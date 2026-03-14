@@ -1,0 +1,96 @@
+﻿@model IEnumerable<Fee>
+@{
+    ViewData["Title"] = "My Fees";
+    var totalDue = ViewBag.TotalDue as decimal? ?? 0;
+}
+
+<div class="content container-fluid">
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="page-title">My Fees</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item active">Dashboard</li>
+                    <li class="breadcrumb-item active">My Fees</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-success text-white text-center">
+                <div class="card-body">
+                    <h3>@Model.Where(f => f.Paid).Sum(f => f.Amount).ToString("N0") EGP</h3>
+                    <p>Paid</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-danger text-white text-center @(totalDue > 0 ? "animate-pulse" : "")">
+                <div class="card-body">
+                    <h3>@totalDue.ToString("N0") EGP</h3>
+                    <p>Due</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-info text-white text-center">
+                <div class="card-body">
+                    <h3>@Model.Count() Total</h3>
+                    <p>Fees</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> No fees recorded yet
+        </div>
+    }
+    else
+    {
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Amount</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                                <th>Days Overdue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var fee in Model)
+                            {
+                                <tr class="@(!fee.Paid ? "table-danger" : "")">
+                                    <td><strong>@fee.Amount.ToString("N0") EGP</strong></td>
+                                    <td>@fee.DueDate.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        <span class="badge @(fee.Paid ? "bg-success" : "bg-danger")">
+                                            @(fee.Paid ? "Paid" : "Pending")
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @if (!fee.Paid)
+                                        {
+                                            <span class="text-danger">
+                                                <i class="fas fa-clock"></i>
+                                                <td>@(fee.Paid ? "—" : ((DateTime.Today - fee.DueDate).Days > 0 ? (DateTime.Today - fee.DueDate).Days.ToString() + " يوم" : "في الميعاد"))</td>
+                                            </span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,430 @@
+﻿@model ExamResultVM
+@{
+    ViewData["Title"] = "Add/Edit Exam Results";
+}
+
+<style>
+    .form-card {
+        border: none;
+        border-radius: 25px;
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+        overflow: hidden;
+        height: 100%;
+    }
+    .form-header {
+        background: linear-gradient(135deg, #6610f2 0%, #6f42c1 100%);
+        color: white;
+        padding: 35px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .form-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+        animation: float 6s ease-in-out infinite;
+    }
+     
+    .form-icon {
+        width: 90px;
+        height: 90px;
+        background: rgba(255,255,255,0.25);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        margin: 0 auto 20px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    .table-modern {
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        border: none;
+        background: white;
+    }
+    .table-modern thead th {
+        background: linear-gradient(135deg, #6610f2 0%, #6f42c1 100%);
+        color: white;
+        font-weight: 700;
+        border: none;
+        padding: 20px 15px;
+        font-size: 15px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .table-modern tbody td {
+        padding: 20px 15px;
+        border-color: #f1f3f4;
+        vertical-align: middle;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+    .table-modern tbody tr:hover {
+        background: linear-gradient(135deg, #f8f9ff 0%, #e8f0fe 100%);
+        transform: scale(1.01);
+        box-shadow: 0 10px 25px rgba(102,16,242,0.1);
+    }
+    .grade-input {
+        border-radius: 15px;
+        border: 2px solid #e9ecef;
+        padding: 12px 20px;
+        font-size: 18px;
+        font-weight: 600;
+        height: 56px;
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        text-align: center;
+        color: #495057;
+    }
+    .grade-input:focus {
+        border-color: #6610f2;
+        box-shadow: 0 0 0 0.25rem rgba(102,16,242,0.15);
+        transform: translateY(-2px);
+        background: white;
+        outline: none;
+    }
+    .grade-badge {
+        font-size: 16px;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-weight: 700;
+        min-width: 80px;
+        text-align: center;
+    }
+    .grade-badge.current {
+        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+    }
+    .grade-badge.new {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+    }
+    .student-avatar {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #6610f2, #6f42c1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 14px;
+        margin-right: 12px;
+        flex-shrink: 0;
+    }
+    .btn-modern {
+        padding: 15px 40px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 16px;
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(102,16,242,0.4);
+    }
+    .btn-primary-modern { 
+        background: linear-gradient(135deg, #6610f2 0%, #6f42c1 100%); 
+        color: white; 
+    }
+    .btn-secondary-modern { 
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef); 
+        color: #6c757d; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .btn-modern:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(102,16,242,0.5);
+        color: white !important;
+    }
+    .empty-state {
+        background: linear-gradient(135deg, rgba(102,16,242,0.05) 0%, rgba(111,66,193,0.05) 100%);
+        border: 2px dashed #dee2e6;
+        border-radius: 20px;
+        padding: 60px 40px;
+        text-align: center;
+        color: #6c757d;
+    }
+</style>
+
+<div class="content container-fluid">
+    <!-- PAGE HEADER -->
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-8">
+            <h2 class="fw-bold mb-2" style="color: #2c3e50;">
+                <i class="fas fa-clipboard-check me-3 text-purple"></i>
+                @Model.ExamName Results
+            </h2>
+            <p class="mb-0 text-muted lead">
+                @Model.SubjectName - @Model.ClassName 
+                <span class="badge bg-purple text-white ms-2">@Model.Students.Count Students</span>
+            </p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a asp-action="Index" class="btn btn-secondary-modern btn-lg shadow-lg px-5">
+                <i class="fas fa-arrow-left me-2"></i>Back to Results
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-lg mb-5" role="alert">
+            <i class="fas fa-check-circle me-2"></i>@TempData["success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- FORM CARD -->
+    <div class="row justify-content-center">
+        <div class="col-xl-12 col-lg-12">
+            <div class="card form-card shadow-xl">
+                <!-- HEADER -->
+                <div class="form-header">
+                    <div class="form-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="mb-2 fw-bold fs-2 position-relative">@Model.ExamName</h3>
+                    <p class="mb-0 opacity-90 position-relative">
+                        @Model.SubjectName • @Model.ClassName • 
+                        <span class="badge bg-light text-dark px-3 py-2">@Model.Students.Count Students</span>
+                    </p>
+                </div>
+
+                <!-- FORM BODY -->
+                <div class="card-body p-0">
+                    <form asp-action="AddResults" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="ExamId" />
+                        <input type="hidden" asp-for="SubjectName" />
+                        <input type="hidden" asp-for="ClassName" />
+
+                        @if (!Model.Students.Any())
+                        {
+                            <div class="empty-state p-5">
+                                <div class="empty-icon mb-4">
+                                    <i class="fas fa-users fa-4x text-muted"></i>
+                                </div>
+                                <h4 class="fw-bold mb-3 text-muted">No Students Found</h4>
+                                <p class="mb-4 lead text-muted">No students are enrolled in <strong>@Model.ClassName</strong></p>
+                                <a asp-action="Index" class="btn btn-outline-purple btn-lg">
+                                    <i class="fas fa-arrow-left me-2"></i>Back to Exam Results
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <!-- RESULTS TABLE -->
+                            <div class="table-responsive">
+                                <table class="table table-modern mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                <i class="fas fa-user-graduate me-2"></i>Student
+                                            </th>
+                                            <th>
+                                                <i class="fas fa-history me-2"></i>Current Grade
+                                            </th>
+                                            <th>
+                                                <i class="fas fa-edit me-2"></i>New Grade (0-100)
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < Model.Students.Count; i++)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="student-avatar">
+                                                            @Model.Students[i].StudentName.Substring(0, 1).ToUpper()
+                                                        </div>
+                                                        <div>
+                                                            <strong class="d-block">@Model.Students[i].StudentName</strong>
+                                                            <small class="text-muted">
+                                                                ID: @Model.Students[i].StudentId
+                                                            </small>
+                                                            <input type="hidden" name="Students[@i].StudentId" value="@Model.Students[i].StudentId" />
+                                                            <input type="hidden" name="Students[@i].StudentName" value="@Model.Students[i].StudentName" />
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="grade-badge current px-4 py-2">
+                                                        @Model.Students[i].CurrentGrade
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <div class="position-relative">
+                                                        <input asp-for="Students[i].Grade" 
+                                                               class="form-control grade-input" 
+                                                               type="number" 
+                                                               min="0" 
+                                                               max="100"
+                                                               placeholder="Enter grade" />
+                                                        <span asp-validation-for="Students[i].Grade" class="text-danger small d-block mt-1"></span>
+                                                        @if (Model.Students[i].Grade > 0)
+                                                        {
+                                                            <span class="grade-badge new position-absolute end-0 top-50 translate-middle-y ms-2 px-3 py-1">
+                                                                @Model.Students[i].Grade
+                                                            </span>
+                                                        }
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- SUMMARY STATS -->
+                            <div class="p-4 border-top bg-light">
+                                <div class="row text-center">
+                                    <div class="col-md-3">
+                                        <div class="h5 fw-bold text-purple mb-1">@Model.Students.Count</div>
+                                        <small class="text-muted">Total Students</small>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="h5 fw-bold text-success mb-1">
+                                            @{
+                                                var avgGrade = Model.Students.Any(s => s.Grade > 0) 
+                                                    ? Math.Round(Model.Students.Where(s => s.Grade > 0).Average(s => s.Grade), 1)
+                                                    : 0;
+                                            }
+                                            @avgGrade
+                                        </div>
+                                        <small class="text-muted">Avg Grade</small>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="h5 fw-bold text-warning mb-1">
+                                            @{
+                                                var highest = Model.Students.Any(s => s.Grade > 0) 
+                                                    ? Model.Students.Where(s => s.Grade > 0).Max(s => s.Grade)
+                                                    : 0;
+                                            }
+                                            @highest
+                                        </div>
+                                        <small class="text-muted">Highest</small>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="h5 fw-bold text-info mb-1">
+                                            @{
+                                                var gradedCount = Model.Students.Count(s => s.Grade > 0);
+                                                var gradedPercent = Model.Students.Any() ? Math.Round((double)gradedCount / Model.Students.Count * 100, 0) : 0;
+                                            }
+                                            @gradedPercent%
+                                        </div>
+                                        <small class="text-muted">Graded</small>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        <!-- ACTION BUTTONS -->
+                        @if (Model.Students.Any())
+                        {
+                            <div class="p-5 text-center border-top bg-gradient-purple">
+                                <a asp-action="Index" class="btn btn-secondary-modern btn-lg me-4 px-5 shadow-lg">
+                                    <i class="fas fa-times me-2"></i>Cancel
+                                </a>
+                                <button type="submit" class="btn btn-primary-modern btn-lg px-6 shadow-lg">
+                                    <i class="fas fa-save me-2"></i>
+                                    Save All @Model.Students.Count Results
+                                </button>
+                            </div>
+                        }
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Real-time grade validation and visual feedback
+            const gradeInputs = document.querySelectorAll('input[type="number"]');
+            gradeInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    const value = parseInt(this.value);
+                    const row = this.closest('tr');
+                    
+                    // Visual feedback
+                    if (value >= 90) {
+                        this.style.background = 'linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%)';
+                        this.style.color = '#155724';
+                    } else if (value >= 70) {
+                        this.style.background = 'linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%)';
+                        this.style.color = '#856404';
+                    } else if (value >= 50) {
+                        this.style.background = 'linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%)';
+                        this.style.color = '#721c24';
+                    } else {
+                        this.style.background = '';
+                        this.style.color = '';
+                    }
+                    
+                    // Limit to 0-100
+                    if (value > 100) this.value = 100;
+                    if (value < 0) this.value = 0;
+                });
+            });
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (e.target.tagName === 'INPUT' && e.target.type === 'number') {
+                    if (e.key === 'Enter') {
+                        e.target.blur();
+                        const nextInput = e.target.parentElement.parentElement.parentElement.querySelector('input[type="number"]');
+                        if (nextInput) nextInput.focus();
+                    }
+                }
+            });
+
+            // Auto-save warning
+            window.addEventListener('beforeunload', function(e) {
+                const hasGrades = Array.from(document.querySelectorAll('input[type="number"]')).some(input => input.value > 0);
+                if (hasGrades) {
+                    e.preventDefault();
+                    e.returnValue = 'You have unsaved grades. Are you sure you want to leave?';
+                }
+            });
+
+            // Table row selection
+            document.querySelectorAll('.table-modern tbody tr').forEach(row => {
+                row.addEventListener('click', function() {
+                    this.style.background = 'linear-gradient(135deg, #e8f0fe 0%, #f8f9ff 100%)';
+                    setTimeout(() => {
+                        this.style.background = '';
+                    }, 2000);
+                });
+            });
+        });
+    </script>
+}
+
+<style>
+    .text-purple { color: #6610f2 !important; }
+    .bg-purple { background-color: #6610f2 !important; }
+    .btn-outline-purple {
+        color: #6610f2;
+        border-color: #6610f2;
+        background: transparent;
+    }
+    .btn-outline-purple:hover {
+        background: #6610f2;
+        color: white;
+    }
+    .bg-gradient-purple {
+        background: linear-gradient(135deg, #f8f9ff 0%, #e8f0fe 100%);
+    }
+</style>

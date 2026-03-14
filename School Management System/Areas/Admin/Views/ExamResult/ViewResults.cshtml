@@ -1,0 +1,381 @@
+﻿@model ExamResultsViewVM
+@{
+    ViewData["Title"] = "View Exam Results";
+}
+
+<style>
+    .stats-grid {
+        gap: 20px;
+    }
+    .stat-card {
+        border: none;
+        border-radius: 25px;
+        padding: 30px;
+        text-align: center;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    }
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #ffffff, rgba(255,255,255,0.7), #ffffff);
+        animation: shimmer 3s infinite;
+    }
+   
+    .stat-card:hover {
+        transform: translateY(-10px) scale(1.05);
+        box-shadow: 0 25px 60px rgba(0,0,0,0.2);
+    }
+    .stat-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        margin: 0 auto 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    .stat-number {
+        font-size: 48px;
+        font-weight: 800;
+        line-height: 1;
+        margin-bottom: 10px;
+    }
+    .stat-label {
+        font-size: 16px;
+        font-weight: 600;
+        opacity: 0.9;
+    }
+    .results-card {
+        border: none;
+        border-radius: 25px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+        overflow: hidden;
+    }
+    .table-modern {
+        margin-bottom: 0;
+    }
+    .table-modern thead th {
+        background: linear-gradient(135deg, #495057, #6c757d);
+        color: white;
+        border: none;
+        font-weight: 700;
+        padding: 20px 20px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        font-size: 15px;
+    }
+    .table-modern tbody td {
+        padding: 20px 20px;
+        border-color: #f1f3f4;
+        vertical-align: middle;
+        transition: all 0.3s ease;
+    }
+    .table-modern tbody tr {
+        transition: all 0.3s ease;
+    }
+    .table-modern tbody tr:hover {
+        background: linear-gradient(135deg, #f8f9ff 0%, #e8f0fe 100%);
+        transform: scale(1.01);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    .rank-badge {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        padding: 12px 20px;
+        border-radius: 25px;
+        font-weight: 700;
+        font-size: 16px;
+        box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+    }
+    .grade-badge {
+        padding: 12px 24px;
+        border-radius: 25px;
+        font-weight: 700;
+        font-size: 18px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        min-width: 80px;
+        text-align: center;
+    }
+    .grade-pass {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+    }
+    .grade-fail {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        color: white;
+    }
+    .empty-state {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 25px;
+        padding: 80px 40px;
+        text-align: center;
+        border: 2px dashed #dee2e6;
+        margin: 40px 0;
+    }
+    .btn-modern {
+        padding: 14px 35px;
+        border-radius: 30px;
+        font-weight: 700;
+        font-size: 15px;
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(40,167,69,0.4);
+    }
+    .btn-modern:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(40,167,69,0.5);
+    }
+    .btn-success-modern {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+    }
+    .btn-secondary-modern {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        color: #6c757d;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .btn-danger-modern {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        color: white;
+        border: 2px solid #dc3545;
+        box-shadow: 0 10px 30px rgba(220,53,69,0.4);
+    }
+    .btn-danger-modern:hover {
+        background: #c82333;
+        border-color: #bd2130;
+        color: white;
+    }
+    .breadcrumb-modern {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 20px;
+        padding: 25px 35px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    }
+</style>
+
+<div class="content container-fluid">
+    <!-- BREADCRUMB & BUTTONS -->
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-8">
+            <div class="breadcrumb-modern">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0">
+                        <li class="breadcrumb-item">
+                            <a href="@Url.Action("Index")" class="text-decoration-none">
+                                <i class="fas fa-chart-line me-2 text-primary"></i> Exam Results
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            <i class="fas fa-clipboard-check me-2 text-success"></i>
+                            @Model.ExamName
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+            <div class="d-flex gap-2 justify-content-md-end">
+                <a asp-action="AddResults" asp-route-examId="@Model.ExamId" class="btn btn-success-modern btn-modern btn-lg px-5">
+                    <i class="fas fa-edit me-2"></i> Edit Results
+                </a>
+                <a asp-action="Index" class="btn btn-secondary-modern btn-modern btn-lg px-5">
+                    <i class="fas fa-arrow-left me-2"></i> Back
+                </a>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.TotalStudents == 0)
+    {
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="empty-state">
+                    <i class="fas fa-chart-line fa-5x text-muted mb-4"></i>
+                    <h3 class="text-muted mb-3 fw-bold">No Results Available</h3>
+                    <p class="lead text-muted mb-4">No exam results have been recorded for this exam yet.</p>
+                    <a asp-action="AddResults" asp-route-examId="@Model.ExamId" class="btn btn-success-modern btn-modern btn-lg px-6">
+                        <i class="fas fa-plus-circle me-2"></i> Add First Result
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- EXAM STATS GRID -->
+        <div class="row stats-grid mb-5">
+            <!-- Total Students -->
+            <div class="col-xl-3 col-lg-6 col-md-6">
+                <div class="stat-card" style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); color: white;">
+                    <div class="stat-icon" style="background: rgba(255,255,255,0.2);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-number">@Model.TotalStudents</div>
+                    <div class="stat-label">Total Students</div>
+                </div>
+            </div>
+
+            <!-- Highest Grade -->
+            <div class="col-xl-3 col-lg-6 col-md-6">
+                <div class="stat-card" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white;">
+                    <div class="stat-icon" style="background: rgba(255,255,255,0.2);">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="stat-number">@Model.HighestGrade</div>
+                    <div class="stat-label">Highest Grade</div>
+                </div>
+            </div>
+
+            <!-- Average Grade -->
+            <div class="col-xl-3 col-lg-6 col-md-6">
+                <div class="stat-card" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%); color: white;">
+                    <div class="stat-icon" style="background: rgba(255,255,255,0.2);">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-number">@Model.AverageGrade.ToString("F1")</div>
+                    <div class="stat-label">Class Average</div>
+                </div>
+            </div>
+
+            <!-- Passed Students -->
+            <div class="col-xl-3 col-lg-6 col-md-6">
+                <div class="stat-card" style="background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%); color: #212529;">
+                    <div class="stat-icon" style="background: rgba(0,0,0,0.1);">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-number">@(Model.Results?.Count(r => r.Grade >= 50) ?? 0)</div>
+                    <div class="stat-label">Passed (≥50)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULTS TABLE -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card results-card shadow-xl">
+                    <div class="card-header p-4" style="background: linear-gradient(135deg, #6c757d, #495057); color: white;">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="mb-0 fw-bold">
+                                <i class="fas fa-table me-3"></i>Final Results Table
+                            </h3>
+                            <span class="badge bg-light text-dark fs-5 px-4 py-2">
+                                @Model.TotalStudents students
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-modern mb-0">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 80px;">
+                                            <i class="fas fa-medal me-2"></i>Rank
+                                        </th>
+                                        <th style="width: 300px;">
+                                            <i class="fas fa-user-graduate me-2"></i>Student Name
+                                        </th>
+                                        <th style="width: 150px;">
+                                            <i class="fas fa-graduation-cap me-2"></i>Final Grade
+                                        </th>
+                                        <th style="width: 140px;">
+                                            <i class="fas fa-cogs me-2"></i>Actions
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var result in Model.Results)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="rank-badge">@result.Rank</div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar-sm me-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; font-weight: 700; font-size: 16px;">
+                                                        @{
+                                                            var initials = $"{result.StudentName.Split(' ')[0][0]}{result.StudentName.Split(' ')[^1][0]}".ToUpper();
+                                                        }
+                                                        @initials
+                                                    </div>
+                                                    <div>
+                                                        <strong class="d-block fw-bold">@result.StudentName</strong>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="grade-badge @(result.Grade >= 50 ? "grade-pass" : "grade-fail")">
+                                                    <i class="fas fa-star me-1 @(result.Grade >= 50 ? "text-warning" : "")"></i>
+                                                    @result.Grade
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <form asp-action="DeleteResult" asp-route-examId="@Model.ExamId" asp-route-studentId="@result.StudentId"
+                                                      method="post" style="display:inline;" class="d-inline"
+                                                      onclick="return confirm('هل أنت متأكد من حذف نتيجة الطالب @result.StudentName؟')">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-danger-modern btn-modern btn-sm px-4">
+                                                        <i class="fas fa-trash me-1"></i> Delete
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Enhanced hover effects for stat cards
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-12px) scale(1.05)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+
+            // Table row animations
+            document.querySelectorAll('.table-modern tbody tr').forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.02)';
+                    this.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
+                });
+                row.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                    this.style.boxShadow = 'none';
+                });
+            });
+
+            // Smooth scroll to table
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    document.querySelector('.results-card').scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                });
+            });
+        });
+    </script>
+}

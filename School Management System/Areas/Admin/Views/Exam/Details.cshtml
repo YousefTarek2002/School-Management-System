@@ -1,0 +1,259 @@
+﻿@model School.Models.Exam
+
+<style>
+    .info-card {
+        border: none;
+        border-radius: 25px;
+        background: linear-gradient(145deg, #dc3545 0%, #fd7e14 100%);
+        box-shadow: 0 20px 50px rgba(220,53,69,0.3);
+        overflow: hidden;
+        height: 100%;
+        color: white;
+        position: relative;
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .info-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #ffffff, rgba(255,255,255,0.7), #ffffff);
+        animation: shimmer 3s infinite;
+    }
+    
+    .info-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 30px 60px rgba(220,53,69,0.4);
+    }
+    .exam-avatar {
+        width: 110px;
+        height: 110px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        font-weight: 700;
+        backdrop-filter: blur(15px);
+        border: 3px solid rgba(255,255,255,0.4);
+        margin: 0 auto 25px;
+        position: relative;
+        overflow: hidden;
+    }
+    .exam-avatar::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+        animation: rotate 10s linear infinite;
+    }
+   
+    .detail-card {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        overflow: hidden;
+        background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+        transition: all 0.3s ease;
+    }
+    .detail-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+    }
+    .detail-item {
+        padding: 25px 30px;
+        border-bottom: 1px solid #f1f3f4;
+        transition: all 0.3s ease;
+    }
+    .detail-item:last-child {
+        border-bottom: none;
+    }
+    .detail-item:hover {
+        background: linear-gradient(135deg, #f8f9ff 0%, #e8f0fe 100%);
+        transform: translateX(10px);
+    }
+    .detail-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin-right: 20px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .file-download {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        border-radius: 15px;
+        padding: 20px 30px;
+        text-align: center;
+        color: white;
+        text-decoration: none;
+        display: block;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(40,167,69,0.3);
+    }
+    .file-download:hover {
+        transform: translateY(-5px) scale(1.05);
+        color: white !important;
+        box-shadow: 0 20px 40px rgba(40,167,69,0.4);
+        text-decoration: none;
+    }
+    .stats-badge {
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255,255,255,0.3);
+        padding: 12px 20px;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 16px;
+    }
+    .breadcrumb-modern {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 20px;
+        padding: 20px 30px;
+        backdrop-filter: blur(15px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border: none;
+    }
+    .btn-modern {
+        padding: 15px 35px;
+        border-radius: 30px;
+        font-weight: 700;
+        font-size: 16px;
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(0,123,255,0.4);
+    }
+    .btn-modern:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(0,123,255,0.5);
+    }
+</style>
+
+<div class="content container-fluid">
+    <!-- BREADCRUMB -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="breadcrumb-modern">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0">
+                        <li class="breadcrumb-item">
+                            <a href="@Url.Action("Index")" class="text-decoration-none">
+                                <i class="fas fa-clipboard-list me-2 text-primary"></i> Exams
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            <i class="fas fa-eye me-2 text-danger"></i> 
+                            @Model.ExamName
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN INFO CARD -->
+    <div class="row mb-5">
+        <div class="col-xl-8 col-lg-7">
+            <div class="card info-card h-100 p-5 text-center position-relative">
+                <div class="exam-avatar">
+                    @Model.ExamName?.Substring(0, 1).ToUpper()
+                </div>
+                <h1 class="mb-4 fw-bold fs-1">@Model.ExamName</h1>
+                
+                <div class="row g-4 mb-5">
+                    <div class="col-md-6">
+                        <div class="stats-badge">
+                            <i class="fas fa-book me-2 text-primary"></i>
+                            <strong>@(Model.Subject?.Name ?? "N/A")</strong>
+                            <div class="small opacity-75">Subject</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="stats-badge">
+                            <i class="fas fa-school me-2 text-success"></i>
+                            <strong>@(Model.Class?.Name ?? "N/A")</strong>
+                            <div class="small opacity-75">Class</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4 mb-5">
+                    <div class="col-md-6">
+                        <div class="stats-badge">
+                            <i class="fas fa-calendar me-2 text-info"></i>
+                            <strong>@Model.ExamDate.ToString("dd MMM yyyy")</strong>
+                            <div class="small opacity-75">Date</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="stats-badge">
+                            <i class="fas fa-clock me-2 text-warning"></i>
+                            <strong>@Model.ExamTime.ToString(@"hh\:mm")</strong>
+                            <div class="small opacity-75">Time</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-badge fs-5">
+                    <i class="fas fa-chart-line me-2 text-success"></i>
+                    <strong>@(Model.ExamResults?.Count ?? 0)</strong> students
+                    <div class="small opacity-75">Results Available</div>
+                </div>
+
+                <div class="position-absolute bottom-0 start-50 translate-middle-x pb-4">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-light btn-lg px-5 py-3">
+                        <i class="fas fa-edit me-2"></i>Edit Exam Details
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- TIME TABLE DOWNLOAD -->
+        @if (!string.IsNullOrEmpty(Model.TimeTablePath))
+        {
+            <div class="col-xl-4 col-lg-5">
+                <div class="card detail-card h-100">
+                    <div class="p-5 text-center">
+                        <i class="fas fa-file-pdf fa-4x text-success mb-4"></i>
+                        <h4 class="mb-4 fw-bold text-success">Exam Time Table</h4>
+                        <p class="text-muted mb-4">Download the complete exam schedule for students and teachers</p>
+                        <a href="@Model.TimeTablePath" target="_blank" class="file-download mb-4">
+                            <i class="fas fa-download me-3 fa-2x"></i>
+                            <h5 class="mb-0 fw-bold">Download Schedule</h5>
+                            <small>PDF Document</small>
+                        </a>
+                        <div class="bg-light rounded-3 p-3">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Click to open in new tab
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="row justify-content-end mt-5">
+        <div class="col-auto">
+            <div class="d-flex gap-3">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-danger-modern btn-modern btn-lg px-5">
+                    <i class="fas fa-edit me-2"></i>Edit Exam Schedule
+                </a>
+                <a asp-action="Index" class="btn btn-secondary-modern btn-modern btn-lg px-5">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Exams
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,446 @@
+﻿@model StudentFeesVM
+@{
+    ViewData["Title"] = "Student Fees";
+}
+
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        border-radius: 25px;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 30px;
+        padding: 50px 0;
+        color: white;
+    }
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        animation: float 8s ease-in-out infinite;
+    }
+ 
+    .student-avatar {
+        width: 120px;
+        height: 120px;
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(20px);
+        color: white;
+        font-size: 42px;
+        font-weight: 800;
+        border-radius: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 4px solid rgba(255,255,255,0.4);
+        margin: 0 auto 25px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        position: relative;
+        animation: pulse 2s infinite;
+    }
+   
+    .stats-grid {
+        gap: 20px;
+    }
+    .stat-card {
+        border: none;
+        border-radius: 25px;
+        padding: 35px;
+        text-align: center;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    }
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: linear-gradient(90deg, #ffffff, rgba(255,255,255,0.7), #ffffff);
+        animation: shimmer 3s infinite;
+    }
+   
+    .stat-card:hover {
+        transform: translateY(-12px) scale(1.05);
+        box-shadow: 0 30px 70px rgba(0,0,0,0.2);
+    }
+    .stat-icon {
+        width: 90px;
+        height: 90px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        margin: 0 auto 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    .stat-number {
+        font-size: 52px;
+        font-weight: 800;
+        line-height: 1;
+        margin-bottom: 12px;
+    }
+    .stat-label {
+        font-size: 18px;
+        font-weight: 600;
+        opacity: 0.9;
+    }
+    .fees-card {
+        border: none;
+        border-radius: 25px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+        overflow: hidden;
+    }
+    .table-modern {
+        margin-bottom: 0;
+    }
+    .table-modern thead th {
+        background: linear-gradient(135deg, #495057, #6c757d);
+        color: white;
+        border: none;
+        font-weight: 700;
+        padding: 25px 25px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        font-size: 16px;
+    }
+    .table-modern tbody td {
+        padding: 25px 25px;
+        border-color: #f1f3f4;
+        vertical-align: middle;
+        transition: all 0.3s ease;
+    }
+    .table-modern tbody tr {
+        transition: all 0.3s ease;
+    }
+    .table-modern tbody tr:hover {
+        background: linear-gradient(135deg, #f8f9ff 0%, #e8f0fe 100%);
+        transform: scale(1.01);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    .table-danger-modern {
+        border-left: 5px solid #dc3545;
+        background: rgba(220,53,69,0.05);
+    }
+    .table-danger-modern:hover {
+        background: linear-gradient(135deg, rgba(220,53,69,0.1) 0%, rgba(225,83,97,0.1) 100%);
+        transform: scale(1.02);
+        box-shadow: 0 10px 30px rgba(220,53,69,0.15);
+    }
+    .status-badge-modern {
+        padding: 14px 28px;
+        font-size: 16px;
+        font-weight: 700;
+        border-radius: 30px;
+        border: 3px solid;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+    .status-paid-modern {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        border-color: #28a745;
+    }
+    .status-overdue-modern {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        color: white;
+        border-color: #dc3545;
+        animation: pulse-danger 2s infinite;
+    }
+   
+    .amount-badge {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        padding: 14px 25px;
+        border-radius: 25px;
+        font-weight: 700;
+        font-size: 18px;
+        box-shadow: 0 8px 25px rgba(0,123,255,0.3);
+        display: inline-flex;
+        align-items: center;
+    }
+    .total-row {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        font-weight: 800;
+    }
+    .breadcrumb-modern {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 20px;
+        padding: 25px 35px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    }
+    .btn-modern {
+        padding: 15px 40px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 16px;
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(40,167,69,0.4);
+    }
+</style>
+
+<div class="content container-fluid">
+    <!-- BREADCRUMB -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="breadcrumb-modern">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0">
+                        <li class="breadcrumb-item">
+                            <a href="@Url.Action("Index")" class="text-decoration-none">
+                                <i class="fas fa-money-bill-wave me-2 text-primary"></i> Fees Management
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            <i class="fas fa-user-graduate me-2 text-info"></i> 
+                            @Model.StudentName
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- STUDENT HERO SECTION -->
+    <div class="row hero-section mb-5 position-relative">
+        <div class="col-12">
+            <div class="row align-items-center">
+                <div class="col-md-3 text-center">
+                    <div class="student-avatar">
+                        @{
+                            var initials = Model.StudentName.Length > 0 ? Model.StudentName.Substring(0, 1).ToUpper() : "S";
+                        }
+                        @initials
+                    </div>
+                    <p class="mb-0 mt-3 opacity-90 fs-5">@Model.ClassName</p>
+                </div>
+                <div class="col-md-6 text-center">
+                    <h1 class="display-3 fw-bold mb-4 position-relative">@Model.StudentName</h1>
+                    <div class="d-flex justify-content-center gap-4 flex-wrap">
+                        <span class="badge bg-light text-dark px-5 py-3 fs-5 shadow-lg">
+                            <i class="fas fa-list me-2"></i> @Model.Fees.Count Fees
+                        </span>
+                        <span class="badge bg-success text-white px-5 py-3 fs-5 shadow-lg">
+                            <i class="fas fa-check-circle me-2"></i> @Model.TotalPaid.ToString("N0") EGP Paid
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-3 text-md-end mt-4 mt-md-0">
+                    <a asp-action="Index" class="btn btn-light btn-lg px-6 shadow-lg">
+                        <i class="fas fa-arrow-left me-2"></i> Back to Fees
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FINANCIAL SUMMARY STATS -->
+    <div class="row stats-grid mb-5">
+        <!-- PAID -->
+        <div class="col-xl-4 col-lg-4 col-md-6">
+            <div class="stat-card" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white;">
+                <div class="stat-icon" style="background: rgba(255,255,255,0.2);">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-number">@Model.TotalPaid.ToString("N0")</div>
+                <div class="stat-label">EGP Paid</div>
+            </div>
+        </div>
+
+        <!-- DUE -->
+        <div class="col-xl-4 col-lg-4 col-md-6">
+            <div class="stat-card" style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white;">
+                <div class="stat-icon" style="background: rgba(255,255,255,0.2);">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-number text-white">@Model.TotalDue.ToString("N0")</div>
+                <div class="stat-label">EGP Due</div>
+            </div>
+        </div>
+
+        <!-- OUTSTANDING -->
+        <div class="col-xl-4 col-lg-4 col-md-12">
+            <div class="stat-card" style="background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%); color: #212529;">
+                <div class="stat-icon" style="background: rgba(0,0,0,0.1);">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-number">@Model.TotalOutstanding.ToString("N0")</div>
+                <div class="stat-label">EGP Outstanding</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FEES TABLE -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card fees-card shadow-xl">
+                <div class="card-header p-5" style="background: linear-gradient(135deg, #495057, #6c757d); color: white;">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        <h3 class="mb-0 fw-bold fs-2">
+                            <i class="fas fa-list-money me-3"></i>
+                            Fee Records
+                            <span class="badge bg-light text-dark ms-3 fs-6">@Model.Fees.Count records</span>
+                        </h3>
+                        @if (Model.TotalOutstanding > 0)
+                        {
+                            <div class="alert alert-danger border-0 p-3 m-0 rounded-4 shadow-lg fs-5">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                <strong>@Model.TotalOutstanding.ToString("N0") EGP</strong> outstanding balance
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    @if (!Model.Fees.Any())
+                    {
+                        <div class="text-center py-10 bg-light">
+                            <i class="fas fa-money-bill-wave fa-6x text-muted mb-5 opacity-50"></i>
+                            <h2 class="text-muted mb-4 fw-bold">No Fee Records Found</h2>
+                            <p class="lead text-muted mb-5">This student doesn't have any fee records yet.</p>
+                            <a asp-action="Create" class="btn btn-success btn-modern btn-lg px-6 shadow-lg">
+                                <i class="fas fa-plus-circle me-2"></i>Add First Fee Record
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <!-- FEES TABLE -->
+                        <div class="table-responsive">
+                            <table class="table table-modern mb-0">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 150px;">
+                                            <i class="fas fa-coins me-2"></i>Amount
+                                        </th>
+                                        <th style="width: 180px;">
+                                            <i class="fas fa-calendar-alt me-2"></i>Due Date
+                                        </th>
+                                        <th style="width: 200px;">
+                                            <i class="fas fa-info-circle me-2"></i>Status
+                                        </th>
+                                        <th style="width: 120px;">
+                                            <i class="fas fa-cogs me-2"></i>Actions
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var fee in Model.Fees.OrderByDescending(f => f.DueDate))
+                                    {
+                                        <tr class="@(DateTime.Now > fee.DueDate && !fee.Paid ? "table-danger-modern" : "")">
+                                            <td>
+                                                <div class="amount-badge">
+                                                    <i class="fas fa-coins me-2"></i>
+                                                    @fee.Amount.ToString("N0")
+                                                </div>
+                                                <small class="d-block text-muted mt-1">EGP</small>
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <strong class="@(DateTime.Now > fee.DueDate && !fee.Paid ? "text-danger" : "text-success")">
+                                                        @fee.DueDate.ToString("dd MMM yyyy")
+                                                    </strong>
+                                                    @if (DateTime.Now > fee.DueDate && !fee.Paid)
+                                                    {
+                                                        <div class="badge bg-danger mt-1">
+                                                            <i class="fas fa-clock me-1"></i>Overdue
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="status-badge-modern @(fee.Paid ? "status-paid-modern" : "status-overdue-modern")">
+                                                    <i class="fas @(fee.Paid ? "fa-check-circle" : "fa-times-circle") me-2"></i>
+                                                    @fee.PaymentStatus
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a asp-action="Edit" asp-route-id="@fee.Id" 
+                                                       class="btn btn-outline-primary btn-sm px-3 shadow-sm" title="Edit Fee">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <a asp-action="Delete" asp-route-id="@fee.Id" 
+                                                       class="btn btn-outline-danger btn-sm px-3 shadow-sm ms-1" 
+                                                       onclick="return confirm('Delete this fee record?')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- GRAND TOTAL ROW -->
+                        <div class="table-responsive">
+                            <table class="table mb-0 total-row">
+                                <tbody>
+                                    <tr class="fw-bold fs-4">
+                                        <td colspan="2" class="text-end pe-5 py-4">
+                                            <h3 class="mb-0">GRAND TOTAL</h3>
+                                        </td>
+                                        <td class="py-4">
+                                            <h3 class="mb-0">
+                                                <span>@Model.TotalPaid.ToString("N0") EGP</span>
+                                                @if (Model.TotalOutstanding > 0)
+                                                {
+                                                    <span class="text-warning ms-3">(- @Model.TotalOutstanding.ToString("N0") EGP)</span>
+                                                }
+                                            </h3>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Enhanced hover effects for stat cards
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-12px) scale(1.05)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+
+            // Table row animations
+            document.querySelectorAll('.table-modern tbody tr').forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.02)';
+                    this.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
+                });
+                row.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                    this.style.boxShadow = 'none';
+                });
+            });
+
+            // Overdue rows shake effect
+            document.querySelectorAll('.table-danger-modern').forEach(row => {
+                row.style.animation = 'shake 1s infinite';
+            });
+        });
+    </script>
+}

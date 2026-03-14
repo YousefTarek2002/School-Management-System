@@ -1,0 +1,375 @@
+﻿@model ExamVM
+@{
+    ViewData["Title"] = "Create Exam";
+}
+
+<style>
+    .form-card {
+        border: none;
+        border-radius: 25px;
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+        overflow: hidden;
+        height: 100%;
+    }
+    .form-header {
+        background: linear-gradient(135deg, #17a2b8 0%, #20c997 100%);
+        color: white;
+        padding: 35px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .form-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+        animation: float 6s ease-in-out infinite;
+    }
+   
+    .form-icon {
+        width: 90px;
+        height: 90px;
+        background: rgba(255,255,255,0.25);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        margin: 0 auto 20px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    .input-group-modern {
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+        background: white;
+        height: 65px;
+        position: relative;
+    }
+    .input-group-modern:focus-within {
+        border-color: #17a2b8;
+        box-shadow: 0 0 0 0.3rem rgba(23,162,184,0.15), 0 10px 25px rgba(23,162,184,0.2);
+        transform: translateY(-2px);
+    }
+    .input-group-text-modern {
+        background: linear-gradient(135deg, #f0f8f9, #e7f4f5);
+        border: none;
+        color: #17a2b8;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        height: 100%;
+    }
+    .form-control-modern {
+        border: none;
+        padding: 20px 20px 20px 70px !important;
+        font-size: 16px;
+        background: transparent;
+        height: 100%;
+        box-shadow: none;
+    }
+    .form-control-modern:focus {
+        box-shadow: none;
+        background: #f8fbfc;
+    }
+    .file-upload-modern {
+        border-radius: 15px;
+        border: 2px dashed #17a2b8;
+        background: linear-gradient(135deg, #f0f8f9 0%, #e7f4f5 100%);
+        padding: 30px;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        height: 120px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .file-upload-modern:hover {
+        border-color: #138496;
+        background: linear-gradient(135deg, #e3f4f6 0%, #d9f0f2 100%);
+        transform: translateY(-3px);
+        box-shadow: 0 15px 35px rgba(23,162,184,0.2);
+    }
+    .file-upload-modern.dragover {
+        border-color: #138496;
+        background: linear-gradient(135deg, #d9f0f2 0%, #cce7eb 100%);
+        transform: scale(1.02);
+    }
+    .btn-modern {
+        padding: 15px 40px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 16px;
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(23,162,184,0.4);
+    }
+    .btn-primary-modern { 
+        background: linear-gradient(135deg, #17a2b8 0%, #20c997 100%); 
+        color: white; 
+    }
+    .btn-secondary-modern { 
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef); 
+        color: #6c757d; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .btn-modern:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(23,162,184,0.5);
+        color: white !important;
+    }
+    .label-modern {
+        font-weight: 700;
+        color: #2c3e50;
+        font-size: 15px;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+</style>
+
+<div class="content container-fluid">
+    <!-- PAGE HEADER -->
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-8">
+            <h2 class="fw-bold mb-2" style="color: #2c3e50;">
+                <i class="fas fa-plus-circle me-3 text-info"></i>
+                Create Exam
+            </h2>
+            <p class="mb-0 text-muted lead">Schedule new exam with class, subject and timetable</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a asp-action="Index" class="btn btn-secondary-modern btn-lg shadow-lg px-5">
+                <i class="fas fa-arrow-left me-2"></i>Back to Exams
+            </a>
+        </div>
+    </div>
+
+    <!-- FORM CARD -->
+    <div class="row justify-content-center">
+        <div class="col-xl-10 col-lg-11">
+            <div class="card form-card shadow-xl">
+                <!-- HEADER -->
+                <div class="form-header">
+                    <div class="form-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h3 class="mb-2 fw-bold fs-2 position-relative">Exam Schedule</h3>
+                    <p class="mb-0 opacity-90 position-relative">Create new exam with complete details</p>
+                </div>
+
+                <!-- FORM BODY -->
+                <div class="card-body p-5">
+                    <form asp-action="Create" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+                        
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4 rounded-3 shadow-sm">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            Please fix the following errors:
+                        </div>
+
+                        <!-- ROW 1: Exam Name & Class -->
+                        <div class="row g-4 mb-5">
+                            <div class="col-lg-8">
+                                <label class="label-modern">
+                                    <i class="fas fa-clipboard-list text-primary"></i>
+                                    Exam Name <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group-modern">
+                                    <span class="input-group-text-modern">
+                                        <i class="fas fa-clipboard-list"></i>
+                                    </span>
+                                    <input asp-for="ExamName" class="form-control-modern" placeholder="e.g. Midterm Exam, Final Test..." />
+                                </div>
+                                <span asp-validation-for="ExamName" class="text-danger small d-block mt-1"></span>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <label class="label-modern">
+                                    <i class="fas fa-school text-success"></i>
+                                    Class <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group-modern">
+                                    <span class="input-group-text-modern">
+                                        <i class="fas fa-school"></i>
+                                    </span>
+                                    <select asp-for="ClassId" class="form-control-modern form-select" style="border: none; padding-left: 70px;">
+                                        <option value="">Choose class...</option>
+                                        @if (Model.Classes != null)
+                                        {
+                                            @foreach (var cls in Model.Classes)
+                                            {
+                                                <option value="@cls.Value">@cls.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                                <span asp-validation-for="ClassId" class="text-danger small d-block mt-1"></span>
+                            </div>
+                        </div>
+
+                        <!-- ROW 2: Subject & Date -->
+                        <div class="row g-4 mb-5">
+                            <div class="col-lg-6">
+                                <label class="label-modern">
+                                    <i class="fas fa-book text-info"></i>
+                                    Subject <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group-modern">
+                                    <span class="input-group-text-modern">
+                                        <i class="fas fa-book"></i>
+                                    </span>
+                                    <select asp-for="SubjectId" class="form-control-modern form-select" style="border: none; padding-left: 70px;">
+                                        <option value="">Choose subject...</option>
+                                        @if (Model.Subjects != null)
+                                        {
+                                            @foreach (var subject in Model.Subjects)
+                                            {
+                                                <option value="@subject.Value">@subject.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                                <span asp-validation-for="SubjectId" class="text-danger small d-block mt-1"></span>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <label class="label-modern">
+                                    <i class="fas fa-calendar text-warning"></i>
+                                    Exam Date <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group-modern">
+                                    <span class="input-group-text-modern">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </span>
+                                    <input asp-for="ExamDate" type="date" class="form-control-modern" />
+                                </div>
+                                <span asp-validation-for="ExamDate" class="text-danger small d-block mt-1"></span>
+                            </div>
+                        </div>
+
+                        <!-- ROW 3: Time & Timetable -->
+                        <div class="row g-4 mb-5">
+                            <div class="col-lg-6">
+                                <label class="label-modern">
+                                    <i class="fas fa-clock text-primary"></i>
+                                    Exam Time <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group-modern">
+                                    <span class="input-group-text-modern">
+                                        <i class="fas fa-clock"></i>
+                                    </span>
+                                    <input asp-for="ExamTime" type="time" class="form-control-modern" />
+                                </div>
+                                <span asp-validation-for="ExamTime" class="text-danger small d-block mt-1"></span>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <label class="label-modern">
+                                    <i class="fas fa-file-pdf text-danger"></i>
+                                    Timetable File (Optional)
+                                </label>
+                                <div class="file-upload-modern" onclick="document.getElementById('TimeTableFile').click()">
+                                    <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                    <div>
+                                        <strong class="text-muted d-block mb-1">Click to upload</strong>
+                                        <small class="text-muted">PDF, DOC, DOCX files</small>
+                                    </div>
+                                    <input asp-for="TimeTableFile" type="file" id="TimeTableFile" 
+                                           class="d-none" accept=".pdf,.doc,.docx" />
+                                </div>
+                                <span asp-validation-for="TimeTableFile" class="text-danger small d-block mt-1"></span>
+                            </div>
+                        </div>
+
+                        <!-- ACTION BUTTONS -->
+                        <div class="text-center mt-5 pt-4 border-top">
+                            <button type="submit" class="btn btn-primary-modern btn-lg px-5 shadow-lg">
+                                <i class="fas fa-save me-2"></i>
+                                Save Exam Schedule
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('TimeTableFile');
+            const fileUpload = document.querySelector('.file-upload-modern');
+            
+            // File upload interactions
+            fileUpload.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
+            
+            fileUpload.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+            });
+            
+            fileUpload.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    updateFileName(files[0].name, files[0].size);
+                }
+            });
+            
+            fileInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    updateFileName(this.files[0].name, this.files[0].size);
+                }
+            });
+            
+            function updateFileName(filename, size) {
+                const uploadArea = fileUpload.querySelector('div');
+                uploadArea.innerHTML = `
+                    <i class="fas fa-file-pdf fa-2x text-success mb-2"></i>
+                    <strong class="text-success d-block mb-1">${filename}</strong>
+                    <small class="text-muted">${formatFileSize(size)}</small>
+                `;
+            }
+            
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+            
+            // Form field animations
+            document.querySelectorAll('.form-control-modern').forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.closest('.input-group-modern').style.transform = 'scale(1.02)';
+                });
+                input.addEventListener('blur', function() {
+                    this.closest('.input-group-modern').style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,353 @@
+﻿@model SubjectVM
+@{
+    ViewData["Title"] = "Edit Subject";
+}
+
+<style>
+    .form-card {
+        border: none;
+        border-radius: 25px;
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+        overflow: hidden;
+        height: 100%;
+    }
+    .form-header {
+        background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+        color: white;
+        padding: 40px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .form-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    .form-icon {
+        width: 100px;
+        height: 100px;
+        background: rgba(255,255,255,0.25);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        margin: 0 auto 25px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
+    .input-group-modern {
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        border: 2px solid #e9ecef;
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        background: white;
+        height: 70px;
+        position: relative;
+    }
+    .input-group-modern:focus-within {
+        border-color: #ff9a9e;
+        box-shadow: 0 0 0 0.4rem rgba(255,154,158,0.15), 0 15px 35px rgba(255,154,158,0.2);
+        transform: translateY(-3px) scale(1.02);
+    }
+    .input-group-text-modern {
+        background: linear-gradient(135deg, #fff5f5, #ffeaea);
+        border: none;
+        color: #e74c3c;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 25px;
+        height: 100%;
+        width: 70px;
+    }
+    .form-control-modern {
+        border: none;
+        padding: 25px 25px 25px 25px !important;
+        font-size: 16px;
+        background: transparent;
+        height: 100%;
+        box-shadow: none;
+        font-weight: 500;
+    }
+    .form-control-modern:focus {
+        box-shadow: none;
+        background: #fff5f5;
+        color: #2c3e50;
+    }
+    .teachers-preview {
+        background: linear-gradient(135deg, rgba(255,154,158,0.08) 0%, rgba(254,207,239,0.08) 100%);
+        border-radius: 20px;
+        border-left: 5px solid #ff9a9e;
+        box-shadow: 0 10px 30px rgba(255,154,158,0.15);
+    }
+    .teacher-badge {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 25px;
+        font-weight: 700;
+        font-size: 14px;
+        box-shadow: 0 5px 20px rgba(40,167,69,0.3);
+        transition: all 0.3s ease;
+        white-space: nowrap;
+    }
+    .teacher-badge:hover {
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 10px 30px rgba(40,167,69,0.4);
+    }
+    .select2-container--modern {
+        border-radius: 20px !important;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1) !important;
+        border: 2px solid #e9ecef !important;
+        height: 70px !important;
+        transition: all 0.4s ease !important;
+    }
+    .select2-container--modern:focus-within {
+        border-color: #ff9a9e !important;
+        box-shadow: 0 0 0 0.4rem rgba(255,154,158,0.15), 0 15px 35px rgba(255,154,158,0.2) !important;
+        transform: translateY(-3px) scale(1.02) !important;
+    }
+    .btn-modern {
+        padding: 18px 50px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 16px;
+        border: none;
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        height: 60px;
+        box-shadow: 0 12px 35px rgba(255,154,158,0.4);
+    }
+    .btn-success-modern {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+    }
+    .btn-secondary-modern {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        color: #6c757d;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    .btn-modern:hover {
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 25px 50px rgba(255,154,158,0.5);
+        color: white !important;
+    }
+    .label-modern {
+        font-weight: 700;
+        color: #2c3e50;
+        font-size: 16px;
+        margin-bottom: 18px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+</style>
+
+<div class="content container-fluid">
+    <!-- PAGE HEADER -->
+    <div class="row mb-6 align-items-center">
+        <div class="col-md-8">
+            <h2 class="fw-bold mb-2" style="color: #2c3e50; font-size: 2.5rem;">
+                <i class="fas fa-edit me-4 text-danger"></i>
+                Edit Subject
+            </h2>
+            <p class="mb-0 text-muted lead fs-5">Update subject name and teacher assignments</p>
+        </div>
+        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+            <a asp-action="Index" class="btn btn-secondary-modern btn-modern btn-lg px-6 shadow-lg">
+                <i class="fas fa-arrow-left me-2"></i>Back to Subjects
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-lg mb-6" role="alert">
+            <i class="fas fa-check-circle me-2"></i>@TempData["success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- CURRENT TEACHERS PREVIEW -->
+    @if (Model.SelectedTeachers?.Any() == true)
+    {
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="teachers-preview p-5">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h4 class="mb-3">
+                                <i class="fas fa-users text-success me-3"></i>
+                                Currently Assigned Teachers (@Model.SelectedTeachers.Count)
+                            </h4>
+                            <div class="row g-3">
+                                @foreach (var teacherId in Model.SelectedTeachers.Take(8))
+                                {
+                                    @foreach (var teacher in Model.AllTeachers.Where(t => t.Id == teacherId))
+                                    {
+                                        <div class="col-auto">
+                                            <span class="teacher-badge">@teacher.Name</span>
+                                        </div>
+                                    }
+                                }
+                                @if (Model.SelectedTeachers.Count > 8)
+                                {
+                                    <div class="col-auto">
+                                        <span class="badge bg-info fs-6 px-4 py-3">
+                                            +@(Model.SelectedTeachers.Count - 8) more...
+                                        </span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <span class="badge bg-success fs-5 px-5 py-3 shadow-lg">
+                                <i class="fas fa-check-circle me-2"></i>Live Preview
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- MAIN FORM -->
+    <div class="row justify-content-center">
+        <div class="col-xl-10 col-lg-11">
+            <div class="card form-card shadow-xl">
+                <!-- HEADER -->
+                <div class="form-header">
+                    <div class="form-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h3 class="mb-3 fw-bold fs-2 position-relative">@Model.Name</h3>
+                    <p class="mb-0 opacity-90 fs-5 position-relative">Update subject details and teacher assignments</p>
+                </div>
+
+                <!-- FORM BODY -->
+                <div class="card-body p-6">
+                    <form asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
+                        <input asp-for="Id" type="hidden" />
+                        
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-5 rounded-4 shadow-lg border-0">
+                            <i class="fas fa-exclamation-circle me-3"></i>
+                            <strong>Please fix the following errors before saving:</strong>
+                        </div>
+
+                        <div class="row g-5 mb-6">
+                            <!-- SUBJECT NAME -->
+                            <div class="col-12">
+                                <label class="label-modern">
+                                    <i class="fas fa-heading text-primary"></i>
+                                    Subject Name <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group-modern">
+                                    <span class="input-group-text-modern">
+                                        <i class="fas fa-heading"></i>
+                                    </span>
+                                    <input asp-for="Name" class="form-control-modern" placeholder="Enter subject name" />
+                                </div>
+                                <span asp-validation-for="Name" class="text-danger small d-block mt-2"></span>
+                            </div>
+                        </div>
+
+                        <!-- TEACHER ASSIGNMENTS -->
+                        <div class="mb-6">
+                            <label class="label-modern">
+                                <i class="fas fa-user-plus text-success"></i>
+                                Assign Teachers
+                            </label>
+                            <select multiple asp-for="SelectedTeachers" class="form-select select2-modern w-100" 
+                                    style="height: 120px; border-radius: 20px; border: 2px solid #e9ecef; padding: 20px;"
+                                    data-placeholder="Select teachers to assign to this subject">
+                                @foreach (var teacher in Model.AllTeachers)
+                                {
+                                    <option value="@teacher.Id" selected="@(Model.SelectedTeachers?.Contains(teacher.Id) == true)">@teacher.Name</option>
+                                }
+                            </select>
+                            <div class="form-text mt-3 fs-6">
+                                <i class="fas fa-info-circle text-info me-2"></i>
+                                Select multiple teachers by holding Ctrl/Cmd + Click. Changes will update teacher assignments.
+                            </div>
+                            <span asp-validation-for="SelectedTeachers" class="text-danger small d-block mt-2"></span>
+                        </div>
+
+                        <!-- ACTION BUTTONS -->
+                        <div class="text-center pt-5 border-top">
+                            <a asp-action="Index" class="btn btn-secondary-modern btn-modern btn-lg me-5 px-6 shadow-lg">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success-modern btn-modern btn-lg px-6 shadow-lg">
+                                <i class="fas fa-save me-2"></i>
+                                Update Subject & Teachers
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.select2-modern').select2({
+                placeholder: "Click to select teachers (Ctrl+Click for multiple)",
+                allowClear: true,
+                width: '100%',
+                dropdownParent: $('.card-body'),
+                templateResult: formatTeacher,
+                templateSelection: formatTeacher,
+                closeOnSelect: false,
+                height: '120px'
+            });
+
+            function formatTeacher(teacher) {
+                if (!teacher.id) {
+                    return $('<span class="text-muted fs-6">' + teacher.text + '</span>');
+                }
+                return $(
+                    '<div class="d-flex align-items-center">' +
+                    '<i class="fas fa-user-tie me-3 text-primary" style="font-size: 18px;"></i>' +
+                    '<span style="font-weight: 600;">' + teacher.text + '</span>' +
+                    '</div>'
+                );
+            }
+
+            // Custom styling for Select2 container
+            $('.select2-container').addClass('select2-container--modern');
+            $('.select2-container').on('focus', function() {
+                $(this).addClass('select2-container--modern-focus');
+            }).on('blur', function() {
+                $(this).removeClass('select2-container--modern-focus');
+            });
+        });
+
+        // Form animations
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.form-control-modern').forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.closest('.input-group-modern').style.transform = 'scale(1.03)';
+                });
+                input.addEventListener('blur', function() {
+                    this.closest('.input-group-modern').style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+}

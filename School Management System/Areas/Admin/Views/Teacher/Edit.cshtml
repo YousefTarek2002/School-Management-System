@@ -1,0 +1,233 @@
+﻿@model AddTeacherVM
+@{
+    ViewData["Title"] = "Edit Teacher";
+}
+
+<style>
+
+    .form-card {
+        border-radius: 14px;
+        border: none;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    .input-group-text {
+        background: #f5f6fa;
+        border-right: 0;
+    }
+
+    .form-control {
+        border-left: 0;
+    }
+
+        .form-control:focus {
+            box-shadow: none;
+            border-color: #0d6efd;
+        }
+
+    .teacher-avatar {
+        width: 70px;
+        height: 70px;
+        background: #0d6efd;
+        color: white;
+        font-size: 26px;
+        font-weight: bold;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+</style>
+
+<div class="content container-fluid">
+
+    <!-- HEADER -->
+
+    <div class="row mb-4 align-items-center">
+
+        <div class="col-auto">
+
+            <div class="teacher-avatar">
+
+                @Model.Name.Substring(0, 1).ToUpper()
+
+            </div>
+
+        </div>
+
+        <div class="col">
+
+            <h3 class="fw-bold">@Model.Name</h3>
+
+            <p class="text-muted">Edit teacher information</p>
+
+        </div>
+
+        <div class="col-auto">
+
+            <a asp-action="Index" class="btn btn-outline-secondary">
+
+                <i class="fas fa-arrow-left"></i> Back
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- FORM -->
+
+    <div class="card form-card">
+
+        <div class="card-body p-4">
+
+            <form asp-action="Edit" method="post">
+
+                @Html.AntiForgeryToken()
+
+                <input asp-for="Id" type="hidden" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+
+                <div class="row">
+
+                    <!-- NAME -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="Name" class="form-label">Teacher Name</label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+
+                                <i class="fas fa-user"></i>
+
+                            </span>
+
+                            <input asp-for="Name" class="form-control" />
+
+                        </div>
+
+                        <span asp-validation-for="Name" class="text-danger"></span>
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="Email" class="form-label">Email</label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+
+                                <i class="fas fa-envelope"></i>
+
+                            </span>
+
+                            <input asp-for="Email" type="email" class="form-control" />
+
+                        </div>
+
+                        <span asp-validation-for="Email" class="text-danger"></span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="row">
+
+                    <!-- SALARY -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="Salary" class="form-label">Salary</label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+
+                                <i class="fas fa-money-bill"></i>
+
+                            </span>
+
+                            <input asp-for="Salary" type="number" class="form-control" />
+
+                        </div>
+
+                        <span asp-validation-for="Salary" class="text-danger"></span>
+
+                    </div>
+
+
+                    <!-- SUBJECT -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label asp-for="SubjectId" class="form-label">Subject</label>
+
+                        <div class="input-group">
+
+                            <span class="input-group-text">
+
+                                <i class="fas fa-book"></i>
+
+                            </span>
+
+                            <select asp-for="SubjectId"
+                                    class="form-select"
+                                    asp-items="@(new SelectList(ViewBag.Subjects, "Id", "Name"))">
+
+                                <option value="">Select Subject</option>
+
+                            </select>
+
+                        </div>
+
+                        <span asp-validation-for="SubjectId" class="text-danger"></span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- BUTTONS -->
+
+                <div class="text-end mt-3">
+
+                    <a asp-action="Index" class="btn btn-light me-2">
+
+                        Cancel
+
+                    </a>
+
+                    <button type="submit" class="btn btn-primary">
+
+                        <i class="fas fa-save"></i>
+
+                        Update Teacher
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

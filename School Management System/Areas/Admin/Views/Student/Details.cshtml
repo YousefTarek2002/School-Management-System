@@ -1,0 +1,331 @@
+﻿@model StudentDetailsVM
+@{
+    ViewData["Title"] = "Student Details";
+}
+
+<style>
+    .student-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 30px;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 40px;
+        color: white;
+        padding: 60px 0;
+    }
+    .student-hero::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+        animation: float 6s ease-in-out infinite;
+    }
+   
+    .student-avatar {
+        width: 150px;
+        height: 150px;
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(20px);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 56px;
+        font-weight: 800;
+        border: 5px solid rgba(255,255,255,0.4);
+        margin: 0 auto 25px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        position: relative;
+        animation: pulse 2s infinite;
+    }
+    
+    .info-card {
+        border: none;
+        border-radius: 25px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+        overflow: hidden;
+        background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+        transition: all 0.4s ease;
+        height: 100%;
+    }
+    .info-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 30px 70px rgba(0,0,0,0.2);
+    }
+    .detail-item {
+        padding: 30px 35px;
+        border-bottom: 1px solid #f1f3f4;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+    }
+    .detail-item:last-child {
+        border-bottom: none;
+    }
+    .detail-item:hover {
+        background: linear-gradient(135deg, #f8f9ff 0%, #e8f0fe 100%);
+        transform: translateX(15px);
+    }
+    .detail-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        margin-right: 25px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        flex-shrink: 0;
+    }
+    .stats-grid {
+        gap: 25px;
+    }
+    .stat-card {
+        border: none;
+        border-radius: 25px;
+        padding: 40px 30px;
+        text-align: center;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    }
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: linear-gradient(90deg, #ffffff, rgba(255,255,255,0.7), #ffffff);
+        animation: shimmer 3s infinite;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-12px) scale(1.05);
+        box-shadow: 0 30px 70px rgba(0,0,0,0.2);
+    }
+    .stat-icon {
+        width: 100px;
+        height: 100px;
+        border-radius: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        margin: 0 auto 25px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
+    .stat-number {
+        font-size: 60px;
+        font-weight: 800;
+        line-height: 1;
+        margin-bottom: 15px;
+    }
+    .stat-label {
+        font-size: 20px;
+        font-weight: 600;
+        opacity: 0.9;
+    }
+    .classes-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .class-badge {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 25px;
+        font-weight: 700;
+        font-size: 15px;
+        box-shadow: 0 8px 25px rgba(0,123,255,0.3);
+        transition: all 0.3s ease;
+        white-space: nowrap;
+    }
+    .class-badge:hover {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 15px 35px rgba(0,123,255,0.4);
+    }
+    .btn-modern {
+        padding: 16px 45px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 16px;
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(0,123,255,0.4);
+        height: 56px;
+    }
+    .btn-primary-modern {
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        color: white;
+    }
+    .btn-secondary-modern {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        color: #6c757d;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .btn-modern:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px rgba(0,123,255,0.5);
+        color: white !important;
+    }
+    .breadcrumb-modern {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 20px;
+        padding: 25px 35px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    }
+</style>
+
+<div class="content container-fluid">
+    <!-- BREADCRUMB -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="breadcrumb-modern">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0">
+                        <li class="breadcrumb-item">
+                            <a href="@Url.Action("Index")" class="text-decoration-none">
+                                <i class="fas fa-users me-2 text-primary"></i> Students
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            <i class="fas fa-user-graduate me-2 text-info"></i> 
+                            @Model.FirstName @Model.LastName
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- STUDENT HERO -->
+    <div class="row student-hero position-relative mb-5">
+        <div class="col-12">
+            <div class="row align-items-center">
+                <div class="col-md-3 text-center">
+                    <div class="student-avatar">
+                        @{
+                            var initials = $"{Model.FirstName[0]}{Model.LastName[0]}".ToUpper();
+                        }
+                        @initials
+                    </div>
+                </div>
+                <div class="col-md-6 text-center">
+                    <h1 class="display-3 fw-bold mb-4 position-relative">@Model.FirstName @Model.LastName</h1>
+                    <p class="lead fs-4 opacity-90 mb-4">Student Profile & Academic Statistics</p>
+                </div>
+                <div class="col-md-3 text-md-end mt-4 mt-md-0">
+                    <div class="d-flex gap-3 justify-content-center justify-content-md-end">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary-modern btn-modern btn-lg px-5 shadow-lg">
+                            <i class="fas fa-edit me-2"></i> Edit Profile
+                        </a>
+                        <a asp-action="Index" class="btn btn-secondary-modern btn-modern btn-lg px-5 shadow-lg">
+                            <i class="fas fa-arrow-left me-2"></i> Back
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- MAIN INFO CARD -->
+        <div class="col-xl-8 col-lg-8">
+            <div class="card info-card shadow-xl h-100">
+                <div class="card-header p-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <h3 class="mb-0 fw-bold">
+                        <i class="fas fa-user-circle me-3"></i>
+                        Personal Information
+                    </h3>
+                </div>
+                <div class="card-body p-0">
+                    <div class="detail-item">
+                        <div class="detail-icon" style="background: linear-gradient(135deg, #28a745, #20c997); color: white;">
+                            <i class="fas fa-signature"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1 fw-bold text-primary">@Model.FirstName @Model.LastName</h6>
+                            <small class="text-muted">Full Name</small>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon" style="background: linear-gradient(135deg, #17a2b8, #138496); color: white;">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1 fw-bold">@Model.Email</h6>
+                            <small class="text-muted">Email Address</small>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon" style="background: linear-gradient(135deg, #ffc107, #fd7e14); color: white;">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1 fw-bold">@Model.Phone</h6>
+                            <small class="text-muted">Phone Number</small>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-icon" style="background: linear-gradient(135deg, #6f42c1, #5a2d91); color: white;">
+                            <i class="fas fa-birthday-cake"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-1 fw-bold">@Model.BirthDate.ToString("dd MMM yyyy")</h6>
+                            <small class="text-muted">Date of Birth</small>
+                        </div>
+                    </div>
+                    @if (Model.Classes.Any())
+                    {
+                        <div class="detail-item">
+                            <div class="detail-icon" style="background: linear-gradient(135deg, #007bff, #0056b3); color: white;">
+                                <i class="fas fa-school"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-2 fw-bold">Classes</h6>
+                                <div class="classes-grid">
+                                    @foreach (var cls in Model.Classes)
+                                    {
+                                        <span class="class-badge">@cls</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- STATS CARDS -->
+        <div class="col-xl-4 col-lg-4">
+            <div class="row stats-grid h-100">
+                <div class="col-12">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white;">
+                        <div class="stat-icon" style="background: rgba(255,255,255,0.2);">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-number">@Model.AttendanceCount</div>
+                        <div class="stat-label">Attendance Records</div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); color: white;">
+                        <div class="stat-icon" style="background: rgba(255,255,255,0.2);">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="stat-number">@Model.ExamResultsCount</div>
+                        <div class="stat-label">Exam Results</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

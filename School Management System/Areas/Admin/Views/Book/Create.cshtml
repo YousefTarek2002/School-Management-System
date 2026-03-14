@@ -1,0 +1,279 @@
+﻿@model School.Models.Book
+@{
+    ViewData["Title"] = "Add Book";
+}
+
+<style>
+    .form-card {
+        border: none;
+        border-radius: 25px;
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+        overflow: hidden;
+        height: 100%;
+    }
+    .form-header {
+        background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
+        color: white;
+        padding: 35px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .form-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    .form-icon {
+        width: 90px;
+        height: 90px;
+        background: rgba(255,255,255,0.25);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        margin: 0 auto 20px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    .input-group-modern {
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+        background: white;
+        height: 65px;
+        position: relative;
+    }
+    .input-group-modern:focus-within {
+        border-color: #6f42c1;
+        box-shadow: 0 0 0 0.3rem rgba(111,66,193,0.15), 0 10px 25px rgba(111,66,193,0.2);
+        transform: translateY(-2px);
+    }
+    .input-group-text-modern {
+        background: linear-gradient(135deg, #f3e8ff, #ede2ff);
+        border: none;
+        color: #6f42c1;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        height: 100%;
+    }
+    .form-control-modern {
+        border: none;
+        padding: 20px 20px 20px 70px !important;
+        font-size: 16px;
+        background: transparent;
+        height: 100%;
+        box-shadow: none;
+    }
+    .form-control-modern:focus {
+        box-shadow: none;
+        background: #f8f4ff;
+    }
+    .readonly-field {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        color: #6c757d;
+        border-color: #dee2e6;
+    }
+    .btn-modern {
+        padding: 15px 40px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 16px;
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(111,66,193,0.4);
+    }
+    .btn-primary-modern { 
+        background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%); 
+        color: white; 
+    }
+    .btn-secondary-modern { 
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef); 
+        color: #6c757d; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .btn-modern:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(111,66,193,0.5);
+        color: white !important;
+    }
+    .label-modern {
+        font-weight: 700;
+        color: #2c3e50;
+        font-size: 15px;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+</style>
+
+<div class="content container-fluid">
+    <!-- PAGE HEADER -->
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-8">
+            <h2 class="fw-bold mb-2" style="color: #2c3e50;">
+                <i class="fas fa-book me-3 text-purple"></i>
+                Add New Book
+            </h2>
+            <p class="mb-0 text-muted lead">Add new book to library inventory</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a asp-action="Index" class="btn btn-secondary-modern btn-lg shadow-lg px-5">
+                <i class="fas fa-arrow-left me-2"></i>Back to Books
+            </a>
+        </div>
+    </div>
+
+    <!-- FORM CARD -->
+    <div class="row justify-content-center">
+        <div class="col-xl-10 col-lg-11">
+            <div class="card form-card shadow-xl">
+                <!-- HEADER -->
+                <div class="form-header">
+                    <div class="form-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h3 class="mb-2 fw-bold fs-2 position-relative">Book Information</h3>
+                    <p class="mb-0 opacity-90 position-relative">Add new book with title, author and copies</p>
+                </div>
+
+                <!-- FORM BODY -->
+                <div class="card-body p-5">
+                    <form method="post" asp-action="Create">
+                        @Html.AntiForgeryToken()
+                        
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4 rounded-3 shadow-sm">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            Please fix the following errors:
+                        </div>
+
+                        <div class="row g-4 mb-5">
+                            <!-- BOOK TITLE -->
+                            <div class="col-lg-8">
+                                <label class="label-modern">
+                                    <i class="fas fa-heading text-primary"></i>
+                                    Book Title <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group-modern">
+                                    <span class="input-group-text-modern">
+                                        <i class="fas fa-book"></i>
+                                    </span>
+                                    <input asp-for="Title" class="form-control-modern" placeholder="Enter complete book title" />
+                                </div>
+                                <span asp-validation-for="Title" class="text-danger small d-block mt-1"></span>
+                            </div>
+
+                            <!-- AUTHOR -->
+                            <div class="col-lg-4">
+                                <label class="label-modern">
+                                    <i class="fas fa-user text-info"></i>
+                                    Author <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group-modern">
+                                    <span class="input-group-text-modern">
+                                        <i class="fas fa-user-pen"></i>
+                                    </span>
+                                    <input asp-for="Author" class="form-control-modern" placeholder="e.g. Ahmed Mohamed, Jane Doe..." />
+                                </div>
+                                <span asp-validation-for="Author" class="text-danger small d-block mt-1"></span>
+                            </div>
+                        </div>
+
+                        <div class="row g-4 mb-5">
+                            <!-- TOTAL COPIES -->
+                            <div class="col-lg-6">
+                                <label class="label-modern">
+                                    <i class="fas fa-copy text-success"></i>
+                                    Total Copies <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group-modern">
+                                    <span class="input-group-text-modern">
+                                        <i class="fas fa-boxes"></i>
+                                    </span>
+                                    <input asp-for="TotalCopies" type="number" min="1" max="1000" 
+                                           class="form-control-modern" placeholder="0" />
+                                </div>
+                                <div class="form-text mt-2">
+                                    <i class="fas fa-info-circle text-info me-1"></i>
+                                    Number of copies available for borrowing
+                                </div>
+                                <span asp-validation-for="TotalCopies" class="text-danger small d-block mt-1"></span>
+                            </div>
+
+                            <!-- AVAILABLE COPIES (READONLY) -->
+                            <div class="col-lg-6">
+                                <label class="label-modern">
+                                    <i class="fas fa-check-circle text-secondary"></i>
+                                    Available Copies
+                                </label>
+                                <div class="input-group-modern">
+                                    <span class="input-group-text-modern">
+                                        <i class="fas fa-check-square"></i>
+                                    </span>
+                                    <input type="number" class="form-control-modern readonly-field" value="0" readonly />
+                                </div>
+                                <div class="form-text mt-2">
+                                    <i class="fas fa-magic text-success me-1"></i>
+                                    Will be set automatically on creation
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ACTION BUTTONS -->
+                        <div class="text-center mt-5 pt-4 border-top">
+                            <a asp-action="Index" class="btn btn-secondary-modern btn-lg me-4 px-5 shadow-lg">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary-modern btn-lg px-5 shadow-lg">
+                                <i class="fas fa-plus me-2"></i>
+                                Add Book to Library
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const totalCopiesInput = document.querySelector('input[name="TotalCopies"]');
+            const readonlyInput = document.querySelector('.readonly-field');
+            
+            // Sync readonly field with total copies
+            totalCopiesInput.addEventListener('input', function() {
+                readonlyInput.value = this.value || 0;
+            });
+            
+            // Form animations
+            document.querySelectorAll('.form-control-modern').forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.closest('.input-group-modern').style.transform = 'scale(1.02)';
+                });
+                input.addEventListener('blur', function() {
+                    this.closest('.input-group-modern').style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+}
+
+<style>
+    .text-purple { color: #6f42c1 !important; }
+</style>

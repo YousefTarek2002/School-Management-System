@@ -1,0 +1,376 @@
+﻿@model AttendanceVM
+@{
+    ViewData["Title"] = "Edit Attendance";
+}
+
+<style>
+    .form-card {
+        border: none;
+        border-radius: 25px;
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+        overflow: hidden;
+        height: 100%;
+    }
+    .form-header {
+        background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+        color: white;
+        padding: 35px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .form-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    .form-icon {
+        width: 90px;
+        height: 90px;
+        background: rgba(255,255,255,0.25);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        margin: 0 auto 20px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    .input-group-modern {
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+        background: white;
+        height: 65px;
+        position: relative;
+    }
+    .input-group-modern:focus-within {
+        border-color: #ffc107;
+        box-shadow: 0 0 0 0.3rem rgba(255,193,7,0.15), 0 10px 25px rgba(255,193,7,0.2);
+        transform: translateY(-2px);
+    }
+    .input-group-text-modern {
+        background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+        border: none;
+        color: #856404;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        height: 100%;
+    }
+    .form-control-modern {
+        border: none;
+        padding: 20px 20px 20px 70px !important;
+        font-size: 16px;
+        background: transparent;
+        height: 100%;
+        box-shadow: none;
+    }
+    .form-control-modern:focus {
+        box-shadow: none;
+        background: #fff8e1;
+    }
+    .status-container {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 15px;
+        border: 2px solid #dee2e6;
+        padding: 25px;
+        transition: all 0.3s ease;
+        height: 80px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+    }
+    .status-container:hover {
+        border-color: #ffc107;
+        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+        transform: translateY(-3px);
+    }
+    .status-container.present {
+        border-color: #28a745;
+        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        box-shadow: 0 8px 25px rgba(40,167,69,0.2);
+        transform: translateY(-2px);
+    }
+    .preview-card {
+        background: linear-gradient(135deg, rgba(255,193,7,0.08) 0%, rgba(253,126,20,0.08) 100%);
+        border-radius: 20px;
+        border-left: 5px solid #ffc107;
+        box-shadow: 0 10px 30px rgba(255,193,7,0.15);
+    }
+    .btn-modern {
+        padding: 15px 40px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 16px;
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(255,193,7,0.4);
+    }
+    .btn-warning-modern { 
+        background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%); 
+        color: #212529; 
+    }
+    .btn-secondary-modern { 
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef); 
+        color: #6c757d; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .btn-modern:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(255,193,7,0.5);
+        color: #212529 !important;
+    }
+    .label-modern {
+        font-weight: 700;
+        color: #2c3e50;
+        font-size: 15px;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+</style>
+
+<div class="content container-fluid">
+    <!-- PAGE HEADER -->
+    <div class="row mb-5 align-items-center">
+        <div class="col-md-8">
+            <h2 class="fw-bold mb-2" style="color: #2c3e50;">
+                <i class="fas fa-edit me-3 text-warning"></i>
+                Edit Attendance
+            </h2>
+            <p class="mb-0 text-muted lead">Update existing attendance record with live preview</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a asp-action="Index" class="btn btn-secondary-modern btn-lg shadow-lg px-5">
+                <i class="fas fa-arrow-left me-2"></i>Back to Attendance
+            </a>
+        </div>
+    </div>
+
+    @if (TempData["success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-lg mb-5" role="alert">
+            <i class="fas fa-check-circle me-2"></i>@TempData["success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- PREVIEW CARD -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="preview-card p-4">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h5 class="mb-2">
+                            <i class="fas fa-user-graduate text-primary me-2"></i>
+                            <span id="previewStudent">@Model.StudentName</span>
+                            <span class="badge bg-info ms-2" id="previewClass">@Model.ClassName</span>
+                        </h5>
+                        <p class="mb-0 text-muted fs-6" id="previewDate">
+                            Date: @Model.Date.ToString("dd/MM/yyyy")
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <span class="badge bg-@(Model.Status ? "success" : "danger") fs-5 px-4 py-3 shadow-sm" id="previewStatus">
+                            <i class="fas fa-@(Model.Status ? "check-circle" : "times-circle") me-2"></i>
+                            @(Model.Status ? "Present" : "Absent")
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FORM CARD -->
+    <div class="row justify-content-center">
+        <div class="col-xl-10 col-lg-11">
+            <div class="card form-card shadow-xl">
+                <!-- HEADER -->
+                <div class="form-header">
+                    <div class="form-icon">
+                        <i class="fas fa-edit"></i>
+                    </div>
+                    <h3 class="mb-2 fw-bold fs-2 position-relative">Update Record</h3>
+                    <p class="mb-0 opacity-90 position-relative">Modify attendance information for @Model.StudentName</p>
+                </div>
+
+                <!-- FORM BODY -->
+                <div class="card-body p-5">
+                    <form asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+                        
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4 rounded-3 shadow-sm">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            Please fix the following errors before updating:
+                        </div>
+
+                        <!-- ROW 1: Student & Class -->
+                        <div class="row g-4 mb-5">
+                            <div class="col-lg-6">
+                                <label class="label-modern">
+                                    <i class="fas fa-user-graduate text-primary"></i>
+                                    Student <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group-modern">
+                                    <span class="input-group-text-modern">
+                                        <i class="fas fa-user-graduate"></i>
+                                    </span>
+                                    <select asp-for="StudentId" class="form-control-modern form-select" style="border: none; padding-left: 70px;" onchange="updatePreview()">
+                                        <option value="">Choose student...</option>
+                                        @if (Model.Students != null)
+                                        {
+                                            @foreach (var student in Model.Students)
+                                            {
+                                                <option value="@student.Value" selected="@(student.Value == Model.StudentId.ToString() ? "selected" : null)">@student.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                                <span asp-validation-for="StudentId" class="text-danger small d-block mt-1"></span>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <label class="label-modern">
+                                    <i class="fas fa-school text-success"></i>
+                                    Class <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group-modern">
+                                    <span class="input-group-text-modern">
+                                        <i class="fas fa-school"></i>
+                                    </span>
+                                    <select asp-for="ClassId" class="form-control-modern form-select" style="border: none; padding-left: 70px;" onchange="updatePreview()">
+                                        <option value="">Choose class...</option>
+                                        @if (Model.Classes != null)
+                                        {
+                                            @foreach (var cls in Model.Classes)
+                                            {
+                                                <option value="@cls.Value" selected="@(cls.Value == Model.ClassId.ToString() ? "selected" : null)">@cls.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                                <span asp-validation-for="ClassId" class="text-danger small d-block mt-1"></span>
+                            </div>
+                        </div>
+
+                        <!-- ROW 2: Date & Status -->
+                        <div class="row g-4 mb-5">
+                            <div class="col-lg-6">
+                                <label class="label-modern">
+                                    <i class="fas fa-calendar text-warning"></i>
+                                    Attendance Date <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group-modern">
+                                    <span class="input-group-text-modern">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </span>
+                                    <input asp-for="Date" type="date" class="form-control-modern" onchange="updatePreview()" />
+                                </div>
+                                <span asp-validation-for="Date" class="text-danger small d-block mt-1"></span>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <label class="label-modern">
+                                    <i class="fas fa-toggle-on text-info"></i>
+                                    Attendance Status <span class="text-danger">*</span>
+                                </label>
+                                <div class="status-container @(Model.Status ? "present" : "")" onclick="toggleStatus()">
+                                    <div class="form-check d-flex align-items-center w-100 h-100">
+                                        <input asp-for="Status" class="form-check-input me-4" type="checkbox" id="statusCheck" onchange="updatePreview()" />
+                                        <label class="form-check-label mb-0 flex-grow-1" for="statusCheck">
+                                            <i class="fas fa-check-circle me-3 text-success fa-2x"></i>
+                                            <strong>Present</strong>
+                                            <div class="small text-muted mt-1">Click to toggle Present/Absent status</div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <span asp-validation-for="Status" class="text-danger small d-block mt-1"></span>
+                            </div>
+                        </div>
+
+                        <!-- ACTION BUTTONS -->
+                        <div class="text-center mt-5 pt-4 border-top">
+                            <a asp-action="Index" class="btn btn-secondary-modern btn-lg me-4 px-5 shadow-lg">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-warning-modern btn-lg px-5 shadow-lg">
+                                <i class="fas fa-save me-2"></i>
+                                Update Attendance Record
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function updatePreview() {
+            const studentSelect = document.querySelector('select[name="StudentId"]');
+            const classSelect = document.querySelector('select[name="ClassId"]');
+            const dateInput = document.querySelector('input[name="Date"]');
+            const statusCheck = document.querySelector('input[name="Status"]');
+            
+            const studentName = studentSelect?.selectedOptions[0]?.text || 'Select Student';
+            const className = classSelect?.selectedOptions[0]?.text || '';
+            const date = dateInput?.value ? new Date(dateInput.value).toLocaleDateString('en-GB') : 'Select date';
+            const status = statusCheck?.checked ? 'Present' : 'Absent';
+            const statusClass = statusCheck?.checked ? 'success' : 'danger';
+            const statusIcon = statusCheck?.checked ? 'check-circle' : 'times-circle';
+            
+            document.getElementById('previewStudent').textContent = studentName;
+            document.getElementById('previewClass').textContent = className;
+            document.getElementById('previewDate').textContent = `Date: ${date}`;
+            document.getElementById('previewStatus').innerHTML = `
+                <i class="fas fa-${statusIcon} me-2"></i>${status}
+            `;
+            document.getElementById('previewStatus').className = `badge bg-${statusClass} fs-5 px-4 py-3 shadow-sm`;
+            
+            // Update status container
+            const statusContainer = document.querySelector('.status-container');
+            if (statusCheck?.checked) {
+                statusContainer.classList.add('present');
+            } else {
+                statusContainer.classList.remove('present');
+            }
+        }
+
+        function toggleStatus() {
+            const checkbox = document.getElementById('statusCheck');
+            checkbox.checked = !checkbox.checked;
+            checkbox.dispatchEvent(new Event('change'));
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePreview();
+            
+            // Form animations
+            document.querySelectorAll('.form-control-modern').forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.closest('.input-group-modern').style.transform = 'scale(1.02)';
+                });
+                input.addEventListener('blur', function() {
+                    this.closest('.input-group-modern').style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+}

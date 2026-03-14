@@ -1,0 +1,72 @@
+﻿@model School.Models.VM.ExamVM
+@{
+    ViewData["Title"] = "Edit Exam";
+}
+
+<div class="content container-fluid">
+    <div class="page-header">
+        <h3>Edit Exam: @Model.ExamName</h3>
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index">Exams</a></li>
+            <li class="breadcrumb-item active">Edit</li>
+        </ul>
+    </div>
+
+    <div class="card card-default">
+        <div class="card-body">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <input asp-for="Id" type="hidden" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="mb-3">
+                    <label asp-for="ExamName" class="form-label"></label>
+                    <input asp-for="ExamName" class="form-control" />
+                    <span asp-validation-for="ExamName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="SubjectId" class="form-label">Subject</label>
+                    <select asp-for="SubjectId" class="form-select" asp-items="Model.Subjects">
+                        <option value="">Select Subject...</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ClassId" class="form-label">Class</label>
+                    <select asp-for="ClassId" class="form-select" asp-items="Model.Classes">
+                        <option value="">Select Class...</option>
+                    </select>
+                </div>
+
+
+                <div class="mb-3">
+                    <label asp-for="ExamDate" class="form-label"></label>
+                    <input asp-for="ExamDate" type="date" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ExamTime" class="form-label"></label>
+                    <input asp-for="ExamTime" type="time" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="TimeTableFile" class="form-label">Upload Time Table</label>
+                    <input asp-for="TimeTableFile" type="file" class="form-control" />
+                    @if (!string.IsNullOrEmpty(Model.ExistingTimeTablePath))
+                    {
+                        <p>Current File: <a href="@Model.ExistingTimeTablePath" target="_blank">View</a></p>
+                    }
+                </div>
+
+                <button type="submit" class="btn btn-primary">Update Exam</button>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,72 @@
+﻿@model IEnumerable<BookIssue>
+@{
+    ViewData["Title"] = "My Books";
+}
+
+<div class="content container-fluid">
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="page-title">My Library Books</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item active">Dashboard</li>
+                    <li class="breadcrumb-item active">My Books</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            <i class="fas fa-book-open fa-2x mb-3 d-block"></i>
+            <p>No books issued yet</p>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var bookIssue in Model)
+            {
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h6 class="card-title">@bookIssue.Book.Title</h6>
+                            <p class="card-text small text-muted">@bookIssue.Book.Author</p>
+                           
+                            <div class="row text-center">
+                                <div class="col-6">
+                                    <div class="small text-muted">Issued</div>
+                                    <strong>@bookIssue.IssueDate.ToString("dd/MM")</strong>
+                                </div>
+                                <div class="col-6">
+                                    <div class="small text-muted">Due</div>
+                                   
+                                </div>
+                            </div>
+                            @if (bookIssue.ReturnDate == null)
+                            {
+                                <div class="mt-3">
+                                    @if (bookIssue.IssueDate < DateTime.Today)
+                                    {
+                                        <span class="badge bg-danger">Overdue</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark">Active</span>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="mt-3">
+                                    <span class="badge bg-success">Returned</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

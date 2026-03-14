@@ -1,0 +1,105 @@
+﻿@model IEnumerable<ExamResult>
+@{
+    ViewData["Title"] = "My Results";
+}
+
+<div class="content container-fluid">
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="page-title">My Exam Results</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item active">Dashboard</li>
+                    <li class="breadcrumb-item active">My Results</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            <i class="fas fa-chart-line fa-2x mb-3"></i>
+            <p>No exam results available yet</p>
+        </div>
+    }
+    else
+    {
+        <!-- Results Summary -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-success text-white text-center">
+                    <div class="card-body">
+                        <h3>@Model.Count()</h3>
+                        <p>Total Exams</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-primary text-white text-center">
+                    <div class="card-body">
+                        <h3>@Model.Max(r => r.Grade)</h3>
+                        <p>Highest Score</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white text-center">
+                    <div class="card-body">
+                        <h3>@Math.Round(Model.Average(r => r.Grade), 1)</h3>
+                        <p>Average Score</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white text-center">
+                    <div class="card-body">
+                        <h3>@Model.Count(r => r.Grade >= 50)</h3>
+                        <p>Passed</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Table -->
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Exam</th>
+                                <th>Subject</th>
+                                <th>Class</th>
+                                <th>Date</th>
+                                <th>Grade</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var result in Model)
+                            {
+                                <tr>
+                                    <td>@result.Exam.ExamName</td>
+                                    <td><span class="badge bg-primary">@result.Exam.Subject.Name</span></td>
+                                    <td>@result.Exam.Class.Name</td>
+                                    <td>@result.Exam.ExamDate.ToString("dd/MM/yyyy")</td>
+                                    <td>
+                                        <span class="badge @(result.Grade >= 50 ? "bg-success" : "bg-danger") fs-6">
+                                            @result.Grade
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge @(result.Grade >= 50 ? "bg-success" : "bg-warning")">
+                                            @(result.Grade >= 50 ? "Pass" : "Fail")
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>

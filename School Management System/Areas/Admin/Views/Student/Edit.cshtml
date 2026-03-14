@@ -1,0 +1,107 @@
+﻿@model AddStudentVM
+@{
+    ViewData["Title"] = "Edit Student";
+}
+
+<div class="content container-fluid">
+
+    <div class="row mb-4 align-items-center">
+
+        <div class="col">
+            <h3 class="fw-bold">@Model.FirstName @Model.LastName</h3>
+            <p class="text-muted">Edit student information</p>
+        </div>
+
+        <div class="col-auto">
+            <a asp-action="Index" class="btn btn-outline-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+        </div>
+
+    </div>
+
+    <div class="card p-4 form-card">
+
+        <form asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
+            <input asp-for="Id" type="hidden" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="FirstName" class="form-label">First Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        <input asp-for="FirstName" class="form-control" />
+                    </div>
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="LastName" class="form-label">Last Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        <input asp-for="LastName" class="form-control" />
+                    </div>
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Email" class="form-label">Email</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                        <input asp-for="Email" type="email" class="form-control" />
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Phone" class="form-label">Phone</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                        <input asp-for="Phone" class="form-control" />
+                    </div>
+                    <span asp-validation-for="Phone" class="text-danger"></span>
+                </div>
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="BD" class="form-label">Date of Birth</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                        <input asp-for="BD" type="date" class="form-control" />
+                    </div>
+                    <span asp-validation-for="BD" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="ClassId" class="form-label">Class</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-school"></i></span>
+                        <select asp-for="ClassId" class="form-select" asp-items="@(new SelectList(ViewBag.Classes, "Id", "Name"))">
+                            <option value="">Select Class...</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="ClassId" class="text-danger"></span>
+                </div>
+
+            </div>
+
+            <div class="text-end mt-3">
+                <a asp-action="Index" class="btn btn-light me-2">Cancel</a>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update Student</button>
+            </div>
+
+        </form>
+    </div>
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
