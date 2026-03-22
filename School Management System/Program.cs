@@ -1,16 +1,18 @@
 ﻿
+using School.Utilites.DBSeeder;
+using Microsoft.AspNetCore.Identity.UI.Services;
+
 namespace School
 {
     public class Program
     {
-        public static async Task Main(string[] args)
+        public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
             // ================= DATABASE =================
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-                .EnableSensitiveDataLogging(builder.Environment.IsDevelopment()));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             // ================= IDENTITY =================
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -20,7 +22,9 @@ namespace School
                 options.Password.RequireUppercase = true;
                 options.Password.RequiredLength = 8;
                 options.Password.RequireNonAlphanumeric = false;
-                options.SignIn.RequireConfirmedEmail = true;
+
+                options.SignIn.RequireConfirmedEmail = false; // خليها false مؤقتًا للتجربة
+
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
                 options.Lockout.MaxFailedAccessAttempts = 5;
             })
@@ -38,12 +42,18 @@ namespace School
 
             // ================= SERVICES =================
             builder.Services.AddControllersWithViews();
-            builder.Services.AddRazorPages();  // للـ Identity pages
+            builder.Services.AddRazorPages();
 
             // Repositories
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
-            // ================= APP =================
+
+            // Email
+            builder.Services.AddScoped<IEmailSender, EmailSender>();
+
+            // DB Initializer
+            builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+
             var app = builder.Build();
 
             // ================= MIDDLEWARE =================
@@ -63,13 +73,23 @@ namespace School
             // ================= ROUTING =================
             app.MapControllerRoute(
                 name: "areas",
-                pattern: "{area=Admin}/{controller=Dashboard}/{action=Index}/{id?}");
+                pattern: "{area=Admin}/{controller=Dashboard}/{action=Index}/{id?}"
+            );
+
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Home}/{action=Index}/{id?}"
+            );
 
-            app.MapRazorPages();  // للـ Identity pages
+            app.MapRazorPages();
+
+            // ================= DB INIT =================
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbInitializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+                dbInitializer.Initialize();
+            }
 
             app.Run();
         }

@@ -3,105 +3,215 @@
     ViewData["Title"] = "Edit Student";
 }
 
+<style>
+    .form-card {
+        border: none;
+        border-radius: 25px;
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+        overflow: hidden;
+    }
+
+    .form-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 35px;
+        text-align: center;
+    }
+
+    .form-icon {
+        width: 90px;
+        height: 90px;
+        background: rgba(255,255,255,0.25);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        margin: 0 auto 20px;
+    }
+
+    .input-group-modern {
+        border-radius: 15px;
+        overflow: hidden;
+        border: 2px solid #e9ecef;
+        height: 60px;
+        background: white;
+    }
+
+        .input-group-modern:focus-within {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102,126,234,0.2);
+        }
+
+    .input-group-text-modern {
+        background: #f1f3ff;
+        border: none;
+        color: #667eea;
+        padding: 0 20px;
+    }
+
+    .form-control-modern {
+        border: none;
+        padding: 15px;
+        width: 100%;
+    }
+
+    .btn-modern {
+        padding: 12px 35px;
+        border-radius: 50px;
+        font-weight: bold;
+        border: none;
+    }
+
+    .btn-primary-modern {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+    }
+
+    .label-modern {
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .student-avatar {
+        width: 70px;
+        height: 70px;
+        background: rgba(255,255,255,0.3);
+        border-radius: 50%;
+        font-size: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 10px;
+        font-weight: bold;
+    }
+</style>
+
 <div class="content container-fluid">
 
+    <!-- HEADER -->
     <div class="row mb-4 align-items-center">
-
         <div class="col">
             <h3 class="fw-bold">@Model.FirstName @Model.LastName</h3>
             <p class="text-muted">Edit student information</p>
         </div>
 
         <div class="col-auto">
-            <a asp-action="Index" class="btn btn-outline-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+        </div>
+    </div>
+
+    <!-- FORM -->
+    <div class="card form-card">
+
+        <!-- TOP HEADER -->
+        <div class="form-header">
+            <div class="student-avatar">
+                @(Model.FirstName?.Substring(0, 1).ToUpper())
+            </div>
+            <h3>Edit Student</h3>
+            <p class="opacity-75">Update student details</p>
         </div>
 
+        <div class="card-body p-4">
+            <form asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+                <input asp-for="Id" type="hidden" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+                        <label class="label-modern">First Name</label>
+                        <div class="input-group-modern d-flex">
+                            <span class="input-group-text-modern">
+                                <i class="fas fa-user"></i>
+                            </span>
+                            <input asp-for="FirstName" class="form-control-modern" />
+                        </div>
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="label-modern">Last Name</label>
+                        <div class="input-group-modern d-flex">
+                            <span class="input-group-text-modern">
+                                <i class="fas fa-user"></i>
+                            </span>
+                            <input asp-for="LastName" class="form-control-modern" />
+                        </div>
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="label-modern">Email</label>
+                        <div class="input-group-modern d-flex">
+                            <span class="input-group-text-modern">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                            <input asp-for="Email" type="email" class="form-control-modern" />
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="label-modern">Phone</label>
+                        <div class="input-group-modern d-flex">
+                            <span class="input-group-text-modern">
+                                <i class="fas fa-phone"></i>
+                            </span>
+                            <input asp-for="Phone" class="form-control-modern" />
+                        </div>
+                        <span asp-validation-for="Phone" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="label-modern">Date of Birth</label>
+                        <div class="input-group-modern d-flex">
+                            <span class="input-group-text-modern">
+                                <i class="fas fa-calendar"></i>
+                            </span>
+                            <input asp-for="BD" type="date" class="form-control-modern" />
+                        </div>
+                        <span asp-validation-for="BD" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="label-modern">Class</label>
+                        <div class="input-group-modern d-flex">
+                            <span class="input-group-text-modern">
+                                <i class="fas fa-school"></i>
+                            </span>
+                            <select asp-for="ClassId" class="form-control-modern">
+                                <option value="">Select Class...</option>
+                                @foreach (var cls in ViewBag.Classes)
+                                {
+                                    <option value="@cls.Id">@cls.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <span asp-validation-for="ClassId" class="text-danger"></span>
+                    </div>
+
+                </div>
+
+                <div class="text-end mt-4">
+                    <a asp-action="Index" class="btn btn-light me-2">Cancel</a>
+                    <button type="submit" class="btn btn-primary-modern">
+                        <i class="fas fa-save me-2"></i> Update Student
+                    </button>
+                </div>
+
+            </form>
+        </div>
     </div>
 
-    <div class="card p-4 form-card">
+</div>
 
-        <form asp-action="Edit" method="post">
-            @Html.AntiForgeryToken()
-            <input asp-for="Id" type="hidden" />
-
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-            <div class="row">
-
-                <div class="col-md-6 mb-3">
-                    <label asp-for="FirstName" class="form-label">First Name</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-user"></i></span>
-                        <input asp-for="FirstName" class="form-control" />
-                    </div>
-                    <span asp-validation-for="FirstName" class="text-danger"></span>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label asp-for="LastName" class="form-label">Last Name</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-user"></i></span>
-                        <input asp-for="LastName" class="form-control" />
-                    </div>
-                    <span asp-validation-for="LastName" class="text-danger"></span>
-                </div>
-
-            </div>
-
-            <div class="row">
-
-                <div class="col-md-6 mb-3">
-                    <label asp-for="Email" class="form-label">Email</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                        <input asp-for="Email" type="email" class="form-control" />
-                    </div>
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label asp-for="Phone" class="form-label">Phone</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                        <input asp-for="Phone" class="form-control" />
-                    </div>
-                    <span asp-validation-for="Phone" class="text-danger"></span>
-                </div>
-
-            </div>
-
-            <div class="row">
-
-                <div class="col-md-6 mb-3">
-                    <label asp-for="BD" class="form-label">Date of Birth</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-calendar"></i></span>
-                        <input asp-for="BD" type="date" class="form-control" />
-                    </div>
-                    <span asp-validation-for="BD" class="text-danger"></span>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label asp-for="ClassId" class="form-label">Class</label>
-                    <div class="input-group">
-                        <span class="input-group-text"><i class="fas fa-school"></i></span>
-                        <select asp-for="ClassId" class="form-select" asp-items="@(new SelectList(ViewBag.Classes, "Id", "Name"))">
-                            <option value="">Select Class...</option>
-                        </select>
-                    </div>
-                    <span asp-validation-for="ClassId" class="text-danger"></span>
-                </div>
-
-            </div>
-
-            <div class="text-end mt-3">
-                <a asp-action="Index" class="btn btn-light me-2">Cancel</a>
-                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update Student</button>
-            </div>
-
-        </form>
-    </div>
-
-    @section Scripts {
-        <partial name="_ValidationScriptsPartial" />
-    }
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

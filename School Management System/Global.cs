@@ -4,7 +4,7 @@ global using School.Models;
 global using School.Models.VM;
 global using School.Repositories;
 global using School.Repositories.IRepositories;
-
+global using School.Utilites;
 global using SchoolSystem.Models.VM;
 global using System.ComponentModel.DataAnnotations;
 global using Microsoft.AspNetCore.Identity;

@@ -1,4 +1,4 @@
-﻿namespace School.ViewModels
+﻿namespace School.Models.VM
 {
     public class CreateRoleVM
     {
