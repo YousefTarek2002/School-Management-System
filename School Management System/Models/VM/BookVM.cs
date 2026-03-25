@@ -41,6 +41,27 @@ namespace SchoolSystem.Models.VM
         [Range(1, int.MaxValue, ErrorMessage = "اختر طالب صحيح")]
         public int StudentId { get; set; }
     }
+    public class BookDetailsVM
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string Author { get; set; }
 
+        public int TotalCopies { get; set; }
+        public int CopiesAvailable { get; set; }
+
+        public List<BookIssueVM> Issues { get; set; } = new();
+    }
+
+    public class BookIssueVM
+    {
+        public string StudentName { get; set; }
+        public string Email { get; set; }
+
+        public DateTime IssueDate { get; set; }
+        public DateTime ReturnDate { get; set; }
+
+        public bool IsReturned => ReturnDate < DateTime.Now;
+    }
 
 }

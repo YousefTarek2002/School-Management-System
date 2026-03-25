@@ -195,8 +195,11 @@
 							<span>Admin</span>
 						</a>
 						<div class="dropdown-menu">
-							<a class="dropdown-item" href="profile.html">My Profile</a>
-							<a class="dropdown-item" href="edit-profile.html">Edit Profile</a>
+																					<a class="dropdown-item"
+																						   href="@Url.Action("Index", "Profile", new { area = "Identity" })">
+																						My Profile
+																					</a>
+																					<a class="dropdown-item" href="edit-profile.html">Edit Profile</a>
 							<a class="dropdown-item" href="settings.html">Settings</a>
 							<a class="dropdown-item" href="login.html">Logout</a>
 						</div>
@@ -207,7 +210,7 @@
 						<i class="fas fa-ellipsis-v"></i>
 					</a>
 					<div class="dropdown-menu dropdown-menu-right">
-						<a class="dropdown-item" href="profile.html">My Profile</a>
+					    <a class="dropdown-item" href="">My Profile</a>
 						<a class="dropdown-item" href="edit-profile.html">Edit Profile</a>
 						<a class="dropdown-item" href="settings.html">Settings</a>
 						<a class="dropdown-item" href="login.html">Logout</a>
@@ -318,9 +321,10 @@
 						</li>
 
 						<li>
-							<a href="@Url.Action("Settings", "Home")">
-								<img src="~/assets/img/sidebar/icon-14.png" alt="icon"><span>Settings</span>
-							</a>
+																																<a class="dropdown-item"
+																																	   href="@Url.Action("Index", "Profile", new { area = "Identity" })">
+																																	<img src="~/assets/img/sidebar/icon-14.png" alt="icon"><span>Settings</span>
+																																</a>
 						</li>
 					</ul>
 				</div>

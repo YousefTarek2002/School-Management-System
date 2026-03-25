@@ -2,7 +2,7 @@
 namespace School.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = SD.SUPER_ADMIN_ROLE)]
     public class StudentController : Controller
     {
         private readonly IRepository<Student> _studentRepo;
@@ -126,98 +126,99 @@ namespace School.Areas.Admin.Controllers
 
         // ================= EDIT GET =================
         [HttpGet]
-        public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken)
+        public async Task<IActionResult> Edit(int id, CancellationToken ct)
         {
             var student = await _studentRepo.GetOneAsync(
                 s => s.Id == id,
                 includeProperties: q => q.Include(s => s.ClassEnrollments),
-                tracked: true,
-                cancellationToken: cancellationToken);
+                tracked: false,
+                cancellationToken: ct);
 
-            if (student == null) return NotFound();
+            if (student == null)
+                return NotFound();
 
-            var model = new AddStudentVM
+            var model = new EditStudentVM
             {
                 Id = student.Id,
-                FirstName = student.FirstName ?? "",
-                LastName = student.LastName ?? "",
-                Email = student.Email ?? "",
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                Email = student.Email,
                 Phone = student.Phone,
                 BD = student.BD,
-                ClassId = student.ClassEnrollments?.FirstOrDefault(e => e.Status)?.ClassId ?? 0
+                ClassId = student.ClassEnrollments.FirstOrDefault(e => e.Status)?.ClassId
             };
 
-            await LoadClasses(cancellationToken);
+            await LoadClasses(ct);
             return View(model);
         }
-
         // ================= EDIT POST =================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, AddStudentVM model, CancellationToken cancellationToken)
+        public async Task<IActionResult> Edit(EditStudentVM model, CancellationToken ct)
         {
-            if (id != model.Id) return BadRequest();
-
             if (!ModelState.IsValid)
             {
-                await LoadClasses(cancellationToken);
-                return View(model);
-            }
-
-            // Check email conflict
-            var emailConflict = await _studentRepo.GetOneAsync(
-                s => s.Email == model.Email && s.Id != id,
-                cancellationToken: cancellationToken);
-
-            if (emailConflict != null)
-            {
-                ModelState.AddModelError("Email", "الإيميل مستخدم من طالب آخر");
-                await LoadClasses(cancellationToken);
+                await LoadClasses(ct);
                 return View(model);
             }
 
             var student = await _studentRepo.GetOneAsync(
-                s => s.Id == id,
+                s => s.Id == model.Id,
                 tracked: true,
-                cancellationToken: cancellationToken);
+                cancellationToken: ct);
 
-            if (student == null) return NotFound();
+            if (student == null)
+                return NotFound();
 
+            // ✅ Email check
+            var emailExists = await _studentRepo.GetOneAsync(
+                s => s.Email == model.Email && s.Id != model.Id,
+                cancellationToken: ct);
+
+            if (emailExists != null)
+            {
+                ModelState.AddModelError("Email", "الإيميل مستخدم قبل كده");
+                await LoadClasses(ct);
+                return View(model);
+            }
+
+            // ✅ Update data
             student.FirstName = model.FirstName;
             student.LastName = model.LastName;
             student.Email = model.Email;
             student.Phone = model.Phone;
             student.BD = model.BD;
 
-            // Handle enrollment update
-            var activeEnrollment = student.ClassEnrollments?.FirstOrDefault(e => e.Status);
+            _studentRepo.Update(student);
+            await _studentRepo.CommitAsync(ct);
 
-            if (activeEnrollment != null)
-            {
-                if (model.ClassId > 0 && activeEnrollment.ClassId != model.ClassId)
-                {
-                    activeEnrollment.ClassId = model.ClassId;
-                    _enrollmentRepo.Update(activeEnrollment);
-                }
-            }
-            else if (model.ClassId > 0)
+            // ✅ Update Class
+            var enrollments = await _enrollmentRepo.GetAsync(
+                e => e.StudentId == model.Id,
+                tracked: true,
+                cancellationToken: ct);
+
+            foreach (var e in enrollments)
+                _enrollmentRepo.Delete(e);
+
+            await _enrollmentRepo.CommitAsync(ct);
+
+            if (model.ClassId.HasValue)
             {
                 await _enrollmentRepo.CreateAsync(new ClassEnrollment
                 {
-                    StudentId = id,
-                    ClassId = model.ClassId,
+                    StudentId = model.Id,
+                    ClassId = model.ClassId.Value,
                     EnrollmentDate = DateTime.Now,
                     Status = true
-                }, cancellationToken);
+                }, ct);
+
+                await _enrollmentRepo.CommitAsync(ct);
             }
 
-            _studentRepo.Update(student);
-            await _studentRepo.CommitAsync(cancellationToken);
-
-            TempData["success"] = "تم تعديل بيانات الطالب بنجاح";
+            TempData["success"] = "تم تعديل الطالب بنجاح";
             return RedirectToAction(nameof(Index));
         }
-
         // ================= DELETE =================
         [HttpPost]
         public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)

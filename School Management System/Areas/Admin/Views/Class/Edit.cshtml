@@ -1,123 +1,140 @@
-﻿@model AddClassVM
+﻿@model SchoolSystem.Models.VM.AddClassVM
 @{
     ViewData["Title"] = "Edit Class";
 }
 
 <style>
-    .form-card {
-        border: none;
-        border-radius: 25px;
+    /* ===== MAIN CARD ===== */
+    .form-card-modern {
+        border-radius: 20px;
         background: linear-gradient(145deg, #ffffff, #f8f9fa);
-        box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
         overflow: hidden;
-        height: 100%;
+        border: none;
+        max-width: 600px;
+        margin: 40px auto;
     }
-    .form-header {
-        background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);
+
+    /* ===== HEADER ===== */
+    .form-header-modern {
+        background: linear-gradient(135deg, #198754 0%, #157347 100%);
         color: white;
         padding: 35px;
         text-align: center;
         position: relative;
         overflow: hidden;
     }
-    .form-header::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
-        animation: float 6s ease-in-out infinite;
-    }
-    
-    .form-icon {
-        width: 90px;
-        height: 90px;
+
+    .form-header-icon-modern {
+        width: 75px;
+        height: 75px;
         background: rgba(255,255,255,0.25);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 36px;
-        margin: 0 auto 20px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        font-size: 32px;
+        margin: 0 auto 15px;
+        backdrop-filter: blur(12px);
     }
+
+    /* ===== INPUT GROUP ===== */
     .input-group-modern {
         border-radius: 15px;
         overflow: hidden;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
         border: 2px solid #e9ecef;
         transition: all 0.3s ease;
         background: white;
-        height: 65px;
-        position: relative;
+        margin-bottom: 25px;
     }
-    .input-group-modern:focus-within {
-        border-color: #6f42c1;
-        box-shadow: 0 0 0 0.3rem rgba(111,66,193,0.15), 0 10px 25px rgba(111,66,193,0.2);
-        transform: translateY(-2px);
-    }
+
+        .input-group-modern:focus-within {
+            border-color: #198754;
+            box-shadow: 0 10px 30px rgba(25,135,84,0.25);
+            transform: translateY(-2px);
+        }
+
     .input-group-text-modern {
-        background: linear-gradient(135deg, #f3e8ff, #ede2ff);
+        background: linear-gradient(135deg, #d1e7dd, #badbcc);
         border: none;
-        color: #6f42c1;
+        color: #198754;
         font-weight: 600;
+        padding: 15px 20px;
         display: flex;
         align-items: center;
-        padding: 0 20px;
-        height: 100%;
     }
+
     .form-control-modern {
         border: none;
-        padding: 20px 20px 20px 70px !important;
+        padding: 15px 20px;
         font-size: 16px;
         background: transparent;
-        height: 100%;
         box-shadow: none;
     }
-    .form-control-modern:focus {
-        box-shadow: none;
-        background: #f8f4ff;
+
+        .form-control-modern:focus {
+            box-shadow: none;
+            background: #f8fffb;
+        }
+
+    /* ===== LABELS ===== */
+    .label-modern {
+        font-weight: 700;
+        color: #2c3e50;
+        font-size: 15px;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
-    .preview-card {
-        background: linear-gradient(135deg, rgba(111,66,193,0.08) 0%, rgba(232,62,140,0.08) 100%);
-        border-radius: 20px;
-        border-left: 5px solid #6f42c1;
-        box-shadow: 0 10px 30px rgba(111,66,193,0.15);
-    }
+
+    /* ===== BUTTONS ===== */
     .btn-modern {
-        padding: 15px 40px;
+        padding: 14px 35px;
         border-radius: 50px;
         font-weight: 700;
         font-size: 16px;
         border: none;
         transition: all 0.3s ease;
-        box-shadow: 0 10px 30px rgba(111,66,193,0.4);
-    }
-    .btn-primary-modern { 
-        background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%); 
-        color: white; 
-    }
-    .btn-secondary-modern { 
-        background: linear-gradient(135deg, #f8f9fa, #e9ecef); 
-        color: #6c757d; 
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }
-    .btn-modern:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 15px 40px rgba(111,66,193,0.5);
-        color: white !important;
-    }
-    .label-modern {
-        font-weight: 700;
-        color: #2c3e50;
-        font-size: 15px;
-        margin-bottom: 15px;
+        box-shadow: 0 8px 25px rgba(25,135,84,0.3);
         display: flex;
         align-items: center;
         gap: 8px;
+    }
+
+    .btn-success-modern {
+        background: linear-gradient(135deg, #198754, #157347);
+        color: white;
+    }
+
+    .btn-secondary-modern {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        color: #6c757d;
+        border: 1px solid #e3e6f0;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .btn-modern:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 30px rgba(25,135,84,0.4);
+        color: white !important;
+    }
+
+    /* ===== ALERTS ===== */
+    .alert-modern {
+        border-radius: 12px;
+        padding: 15px 20px;
+        margin-bottom: 25px;
+        border: none;
+        font-weight: 500;
+    }
+
+    .btn-group-custom {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 20px;
     }
 </style>
 
@@ -125,143 +142,111 @@
     <!-- PAGE HEADER -->
     <div class="row mb-5 align-items-center">
         <div class="col-md-8">
-            <h2 class="fw-bold mb-2" style="color: #2c3e50;">
-                <i class="fas fa-edit me-3 text-purple"></i>
+            <h2 class="fw-bold mb-1" style="color: #2c3e50;">
+                <i class="fas fa-edit me-2 text-success"></i>
                 Edit Class
             </h2>
-            <p class="mb-0 text-muted lead">Update class information with teacher assignment</p>
+            <p class="mb-0 text-muted fs-6">Update class information</p>
         </div>
         <div class="col-md-4 text-end">
-            <a asp-action="Index" class="btn btn-secondary-modern btn-lg shadow-lg px-5">
-                <i class="fas fa-arrow-left me-2"></i>Back to Classes
+            <a asp-action="Index" class="btn btn-secondary-modern btn-lg px-4">
+                <i class="fas fa-arrow-left me-1"></i>Back to Classes
             </a>
         </div>
     </div>
 
     @if (TempData["success"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show shadow-lg mb-5" role="alert">
-            <i class="fas fa-check-circle me-2"></i>@TempData["success"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <div class="alert alert-success alert-modern shadow-sm mx-auto" style="max-width: 600px;">
+            <i class="fas fa-check-circle me-2"></i>
+            @TempData["success"]
+        </div>
+    }
+    @if (TempData["error"] != null)
+    {
+        <div class="alert alert-danger alert-modern shadow-sm mx-auto" style="max-width: 600px;">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            @TempData["error"]
         </div>
     }
 
-    <!-- PREVIEW CARD -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="preview-card p-4">
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <h5 class="mb-2">
-                            <i class="fas fa-school text-primary me-2"></i>
-                            <span id="previewClass">@Model.Name - @Model.Section</span>
-                        </h5>
-                        <p class="mb-0 text-muted fs-6">
-                            Teacher: <span id="previewTeacher">@(ViewBag.CurrentTeacher ?? "غير محدد")</span>
-                        </p>
-                    </div>
-                    <div class="col-md-4 text-md-end">
-                        <span class="badge bg-purple fs-6 px-4 py-2 shadow-sm">
-                            <i class="fas fa-sync-alt me-2"></i>Live Preview
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- FORM CARD -->
     <div class="row justify-content-center">
-        <div class="col-xl-10 col-lg-11">
-            <div class="card form-card shadow-xl">
-                <!-- HEADER -->
-                <div class="form-header">
-                    <div class="form-icon">
-                        <i class="fas fa-edit"></i>
+        <div class="col-12">
+            <div class="card form-card-modern shadow-lg">
+                <div class="form-header-modern">
+                    <div class="form-header-icon-modern">
+                        <i class="fas fa-edit text-white"></i>
                     </div>
-                    <h3 class="mb-2 fw-bold fs-2 position-relative">@Model.Name - @Model.Section</h3>
-                    <p class="mb-0 opacity-90 position-relative">Update class details and teacher assignment</p>
+                    <h4 class="mb-1 fw-bold">Update Class</h4>
+                    <p class="mb-0 opacity-90">Update class information below</p>
                 </div>
 
-                <!-- FORM BODY -->
                 <div class="card-body p-5">
                     <form asp-action="Edit" method="post">
                         @Html.AntiForgeryToken()
-                        <input asp-for="Id" type="hidden" />
-                        
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4 rounded-3 shadow-sm">
+                        <input type="hidden" asp-for="Id" />
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger alert-modern mb-5 shadow-sm">
                             <i class="fas fa-exclamation-circle me-2"></i>
-                            Please fix the following errors before updating:
+                            Please fix the following errors:
                         </div>
 
-                        <div class="row g-4 mb-5">
-                            <!-- CLASS NAME -->
-                            <div class="col-lg-4">
-                                <label class="label-modern">
-                                    <i class="fas fa-school text-primary"></i>
-                                    Class Name <span class="text-danger">*</span>
-                                </label>
-                                <div class="input-group-modern">
-                                    <span class="input-group-text-modern">
-                                        <i class="fas fa-school"></i>
-                                    </span>
-                                    <input asp-for="Name" class="form-control-modern" placeholder="e.g. Grade 10, Grade 11..." />
-                                </div>
-                                <span asp-validation-for="Name" class="text-danger small d-block mt-1"></span>
+                        <!-- CLASS NAME -->
+                        <div class="mb-4">
+                            <label asp-for="Name" class="label-modern">
+                                <i class="fas fa-tag text-primary"></i>
+                                Class Name <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group-modern">
+                                <span class="input-group-text-modern">
+                                    <i class="fas fa-tag"></i>
+                                </span>
+                                <input asp-for="Name" class="form-control-modern" placeholder="Enter class name (e.g. Grade 10A)..." />
                             </div>
+                            <span asp-validation-for="Name" class="text-danger small d-block mt-2"></span>
+                        </div>
 
-                            <!-- SECTION -->
-                            <div class="col-lg-4">
-                                <label class="label-modern">
-                                    <i class="fas fa-layer-group text-success"></i>
-                                    Section <span class="text-danger">*</span>
-                                </label>
-                                <div class="input-group-modern">
-                                    <span class="input-group-text-modern">
-                                        <i class="fas fa-layer-group"></i>
-                                    </span>
-                                    <input asp-for="Section" class="form-control-modern" placeholder="e.g. A, B, C..." />
-                                </div>
-                                <span asp-validation-for="Section" class="text-danger small d-block mt-1"></span>
+                        <!-- SECTION -->
+                        <div class="mb-4">
+                            <label asp-for="Section" class="label-modern">
+                                <i class="fas fa-layer-group text-info"></i>
+                                Section
+                            </label>
+                            <div class="input-group-modern">
+                                <span class="input-group-text-modern">
+                                    <i class="fas fa-layer-group"></i>
+                                </span>
+                                <input asp-for="Section" class="form-control-modern" placeholder="Enter section (e.g. A, B, C)..." />
                             </div>
+                            <span asp-validation-for="Section" class="text-danger small d-block mt-2"></span>
+                        </div>
 
-                            <!-- TEACHER -->
-                            <div class="col-lg-4">
-                                <label class="label-modern">
-                                    <i class="fas fa-chalkboard-teacher text-warning"></i>
-                                    Class Teacher <span class="text-danger">*</span>
-                                </label>
-                                <div class="input-group-modern">
-                                    <span class="input-group-text-modern">
-                                        <i class="fas fa-chalkboard-teacher"></i>
-                                    </span>
-                                    <select asp-for="TeacherId" class="form-control-modern form-select" style="border: none; padding-left: 70px;">
-                                        <option value="">Select Teacher...</option>
-                                        @{
-                                            var teachers = ViewBag.Teachers as IEnumerable<SelectListItem>;
-                                            if (teachers != null)
-                                            {
-                                                foreach (var teacher in teachers)
-                                                {
-                                                    <option value="@teacher.Value" selected="@(teacher.Value == Model.TeacherId.ToString() ? "selected" : null)">@teacher.Text</option>
-                                                }
-                                            }
-                                        }
-                                    </select>
-                                </div>
-                                <span asp-validation-for="TeacherId" class="text-danger small d-block mt-1"></span>
+                        <!-- TEACHER SELECT -->
+                        <div class="mb-5">
+                            <label asp-for="TeacherId" class="label-modern">
+                                <i class="fas fa-chalkboard-teacher text-warning"></i>
+                                Class Teacher <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group-modern">
+                                <span class="input-group-text-modern">
+                                    <i class="fas fa-chalkboard-teacher"></i>
+                                </span>
+                                <select asp-for="TeacherId" class="form-control-modern form-select" asp-items="@(new SelectList(ViewBag.Teachers, "Id", "Name", Model.TeacherId))">
+                                    <option value="">-- Select Teacher --</option>
+                                </select>
                             </div>
+                            <span asp-validation-for="TeacherId" class="text-danger small d-block mt-2"></span>
                         </div>
 
                         <!-- ACTION BUTTONS -->
-                        <div class="text-center mt-5 pt-4 border-top">
-                            <a asp-action="Index" class="btn btn-secondary-modern btn-lg me-4 px-5 shadow-lg">
-                                <i class="fas fa-times me-2"></i>Cancel
-                            </a>
-                            <button type="submit" class="btn btn-primary-modern btn-lg px-5 shadow-lg">
-                                <i class="fas fa-save me-2"></i>
-                                Update Class Information
+                        <div class="btn-group-custom">
+                            <button type="submit" class="btn btn-success-modern btn-lg px-5 shadow-sm">
+                                <i class="fas fa-save me-1"></i>Update Class
                             </button>
+                            <a asp-action="Index" class="btn btn-secondary-modern btn-lg px-5 shadow-sm">
+                                <i class="fas fa-arrow-left me-1"></i>Cancel
+                            </a>
                         </div>
                     </form>
                 </div>
@@ -272,40 +257,4 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Live preview update
-            const inputs = document.querySelectorAll('input[name="Name"], input[name="Section"], select[name="TeacherId"]');
-            inputs.forEach(input => {
-                input.addEventListener('input', updatePreview);
-                input.addEventListener('change', updatePreview);
-            });
-
-            function updatePreview() {
-                const nameInput = document.querySelector('input[name="Name"]').value || '@Model.Name';
-                const sectionInput = document.querySelector('input[name="Section"]').value || '@Model.Section';
-                const teacherSelect = document.querySelector('select[name="TeacherId"]');
-                const teacherName = teacherSelect?.selectedOptions[0]?.text || '@(ViewBag.CurrentTeacher ?? "غير محدد")';
-                
-                document.getElementById('previewClass').textContent = `${nameInput} - ${sectionInput}`;
-                document.getElementById('previewTeacher').textContent = teacherName;
-                document.querySelector('.form-header h3').textContent = `${nameInput} - ${sectionInput}`;
-            }
-            
-            // Form animations
-            document.querySelectorAll('.form-control-modern').forEach(input => {
-                input.addEventListener('focus', function() {
-                    this.closest('.input-group-modern').style.transform = 'scale(1.02)';
-                });
-                input.addEventListener('blur', function() {
-                    this.closest('.input-group-modern').style.transform = 'scale(1)';
-                });
-            });
-        });
-    </script>
 }
-
-<style>
-    .text-purple { color: #6f42c1 !important; }
-    .bg-purple { background-color: #6f42c1 !important; }
-</style>

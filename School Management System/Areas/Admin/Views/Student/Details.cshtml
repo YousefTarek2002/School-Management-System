@@ -4,16 +4,37 @@
 }
 
 <style>
-    .student-hero {
+    /* ===== MAIN CONTAINER ===== */
+    .profile-container {
+        background: linear-gradient(135deg, #f8fbff 0%, #e8f4f8 100%);
+        min-height: 100vh;
+        padding: 40px 0;
+    }
+
+    /* ===== BREADCRUMB ===== */
+    .breadcrumb-modern {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 20px;
+        padding: 25px 35px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    }
+
+    /* ===== PROFILE HEADER ===== */
+    .profile-hero {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 30px;
+        border-radius: 25px;
+        padding: 40px;
+        color: white;
         position: relative;
         overflow: hidden;
-        margin-bottom: 40px;
-        color: white;
-        padding: 60px 0;
+        margin-bottom: 30px;
+        box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+        display: flex;
+        align-items: center;
+        min-height: 180px;
     }
-    .student-hero::before {
+
+    .profile-hero::before {
         content: '';
         position: absolute;
         top: -50%;
@@ -21,40 +42,50 @@
         width: 200%;
         height: 200%;
         background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
-        animation: float 6s ease-in-out infinite;
+        animation: float 8s ease-in-out infinite;
     }
-   
-    .student-avatar {
-        width: 150px;
-        height: 150px;
-        background: rgba(255,255,255,0.2);
-        backdrop-filter: blur(20px);
+ 
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        background: rgba(255,255,255,0.25);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 56px;
+        font-size: 48px;
         font-weight: 800;
-        border: 5px solid rgba(255,255,255,0.4);
-        margin: 0 auto 25px;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        backdrop-filter: blur(20px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         position: relative;
-        animation: pulse 2s infinite;
+        z-index: 2;
+        border: 5px solid rgba(255,255,255,0.3);
+        flex-shrink: 0;
+        margin-right: 30px;
     }
-    
+
+    .profile-hero-content {
+        flex: 1;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* ===== INFO CARDS ===== */
     .info-card {
         border: none;
-        border-radius: 25px;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+        border-radius: 20px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.08);
         overflow: hidden;
-        background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+        background: white;
         transition: all 0.4s ease;
         height: 100%;
     }
+
     .info-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 30px 70px rgba(0,0,0,0.2);
+        transform: translateY(-8px);
+        box-shadow: 0 30px 70px rgba(0,0,0,0.15);
     }
+
     .detail-item {
         padding: 30px 35px;
         border-bottom: 1px solid #f1f3f4;
@@ -62,13 +93,16 @@
         display: flex;
         align-items: center;
     }
+
     .detail-item:last-child {
         border-bottom: none;
     }
+
     .detail-item:hover {
         background: linear-gradient(135deg, #f8f9ff 0%, #e8f0fe 100%);
-        transform: translateX(15px);
+        transform: translateX(10px);
     }
+
     .detail-icon {
         width: 70px;
         height: 70px;
@@ -76,161 +110,147 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 28px;
+        font-size: 24px;
         margin-right: 25px;
         box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         flex-shrink: 0;
     }
+
+    /* ===== STATS CARDS ===== */
     .stats-grid {
         gap: 25px;
     }
+
     .stat-card {
         border: none;
-        border-radius: 25px;
-        padding: 40px 30px;
+        border-radius: 20px;
+        padding: 35px 25px;
         text-align: center;
         height: 100%;
         position: relative;
         overflow: hidden;
-        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        transition: all 0.4s ease;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.08);
     }
+
     .stat-card::before {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
-        height: 6px;
+        height: 5px;
         background: linear-gradient(90deg, #ffffff, rgba(255,255,255,0.7), #ffffff);
         animation: shimmer 3s infinite;
     }
-    
+ 
+
     .stat-card:hover {
-        transform: translateY(-12px) scale(1.05);
-        box-shadow: 0 30px 70px rgba(0,0,0,0.2);
+        transform: translateY(-10px);
+        box-shadow: 0 25px 60px rgba(0,0,0,0.15);
     }
+
     .stat-icon {
-        width: 100px;
-        height: 100px;
-        border-radius: 25px;
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 40px;
-        margin: 0 auto 25px;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        font-size: 32px;
+        margin: 0 auto 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     }
+
     .stat-number {
-        font-size: 60px;
+        font-size: 48px;
         font-weight: 800;
         line-height: 1;
-        margin-bottom: 15px;
+        margin-bottom: 12px;
     }
+
     .stat-label {
-        font-size: 20px;
+        font-size: 16px;
         font-weight: 600;
         opacity: 0.9;
     }
+
     .classes-grid {
         display: flex;
         flex-wrap: wrap;
         gap: 12px;
+        justify-content: center;
     }
+
     .class-badge {
         background: linear-gradient(135deg, #007bff, #0056b3);
         color: white;
-        padding: 15px 25px;
+        padding: 12px 22px;
         border-radius: 25px;
         font-weight: 700;
-        font-size: 15px;
-        box-shadow: 0 8px 25px rgba(0,123,255,0.3);
+        font-size: 14px;
+        box-shadow: 0 6px 20px rgba(0,123,255,0.3);
         transition: all 0.3s ease;
         white-space: nowrap;
     }
+
     .class-badge:hover {
-        transform: translateY(-3px) scale(1.05);
-        box-shadow: 0 15px 35px rgba(0,123,255,0.4);
+        transform: translateY(-3px);
+        box-shadow: 0 12px 30px rgba(0,123,255,0.4);
     }
+
+    /* ===== BUTTONS ===== */
     .btn-modern {
-        padding: 16px 45px;
+        padding: 16px 40px;
         border-radius: 50px;
         font-weight: 700;
         font-size: 16px;
         border: none;
-        transition: all 0.3s ease;
-        box-shadow: 0 10px 30px rgba(0,123,255,0.4);
-        height: 56px;
+        transition: all 0.4s ease;
+        box-shadow: 0 10px 30px rgba(13,110,253,0.4);
+        position: relative;
+        overflow: hidden;
+        min-height: 56px;
     }
+
     .btn-primary-modern {
-        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
         color: white;
     }
+
     .btn-secondary-modern {
-        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-        color: #6c757d;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        background: linear-gradient(135deg, #6c757d 0%, #5c636a 100%);
+        color: white;
+        box-shadow: 0 10px 30px rgba(108,117,125,0.4);
     }
+
     .btn-modern:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 20px 40px rgba(0,123,255,0.5);
+        transform: translateY(-5px);
+        box-shadow: 0 20px 50px rgba(13,110,253,0.6);
         color: white !important;
     }
-    .breadcrumb-modern {
-        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-        border-radius: 20px;
-        padding: 25px 35px;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-    }
-</style>
 
-<div class="content container-fluid">
-    <!-- BREADCRUMB -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <div class="breadcrumb-modern">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0 p-0">
-                        <li class="breadcrumb-item">
-                            <a href="@Url.Action("Index")" class="text-decoration-none">
-                                <i class="fas fa-users me-2 text-primary"></i> Students
-                            </a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">
-                            <i class="fas fa-user-graduate me-2 text-info"></i> 
-                            @Model.FirstName @Model.LastName
-                        </li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-    </div>
+    
+</style>
+<div >
+  
 
     <!-- STUDENT HERO -->
-    <div class="row student-hero position-relative mb-5">
-        <div class="col-12">
-            <div class="row align-items-center">
-                <div class="col-md-3 text-center">
-                    <div class="student-avatar">
-                        @{
-                            var initials = $"{Model.FirstName[0]}{Model.LastName[0]}".ToUpper();
-                        }
-                        @initials
-                    </div>
+    <div class="row justify-content-center mb-5">
+        <div class="col-xl-10 col-lg-11">
+            <div class="profile-hero position-relative">
+                <div class="profile-avatar">
+                    @{
+                        var initials = $"{Model.FirstName[0]}{Model.LastName[0]}".ToUpper();
+                    }
+                    @initials
                 </div>
-                <div class="col-md-6 text-center">
-                    <h1 class="display-3 fw-bold mb-4 position-relative">@Model.FirstName @Model.LastName</h1>
-                    <p class="lead fs-4 opacity-90 mb-4">Student Profile & Academic Statistics</p>
-                </div>
-                <div class="col-md-3 text-md-end mt-4 mt-md-0">
-                    <div class="d-flex gap-3 justify-content-center justify-content-md-end">
-                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary-modern btn-modern btn-lg px-5 shadow-lg">
-                            <i class="fas fa-edit me-2"></i> Edit Profile
-                        </a>
-                        <a asp-action="Index" class="btn btn-secondary-modern btn-modern btn-lg px-5 shadow-lg">
-                            <i class="fas fa-arrow-left me-2"></i> Back
-                        </a>
-                    </div>
+                <div class="profile-hero-content">
+                    <h1 class="display-5 fw-bold mb-2">@Model.FirstName @Model.LastName</h1>
+                    <p class="lead mb-3">معلم متميز في المدرسة</p>
+                    <span class="badge bg-light text-dark px-4 py-2 fs-6">
+                        <i class="fas fa-user-graduate me-2"></i>Student
+                    </span>
                 </div>
             </div>
         </div>
@@ -325,6 +345,20 @@
                         <div class="stat-label">Exam Results</div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ACTION BUTTONS -->
+    <div class="row justify-content-center mt-5">
+        <div class="col-12">
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary-modern btn-modern btn-lg px-6">
+                    <i class="fas fa-edit me-2"></i>Edit Profile
+                </a>
+                <a asp-action="Index" class="btn btn-secondary-modern btn-modern btn-lg px-6">
+                    <i class="fas fa-arrow-left me-2"></i>Back
+                </a>
             </div>
         </div>
     </div>

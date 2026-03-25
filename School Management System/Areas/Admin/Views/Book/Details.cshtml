@@ -1,0 +1,98 @@
+﻿@model BookDetailsVM
+
+@{
+    ViewData["Title"] = "Book Details";
+}
+
+<style>
+    .card-box {
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    .badge-active {
+        background: #198754;
+    }
+
+    .badge-returned {
+        background: #dc3545;
+    }
+</style>
+
+<div class="container mt-4">
+
+    <!-- Book Info -->
+    <div class="card card-box p-4 mb-4">
+        <h3>@Model.Title</h3>
+        <p class="text-muted">by @Model.Author</p>
+
+        <div class="row mt-3">
+            <div class="col-md-4">
+                <strong>Total Copies:</strong> @Model.TotalCopies
+            </div>
+
+            <div class="col-md-4">
+                <strong>Available:</strong> @Model.CopiesAvailable
+            </div>
+
+            <div class="col-md-4">
+                <strong>Borrowed:</strong> @(Model.TotalCopies - Model.CopiesAvailable)
+            </div>
+        </div>
+    </div>
+
+    <!-- Issue History -->
+    <div class="card card-box p-4">
+        <h4 class="mb-3">📖 Borrow History</h4>
+
+        <table class="table table-bordered table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Student</th>
+                    <th>Email</th>
+                    <th>Issue Date</th>
+                    <th>Return Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @if (Model.Issues.Any())
+                {
+                    foreach (var item in Model.Issues)
+                    {
+                        <tr>
+                            <td>@item.StudentName</td>
+                            <td>@item.Email</td>
+                            <td>@item.IssueDate.ToShortDateString()</td>
+                            <td>@item.ReturnDate.ToShortDateString()</td>
+                            <td>
+                                @if (item.IsReturned)
+                                {
+                                    <span class="badge badge-returned">Returned</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-active">Active</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">
+                            No records found
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="text-end">
+            <a asp-action="Index" class="btn btn-secondary">Back</a>
+        </div>
+    </div>
+
+</div>

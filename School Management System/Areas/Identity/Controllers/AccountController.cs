@@ -1,6 +1,5 @@
 ﻿
 using Microsoft.AspNetCore.Identity.UI.Services;
-
 namespace School.Areas.Identity.Controllers
 {
     [Area("Identity")]
@@ -62,11 +61,11 @@ namespace School.Areas.Identity.Controllers
             var link = Url.Action(nameof(ConfirmEmail), "Account", new { area = "Identity", token = token, user.Id }, Request.Scheme);
 
             await _emailSender.SendEmailAsync(registerVM.Email
-                , "Ecommerce 518 - Confirm Your Email!"
+                , "School Managment System - Confirm Your Email!"
                 , $"<h1>Please Confirm Your Email By Clicking <a href='{link}'>Here</a></h1>");
 
             // Add User To Role
-            await _userManager.AddToRoleAsync(user!, SD.CUSTOMER_ROLE);
+            await _userManager.AddToRoleAsync(user!, SD.ADMIN_ROLE);
 
             TempData["success-notification"] = "Send Email Successfully";
 

@@ -4,7 +4,7 @@ using SchoolSystem.Models.VM;
 namespace School.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = SD.SUPER_ADMIN_ROLE)]
     public class ClassController : Controller
     {
         private readonly IRepository<Class> _classRepo;

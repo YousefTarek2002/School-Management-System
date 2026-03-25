@@ -4,180 +4,155 @@
 }
 
 <style>
+    /* ===== FORM CARD ===== */
     .form-card {
-        border: none;
-        border-radius: 25px;
-        background: linear-gradient(145deg, #ffffff, #f8f9fa);
-        box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+        border-radius: 15px;
+        background: #fff;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
         overflow: hidden;
-        height: 100%;
+        transition: all 0.3s ease;
     }
+
+    /* ===== HEADER ===== */
     .form-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
         color: white;
-        padding: 30px;
+        padding: 25px 20px;
         text-align: center;
         position: relative;
-        overflow: hidden;
     }
-    .form-header::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-        animation: float 6s ease-in-out infinite;
-    }
-    .form-icon {
-        width: 90px;
-        height: 90px;
+
+    .form-header-icon {
+        width: 70px;
+        height: 70px;
         background: rgba(255,255,255,0.2);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 36px;
-        margin: 0 auto 20px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        font-size: 30px;
+        margin: 0 auto 15px;
     }
-    .input-group-modern {
-        border-radius: 15px;
-        overflow: hidden;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-        border: 2px solid #e9ecef;
-        transition: all 0.3s ease;
-        background: white;
-    }
-    .input-group-modern:focus-within {
-        border-color: #667eea;
-        box-shadow: 0 0 0 0.3rem rgba(102,126,234,0.15), 0 10px 25px rgba(102,126,234,0.2);
-        transform: translateY(-2px);
-    }
-    .input-group-text-modern {
-        background: linear-gradient(135deg, #f8f9ff, #e8ecff);
-        border: none;
-        color: #667eea;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        padding: 15px 20px;
-    }
-    .form-control-modern {
-        border: none;
-        padding: 15px 20px;
-        font-size: 16px;
-        background: transparent;
-        box-shadow: none;
-    }
-    .form-control-modern:focus {
-        box-shadow: none;
-        background: #fafbff;
-    }
-    .btn-modern {
-        padding: 15px 40px;
-        border-radius: 50px;
-        font-weight: 700;
-        font-size: 16px;
-        border: none;
-        transition: all 0.3s ease;
-        box-shadow: 0 10px 30px rgba(102,126,234,0.4);
+
+    /* ===== INPUTS ===== */
+    .input-group-curvy {
         position: relative;
+        border-radius: 10px;
         overflow: hidden;
+        border: 1px solid #e3e6f0;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
     }
-    .btn-modern::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
+    .input-group-curvy:focus-within {
+        border-color: #00c6ff;
+        box-shadow: 0 0 0 0.2rem rgba(0,198,255,0.2);
+    }
+
+    .input-group-prepend-curvy {
+        background: #e3e6f0;
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        color: #00c6ff;
+    }
+
+    .form-control-curvy {
+        border: none;
+        background: transparent;
+        padding: 10px 15px;
         width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-        transition: left 0.5s;
     }
-    .btn-modern:hover::before {
-        left: 100%;
+    .form-control-curvy:focus {
+        box-shadow: none;
+        background: #fefeff;
     }
-    .btn-primary-modern { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
-    .btn-secondary-modern { 
-        background: linear-gradient(135deg, #f8f9fa, #e9ecef); 
-        color: #6c757d; 
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }
-    .btn-modern:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 15px 40px rgba(102,126,234,0.5);
-        color: white !important;
-    }
-    .label-modern {
-        font-weight: 700;
+
+    /* ===== LABELS ===== */
+    .form-label-curvy {
+        font-weight: 600;
         color: #2c3e50;
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn-curvy {
+        border-radius: 50px;
+        font-weight: 600;
         font-size: 15px;
-        margin-bottom: 10px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
+        transition: all 0.3s ease;
     }
-    .error-message {
-        background: linear-gradient(135deg, #f8d7da, #f5c6cb);
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-        border-radius: 10px;
-        padding: 12px 20px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 20px;
-        box-shadow: 0 5px 15px rgba(220,53,69,0.2);
+
+    .btn-primary-curvy {
+        background: #00c6ff;
+        color: white;
+        border: none;
     }
-    .success-message {
-        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+
+    .btn-primary-curvy:hover {
+        background: #0072ff;
+    }
+
+    .btn-secondary-curvy {
+        background: #f8f9fa;
+        color: #6c757d;
+        border: 1px solid #e3e6f0;
+    }
+
+    .btn-secondary-curvy:hover {
+        background: #e3e6f0;
+        color: #0072ff;
+    }
+
+    /* ===== ALERTS ===== */
+    .alert-success-curvy {
+        background: #d4edda;
         color: #155724;
-        border: 1px solid #c3e6cb;
         border-radius: 10px;
-        padding: 12px 20px;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 10px;
+        padding: 10px 15px;
         margin-bottom: 20px;
-        box-shadow: 0 5px 15px rgba(40,167,69,0.2);
     }
-  
+    .alert-danger-curvy {
+        background: #f8d7da;
+        color: #721c24;
+        border-radius: 10px;
+        padding: 10px 15px;
+        margin-bottom: 20px;
+    }
+
+   
 </style>
 
 <div class="content container-fluid">
     <!-- PAGE HEADER -->
-    <div class="row mb-5 align-items-center">
+    <div class="row mb-4 align-items-center">
         <div class="col-md-8">
-            <h2 class="fw-bold mb-2" style="color: #2c3e50;">
-                <i class="fas fa-chalkboard-teacher me-3 text-primary"></i>
+            <h2 class="fw-bold mb-1" style="color: #2c3e50;">
+                <i class="fas fa-chalkboard-teacher me-2 text-primary"></i>
                 Add New Teacher
             </h2>
-            <p class="mb-0 text-muted lead">Create a new teacher profile for your school</p>
+            <p class="mb-0 text-muted">Create a new teacher profile for your school</p>
         </div>
         <div class="col-md-4 text-end">
-            <a asp-action="Index" class="btn btn-secondary-modern btn-lg shadow-lg px-5">
-                <i class="fas fa-arrow-left me-2"></i>Back to Teachers
+            <a asp-action="Index" class="btn btn-secondary-curvy btn-lg px-4">
+                <i class="fas fa-arrow-left me-1"></i>Back to Teachers
             </a>
         </div>
     </div>
 
     @if (TempData["success"] != null)
     {
-        <div class="alert success-message shadow-lg mb-5">
-            <i class="fas fa-check-circle"></i>
+        <div class="alert alert-success-curvy">
+            <i class="fas fa-check-circle me-2"></i>
             @TempData["success"]
         </div>
     }
-
     @if (TempData["error"] != null)
     {
-        <div class="alert error-message shadow-lg mb-5">
-            <i class="fas fa-exclamation-triangle"></i>
+        <div class="alert alert-danger-curvy">
+            <i class="fas fa-exclamation-triangle me-2"></i>
             @TempData["error"]
         </div>
     }
@@ -185,150 +160,135 @@
     <!-- FORM CARD -->
     <div class="row justify-content-center">
         <div class="col-xl-8 col-lg-10">
-            <div class="card form-card shadow-xl">
-                <!-- HEADER -->
+            <div class="card form-card">
                 <div class="form-header">
-                    <div class="form-icon">
-                        <i class="fas fa-user-graduate"></i>
+                    <div class="form-header-icon">
+                        <i class="fas fa-user-graduate text-white"></i>
                     </div>
-                    <h3 class="mb-2 fw-bold fs-2 position-relative">Teacher Information</h3>
-                    <p class="mb-0 opacity-90 position-relative">Fill in the details to create new teacher account</p>
+                    <h4 class="mb-1 fw-bold">Teacher Information</h4>
+                    <p class="mb-0 opacity-90">Fill in the details to create a new teacher account</p>
                 </div>
 
-                <!-- FORM BODY -->
-                <div class="card-body p-5">
+                <div class="card-body p-4">
                     <form asp-action="Add" method="post">
                         @Html.AntiForgeryToken()
-                        
-                        <div asp-validation-summary="ModelOnly" class="error-message mb-4">
-                            <i class="fas fa-exclamation-circle"></i>
-                            Please fix the following errors:
+
+                        <div asp-validation-summary="ModelOnly" class="alert-danger-curvy mb-3">
+                            <i class="fas fa-exclamation-circle me-1"></i> Please fix the following errors:
                         </div>
 
-                        <!-- ROW 1 -->
-                        <div class="row g-4">
-                            <!-- NAME -->
+                        <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="label-modern">
+                                <label asp-for="Name" class="form-label-curvy">
                                     <i class="fas fa-user text-primary"></i>
-                                    Full Name
+                                    Full Name <span class="text-danger">*</span>
                                 </label>
-                                <div class="input-group-modern">
-                                    <span class="input-group-text-modern">
+                                <div class="input-group-curvy">
+                                    <span class="input-group-prepend-curvy">
                                         <i class="fas fa-user"></i>
                                     </span>
-                                    <input asp-for="Name" class="form-control-modern" placeholder="Enter teacher full name" />
+                                    <input asp-for="Name" class="form-control-curvy" placeholder="Enter full name" />
                                 </div>
-                                <span asp-validation-for="Name" class="text-danger small d-block mt-1"></span>
+                                <span asp-validation-for="Name" class="text-danger small mt-1 d-block"></span>
                             </div>
 
-                            <!-- EMAIL -->
                             <div class="col-md-6">
-                                <label class="label-modern">
+                                <label asp-for="Email" class="form-label-curvy">
                                     <i class="fas fa-envelope text-info"></i>
-                                    Email Address
+                                    Email Address <span class="text-danger">*</span>
                                 </label>
-                                <div class="input-group-modern">
-                                    <span class="input-group-text-modern">
+                                <div class="input-group-curvy">
+                                    <span class="input-group-prepend-curvy">
                                         <i class="fas fa-envelope"></i>
                                     </span>
-                                    <input asp-for="Email" type="email" class="form-control-modern" placeholder="teacher@school.com" />
+                                    <input asp-for="Email" class="form-control-curvy" placeholder="teacher@school.com" />
                                 </div>
-                                <span asp-validation-for="Email" class="text-danger small d-block mt-1"></span>
+                                <span asp-validation-for="Email" class="text-danger small mt-1 d-block"></span>
                             </div>
                         </div>
 
-                        <!-- ROW 2 -->
-                        <div class="row g-4 mt-4">
-                            <!-- SALARY -->
+                        <div class="row g-3 mt-3">
                             <div class="col-md-6">
-                                <label class="label-modern">
+                                <label asp-for="Salary" class="form-label-curvy">
                                     <i class="fas fa-money-bill-wave text-success"></i>
-                                    Monthly Salary
+                                    Monthly Salary <span class="text-danger">*</span>
                                 </label>
-                                <div class="input-group-modern">
-                                    <span class="input-group-text-modern">
+                                <div class="input-group-curvy">
+                                    <span class="input-group-prepend-curvy">
                                         <i class="fas fa-pound-sign"></i>
                                     </span>
-                                    <input asp-for="Salary" type="number" step="0.01" class="form-control-modern" placeholder="0.00" />
+                                    <input asp-for="Salary" type="number" step="0.01" class="form-control-curvy" placeholder="0.00" />
                                 </div>
-                                <span asp-validation-for="Salary" class="text-danger small d-block mt-1"></span>
+                                <span asp-validation-for="Salary" class="text-danger small mt-1 d-block"></span>
                             </div>
 
-                            <!-- SUBJECT -->
                             <div class="col-md-6">
-                                <label class="label-modern">
+                                <label asp-for="SubjectId" class="form-label-curvy">
                                     <i class="fas fa-book text-warning"></i>
-                                    Subject Specialty
+                                    Subject Specialty <span class="text-danger">*</span>
                                 </label>
-                                <div class="input-group-modern">
-                                    <span class="input-group-text-modern">
+                                <div class="input-group-curvy">
+                                    <span class="input-group-prepend-curvy">
                                         <i class="fas fa-book"></i>
                                     </span>
-                                    <select asp-for="SubjectId" class="form-control-modern form-select" style="border: none;">
+                                    <select asp-for="SubjectId" class="form-control-curvy">
                                         <option value="">Choose a subject...</option>
-                                        @if (ViewBag.Subjects != null)
+                                        @if(ViewBag.Subjects != null)
                                         {
-                                            @foreach (var subject in ViewBag.Subjects)
+                                            foreach(var s in ViewBag.Subjects)
                                             {
-                                                <option value="@subject.Id">@subject.Name</option>
+                                                <option value="@s.Id">@s.Name</option>
                                             }
                                         }
                                     </select>
                                 </div>
-                                <span asp-validation-for="SubjectId" class="text-danger small d-block mt-1"></span>
+                                <span asp-validation-for="SubjectId" class="text-danger small mt-1 d-block"></span>
                             </div>
                         </div>
 
-                        <!-- ROW 3 -->
-                        <div class="row g-4 mt-4">
-                            <!-- PASSWORD -->
+                        <div class="row g-3 mt-3">
                             <div class="col-md-6">
-                                <label class="label-modern">
+                                <label asp-for="Password" class="form-label-curvy">
                                     <i class="fas fa-lock text-danger"></i>
-                                    Password
+                                    Password <span class="text-danger">*</span>
                                 </label>
-                                <div class="input-group-modern">
-                                    <span class="input-group-text-modern">
+                                <div class="input-group-curvy">
+                                    <span class="input-group-prepend-curvy">
                                         <i class="fas fa-lock"></i>
                                     </span>
-                                    <input asp-for="Password" type="password" class="form-control-modern" placeholder="Enter secure password" />
-                                    <button type="button" class="btn btn-sm p-3" onclick="togglePassword('Password')" style="border-left: 1px solid #e9ecef;">
-                                        <i class="fas fa-eye" id="togglePasswordIcon"></i>
-                                    </button>
+                                    <input asp-for="Password" type="password" class="form-control-curvy" placeholder="Enter password" />
                                 </div>
-                                <span asp-validation-for="Password" class="text-danger small d-block mt-1"></span>
+                                <span asp-validation-for="Password" class="text-danger small mt-1 d-block"></span>
                             </div>
 
-                            <!-- CONFIRM PASSWORD -->
                             <div class="col-md-6">
-                                <label class="label-modern">
+                                <label asp-for="ConfirmPassword" class="form-label-curvy">
                                     <i class="fas fa-lock-open text-secondary"></i>
-                                    Confirm Password
+                                    Confirm Password <span class="text-danger">*</span>
                                 </label>
-                                <div class="input-group-modern">
-                                    <span class="input-group-text-modern">
+                                <div class="input-group-curvy">
+                                    <span class="input-group-prepend-curvy">
                                         <i class="fas fa-lock-open"></i>
                                     </span>
-                                    <input asp-for="ConfirmPassword" type="password" class="form-control-modern" placeholder="Confirm your password" />
-                                    <button type="button" class="btn btn-sm p-3" onclick="togglePassword('ConfirmPassword')" style="border-left: 1px solid #e9ecef;">
-                                        <i class="fas fa-eye-slash" id="toggleConfirmPasswordIcon"></i>
-                                    </button>
+                                    <input asp-for="ConfirmPassword" type="password" class="form-control-curvy" placeholder="Confirm password" />
                                 </div>
-                                <span asp-validation-for="ConfirmPassword" class="text-danger small d-block mt-1"></span>
+                                <span asp-validation-for="ConfirmPassword" class="text-danger small mt-1 d-block"></span>
                             </div>
                         </div>
 
-                        <!-- ACTION BUTTONS -->
-                        <div class="text-center mt-5 pt-4 border-top">
-                            <a asp-action="Index" class="btn btn-secondary-modern btn-lg me-3 px-5 shadow-lg">
-                                <i class="fas fa-times me-2"></i>Cancel
-                            </a>
-                            <button type="submit" class="btn btn-primary-modern btn-lg px-5 shadow-lg">
-                                <i class="fas fa-plus me-2"></i>
-                                Create Teacher Account
-                            </button>
+                        <div class="row mt-4">
+                            <div class="col-md-6 text-start">
+                                <a asp-action="Index" class="btn btn-secondary-curvy btn-lg px-4">
+                                    <i class="fas fa-times me-1"></i> Cancel
+                                </a>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <button type="submit" class="btn btn-primary-curvy btn-lg px-4">
+                                    <i class="fas fa-save me-1"></i> Save Teacher
+                                </button>
+                            </div>
                         </div>
+
                     </form>
                 </div>
             </div>
@@ -338,61 +298,4 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script>
-        // Password toggle functionality
-        function togglePassword(fieldId) {
-            const passwordField = document.querySelector(`[name="${fieldId}"]`);
-            const icon = document.getElementById(`toggle${fieldId === 'Password' ? 'Password' : 'ConfirmPassword'}Icon`);
-            
-            if (passwordField.type === 'password') {
-                passwordField.type = 'text';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            } else {
-                passwordField.type = 'password';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            }
-        }
-
-        // Form animations
-        document.addEventListener('DOMContentLoaded', function() {
-            // Animate form inputs on focus
-            document.querySelectorAll('.form-control-modern').forEach(input => {
-                input.addEventListener('focus', function() {
-                    this.parentElement.parentElement.style.transform = 'scale(1.02)';
-                });
-                input.addEventListener('blur', function() {
-                    this.parentElement.parentElement.style.transform = 'scale(1)';
-                });
-            });
-
-            // Auto-format salary input
-            const salaryInput = document.querySelector('[name="Salary"]');
-            salaryInput.addEventListener('input', function() {
-                let value = parseFloat(this.value);
-                if (!isNaN(value)) {
-                    this.value = value.toLocaleString('en-US', { 
-                        minimumFractionDigits: 2, 
-                        maximumFractionDigits: 2 
-                    });
-                }
-            });
-        });
-
-        // Real-time password match validation
-        document.querySelectorAll('input[type="password"]').forEach(input => {
-            input.addEventListener('keyup', function() {
-                const password = document.querySelector('[name="Password"]').value;
-                const confirmPassword = document.querySelector('[name="ConfirmPassword"]').value;
-                const confirmField = document.querySelector('[name="ConfirmPassword"]');
-                
-                if (confirmPassword && password !== confirmPassword) {
-                    confirmField.style.borderColor = '#dc3545';
-                } else {
-                    confirmField.style.borderColor = '';
-                }
-            });
-        });
-    </script>
 }

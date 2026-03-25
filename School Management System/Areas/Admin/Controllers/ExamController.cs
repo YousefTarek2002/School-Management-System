@@ -1,13 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using School.Models;
-using School.Models.VM;
-using System.ComponentModel.DataAnnotations;
+﻿
+using School.Models.VM.School.Models.VM;
 
 namespace School.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = SD.SUPER_ADMIN_ROLE)]
     public class ExamController : Controller
     {
         private readonly IRepository<Exam> _examRepo;
@@ -268,6 +265,42 @@ namespace School.Areas.Admin.Controllers
             {
                 System.IO.File.Delete(fullPath);
             }
+        }
+        [HttpGet]
+        public async Task<IActionResult> Details(int id, CancellationToken cancellationToken)
+        {
+            var exam = await _examRepo.GetOneAsync(
+                e => e.Id == id,
+                includeProperties: q => q
+                    .Include(e => e.Subject)
+                    .Include(e => e.Class)
+                    .Include(e => e.ExamResults)
+                    .ThenInclude(er => er.Student),
+                tracked: false,
+                cancellationToken: cancellationToken);
+
+            if (exam == null) return NotFound();
+
+            var vm = new ExamDetailsVM
+            {
+                Id = exam.Id,
+                ExamName = exam.ExamName ?? "",
+                SubjectName = exam.Subject?.Name ?? "",
+                ClassName = exam.Class?.Name ?? "",
+                ExamDate = exam.ExamDate,
+                ExamTime = exam.ExamTime,
+                TimeTablePath = exam.TimeTablePath,
+                Students = exam.ExamResults.Select(er => new ExamStudentVM
+                {
+                    StudentId = er.StudentId,
+                    StudentName = er.Student.FirstName + " " + er.Student.LastName,
+                    Email = er.Student.Email ?? "",
+                    Grade = er.Grade,
+                
+                }).OrderBy(s => s.StudentName).ToList()
+            };
+
+            return View(vm);
         }
     }
 }

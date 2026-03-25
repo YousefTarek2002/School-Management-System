@@ -5,7 +5,7 @@ using School.Models.VM;
 namespace School.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = SD.SUPER_ADMIN_ROLE)]
     public class AttendanceController : Controller
     {
         private readonly IRepository<Attendance> _attRepo;

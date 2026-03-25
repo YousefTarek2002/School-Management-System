@@ -2,7 +2,7 @@
 namespace School.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = SD.SUPER_ADMIN_ROLE)]
     public class SubjectController : Controller
     {
         private readonly IRepository<Subject> _subjectRepo;

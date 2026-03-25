@@ -12,4 +12,25 @@ namespace School.Models.VM
         public string Phone { get; set; } = "";
         public string ClassName { get; set; } = "";
     }
+    public class EditStudentVM
+    {
+        public int Id { get; set; }
+
+        [Required]
+        public string FirstName { get; set; } = "";
+
+        [Required]
+        public string LastName { get; set; } = "";
+
+        [Required]
+        public DateTime BD { get; set; }
+
+        [Required]
+        public string Email { get; set; } = "";
+
+        [Required]
+        public string Phone { get; set; } = "";
+
+        public int? ClassId { get; set; }
+    }
 }

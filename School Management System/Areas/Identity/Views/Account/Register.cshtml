@@ -1,58 +1,79 @@
 ﻿@model School.Models.VM.RegisterVM
-
 @{
     ViewData["Title"] = "Register";
 }
 
-<div class="container">
-    <h1>Register</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Register</title>
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,800" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
 
-    <h4>RegisterVM</h4>
-    <hr />
-    <div class="row">
-        <div class="col-md-12">
-            <form asp-action="Register">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="Name" class="control-label"></label>
-                    <input asp-for="Name" class="form-control" />
-                    <span asp-validation-for="Name" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Email" class="control-label"></label>
-                    <input asp-for="Email" class="form-control" />
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="UserName" class="control-label"></label>
-                    <input asp-for="UserName" class="form-control" />
-                    <span asp-validation-for="UserName" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="Password" class="control-label"></label>
-                    <input asp-for="Password" class="form-control" />
-                    <span asp-validation-for="Password" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="ConfirmPassword" class="control-label"></label>
-                    <input asp-for="ConfirmPassword" class="form-control" />
-                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                </div>
-                <div class="form-group mt-3">
-                    <input type="submit" value="Create" class="btn btn-primary" />
-                </div>
-            </form>
-        </div>
-    </div>
+<style>
+body {
+    background: #f6f5f7;
+    font-family: 'Montserrat', sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+.container-register {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25),0 10px 10px rgba(0,0,0,0.22);
+    width: 400px;
+    max-width: 100%;
+    padding: 50px 30px;
+    text-align: center;
+    position: relative;
+    animation: fadeIn 0.8s ease;
+}
+h1 { margin-bottom: 20px; font-weight: 700; color: #333; }
+input { width: 100%; padding: 12px 15px; margin: 8px 0; border: none; border-radius: 5px; background: #eee; }
+button { margin-top: 20px; width: 100%; padding: 12px; border: none; border-radius: 20px; background: #FF4B2B; color: #fff; font-weight: bold; cursor: pointer; transition: 0.3s; }
+button:hover { background: #FF416C; }
+a { display: block; margin: 10px 0; color: #FF4B2B; text-decoration: none; }
+a:hover { text-decoration: underline; color: #FF416C; }
+.text-danger { font-size: 13px; }
 
-    <div>
-        <a asp-action="Index">Back to List</a>
-    </div>
-    <div>
-        <a asp-action="Login">Login</a>
-    </div>
+</style>
+</head>
+<body>
+
+<div class="container-register">
+    <h1>Create Account</h1>
+    <form asp-action="Register" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <input asp-for="Name" placeholder="Full Name" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+
+        <input asp-for="Email" placeholder="Email" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+
+        <input asp-for="UserName" placeholder="Username" />
+        <span asp-validation-for="UserName" class="text-danger"></span>
+
+        <input asp-for="Password" type="password" placeholder="Password" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+
+        <input asp-for="ConfirmPassword" type="password" placeholder="Confirm Password" />
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+
+        <button type="submit">Create Account</button>
+    </form>
+
+    <a asp-action="Login">Back to Login</a>
 </div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+</body>
+</html>

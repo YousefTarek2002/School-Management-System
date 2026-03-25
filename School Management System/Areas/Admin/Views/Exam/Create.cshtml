@@ -3,61 +3,321 @@
     ViewData["Title"] = "Add Exam";
 }
 
+<style>
+    /* ===== MAIN CARD ===== */
+    .form-card-modern {
+        border-radius: 20px;
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        overflow: hidden;
+        border: none;
+    }
+
+    /* ===== HEADER ===== */
+    .form-header-modern {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .form-header-icon-modern {
+        width: 75px;
+        height: 75px;
+        background: rgba(255,255,255,0.25);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        margin: 0 auto 15px;
+        backdrop-filter: blur(12px);
+    }
+
+    /* ===== INPUT GROUP ===== */
+    .input-group-modern {
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+        background: white;
+        margin-bottom: 25px;
+    }
+
+        .input-group-modern:focus-within {
+            border-color: #dc3545;
+            box-shadow: 0 10px 30px rgba(220,53,69,0.25);
+            transform: translateY(-2px);
+        }
+
+    .input-group-text-modern {
+        background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+        border: none;
+        color: #dc3545;
+        font-weight: 600;
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-control-modern {
+        border: none;
+        padding: 15px 20px;
+        font-size: 16px;
+        background: transparent;
+        box-shadow: none;
+    }
+
+        .form-control-modern:focus {
+            box-shadow: none;
+            background: #fff5f5;
+        }
+
+    /* ===== FILE UPLOAD ===== */
+    .file-upload-modern {
+        border: 2px dashed #dc3545;
+        border-radius: 12px;
+        padding: 30px;
+        text-align: center;
+        background: linear-gradient(135deg, #fdf2f2, #fce7e7);
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+        .file-upload-modern:hover,
+        .file-upload-modern:focus-within {
+            border-color: #c82333;
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(220,53,69,0.15);
+        }
+
+    /* ===== LABELS ===== */
+    .label-modern {
+        font-weight: 700;
+        color: #2c3e50;
+        font-size: 15px;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn-modern {
+        padding: 14px 40px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 16px;
+        border: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 25px rgba(220,53,69,0.3);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary-modern {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        color: white;
+    }
+
+    .btn-secondary-modern {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        color: #6c757d;
+        border: 1px solid #e3e6f0;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .btn-modern:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 30px rgba(220,53,69,0.4);
+        color: white !important;
+    }
+
+    /* ===== BREADCRUMB ===== */
+    .breadcrumb-modern {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-radius: 12px;
+        padding: 15px 25px;
+        margin-bottom: 30px;
+    }
+
+    /* ===== ALERTS ===== */
+    .alert-modern {
+        border-radius: 12px;
+        padding: 15px 20px;
+        margin-bottom: 25px;
+        border: none;
+        font-weight: 500;
+    }
+</style>
+
 <div class="content container-fluid">
-    <div class="page-header">
-        <h3>Add New Exam</h3>
-        <ul class="breadcrumb">
-            <li class="breadcrumb-item"><a asp-action="Index">Exams</a></li>
-            <li class="breadcrumb-item active">Add</li>
-        </ul>
+    <!-- PAGE HEADER -->
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-8">
+            <h2 class="fw-bold mb-1" style="color: #2c3e50;">
+                <i class="fas fa-clipboard-list me-2 text-danger"></i>
+                Add New Exam
+            </h2>
+            <p class="mb-0 text-muted fs-6">Create exam schedule and timetable</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb breadcrumb-modern p-3 shadow-sm">
+                    <li class="breadcrumb-item"><a asp-action="Index" class="text-primary"><i class="fas fa-list me-1"></i>Exams</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Add Exam</li>
+                </ol>
+            </nav>
+        </div>
     </div>
 
-    <div class="card card-default">
-        <div class="card-body">
-            <form asp-action="Create" method="post" enctype="multipart/form-data">
-                @Html.AntiForgeryToken()
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    @if (TempData["success"] != null)
+    {
+        <div class="alert alert-success alert-modern shadow-sm">
+            <i class="fas fa-check-circle me-2"></i>
+            @TempData["success"]
+        </div>
+    }
+    @if (TempData["error"] != null)
+    {
+        <div class="alert alert-danger alert-modern shadow-sm">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            @TempData["error"]
+        </div>
+    }
 
-                <div class="mb-3">
-                    <label asp-for="ExamName" class="form-label"></label>
-                    <input asp-for="ExamName" class="form-control" />
-                    <span asp-validation-for="ExamName" class="text-danger"></span>
+    <!-- FORM CARD -->
+    <div class="row justify-content-center">
+        <div class="col-xl-10 col-lg-11">
+            <div class="card form-card-modern shadow-lg">
+                <div class="form-header-modern">
+                    <div class="form-header-icon-modern">
+                        <i class="fas fa-calendar-alt text-white"></i>
+                    </div>
+                    <h4 class="mb-1 fw-bold">Exam Schedule</h4>
+                    <p class="mb-0 opacity-90">Create new exam with timetable</p>
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="SubjectId" class="form-label">Subject</label>
-                    <select asp-for="SubjectId" class="form-select" asp-items="Model.Subjects">
-                        <option value="">Select Subject...</option>
-                    </select>
+                <div class="card-body p-5">
+                    <form asp-action="Create" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger alert-modern mb-5 shadow-sm">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            Please fix the following errors:
+                        </div>
+
+                        <div class="row g-4 mb-4">
+                            <!-- EXAM NAME -->
+                            <div class="col-md-6">
+                                <label asp-for="ExamName" class="label-modern">
+                                    <i class="fas fa-file-alt text-primary"></i>
+                                    Exam Name <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group-modern">
+                                    <span class="input-group-text-modern">
+                                        <i class="fas fa-file-alt"></i>
+                                    </span>
+                                    <input asp-for="ExamName" class="form-control-modern" placeholder="e.g. Midterm Exam 2026" />
+                                </div>
+                                <span asp-validation-for="ExamName" class="text-danger small d-block mt-2"></span>
+                            </div>
+
+                            <!-- SUBJECT SELECT -->
+                            <div class="col-md-6">
+                                <label asp-for="SubjectId" class="label-modern">
+                                    <i class="fas fa-book text-info"></i>
+                                    Subject <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group-modern">
+                                    <span class="input-group-text-modern">
+                                        <i class="fas fa-book"></i>
+                                    </span>
+                                    <select asp-for="SubjectId" class="form-control-modern form-select" asp-items="Model.Subjects">
+                                        <option value="">Select Subject...</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-4 mb-4">
+                            <!-- CLASS SELECT -->
+                            <div class="col-md-6">
+                                <label asp-for="ClassId" class="label-modern">
+                                    <i class="fas fa-graduation-cap text-warning"></i>
+                                    Class <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group-modern">
+                                    <span class="input-group-text-modern">
+                                        <i class="fas fa-graduation-cap"></i>
+                                    </span>
+                                    <select asp-for="ClassId" class="form-control-modern form-select" asp-items="Model.Classes">
+                                        <option value="">Select Class...</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- EXAM DATE -->
+                            <div class="col-md-6">
+                                <label asp-for="ExamDate" class="label-modern">
+                                    <i class="fas fa-calendar text-success"></i>
+                                    Exam Date <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group-modern">
+                                    <span class="input-group-text-modern">
+                                        <i class="fas fa-calendar"></i>
+                                    </span>
+                                    <input asp-for="ExamDate" type="date" class="form-control-modern" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-4 mb-5">
+                            <!-- EXAM TIME -->
+                            <div class="col-md-6">
+                                <label asp-for="ExamTime" class="label-modern">
+                                    <i class="fas fa-clock text-info"></i>
+                                    Exam Time <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group-modern">
+                                    <span class="input-group-text-modern">
+                                        <i class="fas fa-clock"></i>
+                                    </span>
+                                    <input asp-for="ExamTime" type="time" class="form-control-modern" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TIME TABLE FILE UPLOAD -->
+                        <div class="mb-5">
+                            <label asp-for="TimeTableFile" class="label-modern">
+                                <i class="fas fa-file-upload text-primary"></i>
+                                Upload Time Table
+                            </label>
+                            <div class="file-upload-modern">
+                                <i class="fas fa-cloud-upload-alt fa-3x text-danger mb-3"></i>
+                                <input asp-for="TimeTableFile" type="file" class="form-control" accept=".pdf,.doc,.docx,.xlsx" />
+                                <div class="mt-3">
+                                    <small class="text-muted">Supported: PDF, Word, Excel</small>
+                                </div>
+                            </div>
+                            <span asp-validation-for="TimeTableFile" class="text-danger small d-block mt-2"></span>
+                        </div>
+
+                        <!-- ACTION BUTTONS -->
+                        <div class="text-center pt-4 border-top">
+                            <button type="submit" class="btn btn-primary-modern btn-lg px-6 shadow-sm">
+                                <i class="fas fa-plus-circle me-2"></i>Create Exam
+                            </button>
+                        </div>
+                    </form>
                 </div>
-
-                <div class="mb-3">
-                    <label asp-for="ClassId" class="form-label">Class</label>
-                    <select asp-for="ClassId" class="form-select" asp-items="Model.Classes">
-                        <option value="">Select Class...</option>
-                    </select>
-                </div>
-
-              
-
-                <div class="mb-3">
-                    <label asp-for="ExamDate" class="form-label"></label>
-                    <input asp-for="ExamDate" type="date" class="form-control" />
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="ExamTime" class="form-label"></label>
-                    <input asp-for="ExamTime" type="time" class="form-control" />
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="TimeTableFile" class="form-label">Upload Time Table</label>
-                    <input asp-for="TimeTableFile" type="file" class="form-control" />
-                </div>
-
-                <button type="submit" class="btn btn-primary">Create Exam</button>
-            </form>
-
+            </div>
         </div>
     </div>
 </div>

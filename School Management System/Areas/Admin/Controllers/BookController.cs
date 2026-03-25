@@ -1,6 +1,7 @@
 ﻿namespace School.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = SD.SUPER_ADMIN_ROLE)]
     public class BookController : Controller
 
     {
@@ -123,6 +124,38 @@
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Details(int id, CancellationToken ct)
+        {
+            var book = await _bookRepo.GetOneAsync(
+                b => b.Id == id,
+                includeProperties: q => q
+                    .Include(b => b.BookIssues)
+                    .ThenInclude(bi => bi.Student),
+                tracked: false,
+                cancellationToken: ct);
 
+            if (book == null)
+                return NotFound();
+
+            var vm = new BookDetailsVM
+            {
+                Id = book.Id,
+                Title = book.Title,
+                Author = book.Author,
+                TotalCopies = book.TotalCopies,
+                CopiesAvailable = book.CopiesAvailable,
+
+                Issues = book.BookIssues.Select(bi => new BookIssueVM
+                {
+                    StudentName = bi.Student.FirstName + " " + bi.Student.LastName,
+                    Email = bi.Student.Email,
+                    IssueDate = bi.IssueDate,
+                    ReturnDate = bi.ReturnDate
+                }).OrderByDescending(x => x.IssueDate).ToList()
+            };
+
+            return View(vm);
+        }
     }
 }

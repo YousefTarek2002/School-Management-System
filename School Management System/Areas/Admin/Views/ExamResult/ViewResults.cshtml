@@ -4,163 +4,91 @@
 }
 
 <style>
-    .stats-grid {
-        gap: 20px;
-    }
+    /* ===== STATS GRID ===== */
+    .stats-grid { gap: 20px; }
     .stat-card {
-        border: none;
-        border-radius: 25px;
-        padding: 30px;
-        text-align: center;
-        height: 100%;
-        position: relative;
-        overflow: hidden;
+        border: none; border-radius: 25px; padding: 30px;
+        text-align: center; height: 100%; position: relative; overflow: hidden;
         transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         box-shadow: 0 15px 40px rgba(0,0,0,0.1);
     }
     .stat-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 5px;
+        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px;
         background: linear-gradient(90deg, #ffffff, rgba(255,255,255,0.7), #ffffff);
         animation: shimmer 3s infinite;
     }
-   
+    
     .stat-card:hover {
         transform: translateY(-10px) scale(1.05);
         box-shadow: 0 25px 60px rgba(0,0,0,0.2);
     }
     .stat-icon {
-        width: 80px;
-        height: 80px;
-        border-radius: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 32px;
-        margin: 0 auto 20px;
+        width: 80px; height: 80px; border-radius: 20px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 32px; margin: 0 auto 20px;
         box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     }
     .stat-number {
-        font-size: 48px;
-        font-weight: 800;
-        line-height: 1;
-        margin-bottom: 10px;
+        font-size: 48px; font-weight: 800; line-height: 1; margin-bottom: 10px;
     }
-    .stat-label {
-        font-size: 16px;
-        font-weight: 600;
-        opacity: 0.9;
-    }
-    .results-card {
-        border: none;
-        border-radius: 25px;
-        box-shadow: 0 20px 50px rgba(0,0,0,0.12);
-        overflow: hidden;
-    }
-    .table-modern {
-        margin-bottom: 0;
-    }
+    .stat-label { font-size: 16px; font-weight: 600; opacity: 0.9; }
+
+    /* ===== RESULTS CARD ===== */
+    .results-card { border: none; border-radius: 25px; box-shadow: 0 20px 50px rgba(0,0,0,0.12); overflow: hidden; }
+    .table-modern { margin-bottom: 0; }
     .table-modern thead th {
-        background: linear-gradient(135deg, #495057, #6c757d);
-        color: white;
-        border: none;
-        font-weight: 700;
-        padding: 20px 20px;
-        position: sticky;
-        top: 0;
-        z-index: 10;
-        font-size: 15px;
+        background: linear-gradient(135deg, #495057, #6c757d); color: white; border: none;
+        font-weight: 700; padding: 20px 20px; position: sticky; top: 0; z-index: 10; font-size: 15px;
     }
     .table-modern tbody td {
-        padding: 20px 20px;
-        border-color: #f1f3f4;
-        vertical-align: middle;
-        transition: all 0.3s ease;
-    }
-    .table-modern tbody tr {
-        transition: all 0.3s ease;
+        padding: 20px 20px; border-color: #f1f3f4; vertical-align: middle; transition: all 0.3s ease;
     }
     .table-modern tbody tr:hover {
         background: linear-gradient(135deg, #f8f9ff 0%, #e8f0fe 100%);
-        transform: scale(1.01);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        transform: scale(1.01); box-shadow: 0 8px 25px rgba(0,0,0,0.1);
     }
+
+    /* ===== BADGES ===== */
     .rank-badge {
-        background: linear-gradient(135deg, #007bff, #0056b3);
-        color: white;
-        padding: 12px 20px;
-        border-radius: 25px;
-        font-weight: 700;
-        font-size: 16px;
+        background: linear-gradient(135deg, #007bff, #0056b3); color: white;
+        padding: 12px 20px; border-radius: 25px; font-weight: 700; font-size: 16px;
         box-shadow: 0 5px 15px rgba(0,123,255,0.3);
     }
     .grade-badge {
-        padding: 12px 24px;
-        border-radius: 25px;
-        font-weight: 700;
-        font-size: 18px;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-        min-width: 80px;
-        text-align: center;
+        padding: 12px 24px; border-radius: 25px; font-weight: 700; font-size: 18px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15); min-width: 80px; text-align: center;
     }
-    .grade-pass {
-        background: linear-gradient(135deg, #28a745, #20c997);
-        color: white;
-    }
-    .grade-fail {
-        background: linear-gradient(135deg, #dc3545, #c82333);
-        color: white;
-    }
+    .grade-pass { background: linear-gradient(135deg, #28a745, #20c997); color: white; }
+    .grade-fail { background: linear-gradient(135deg, #dc3545, #c82333); color: white; }
+
+    /* ===== EMPTY STATE ===== */
     .empty-state {
         background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        border-radius: 25px;
-        padding: 80px 40px;
-        text-align: center;
-        border: 2px dashed #dee2e6;
-        margin: 40px 0;
+        border-radius: 25px; padding: 80px 40px; text-align: center;
+        border: 2px dashed #dee2e6; margin: 40px 0;
     }
+
+    /* ===== BUTTONS ===== */
     .btn-modern {
-        padding: 14px 35px;
-        border-radius: 30px;
-        font-weight: 700;
-        font-size: 15px;
-        border: none;
-        transition: all 0.3s ease;
-        box-shadow: 0 10px 30px rgba(40,167,69,0.4);
+        padding: 14px 35px; border-radius: 30px; font-weight: 700; font-size: 15px;
+        border: none; transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(40,167,69,0.4);
     }
-    .btn-modern:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 15px 40px rgba(40,167,69,0.5);
-    }
-    .btn-success-modern {
-        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-        color: white;
-    }
+    .btn-modern:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(40,167,69,0.5); }
+    .btn-success-modern { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; }
     .btn-secondary-modern {
-        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-        color: #6c757d;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef); color: #6c757d;
         box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
     .btn-danger-modern {
-        background: linear-gradient(135deg, #dc3545, #c82333);
-        color: white;
-        border: 2px solid #dc3545;
-        box-shadow: 0 10px 30px rgba(220,53,69,0.4);
+        background: linear-gradient(135deg, #dc3545, #c82333); color: white;
+        border: 2px solid #dc3545; box-shadow: 0 10px 30px rgba(220,53,69,0.4);
     }
-    .btn-danger-modern:hover {
-        background: #c82333;
-        border-color: #bd2130;
-        color: white;
-    }
+    .btn-danger-modern:hover { background: #c82333; border-color: #bd2130; color: white; }
+
+    /* ===== BREADCRUMB ===== */
     .breadcrumb-modern {
-        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-        border-radius: 20px;
-        padding: 25px 35px;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef); border-radius: 20px;
+        padding: 25px 35px; box-shadow: 0 15px 40px rgba(0,0,0,0.1);
     }
 </style>
 
@@ -297,9 +225,7 @@
                                     @foreach (var result in Model.Results)
                                     {
                                         <tr>
-                                            <td>
-                                                <div class="rank-badge">@result.Rank</div>
-                                            </td>
+                                            <td><div class="rank-badge">@result.Rank</div></td>
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <div class="avatar-sm me-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; font-weight: 700; font-size: 16px;">
@@ -371,8 +297,7 @@
             document.querySelectorAll('.stat-card').forEach(card => {
                 card.addEventListener('click', function() {
                     document.querySelector('.results-card').scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
+                        behavior: 'smooth', block: 'start'
                     });
                 });
             });

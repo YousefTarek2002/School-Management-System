@@ -1,0 +1,354 @@
+﻿@model TeacherDetailsVM
+@{
+    ViewData["Title"] = "Teacher Details";
+}
+
+<style>
+    /* ===== MAIN CONTAINER ===== */
+    .profile-container {
+        min-height: 100vh;
+        padding: 40px 0;
+    }
+
+    /* ===== PROFILE HEADER ===== */
+    .profile-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 25px;
+        padding: 40px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 30px;
+        box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
+    }
+
+        .profile-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+            animation: float 8s ease-in-out infinite;
+        }
+
+
+
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        font-weight: 800;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        border: 3px solid rgba(255, 255, 255, 0.3);
+      
+    }
+
+    .profile-hero-content h1 {
+        font-size: 36px;
+        font-weight: 800;
+        margin-bottom: 8px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .profile-hero-content .lead {
+        font-size: 18px;
+        opacity: 0.95;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* ===== INFO CARDS - FULL WIDTH ===== */
+    .info-section {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+        margin-bottom: 30px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        align-items: start;
+    }
+
+    .info-item {
+        padding: 30px 0;
+        border-right: 1px solid rgba(0, 0, 0, 0.08);
+        transition: all 0.4s ease;
+    }
+
+        .info-item:last-child {
+            border-right: none;
+        }
+
+        .info-item:hover {
+            transform: translateY(-5px);
+        }
+
+    .info-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        margin-bottom: 25px;
+        color: white;
+    }
+
+    .icon-email {
+        background: linear-gradient(135deg, #17a2b8, #138496);
+    }
+
+    .icon-salary {
+        background: linear-gradient(135deg, #28a745, #20c997);
+    }
+
+    .info-label {
+        font-weight: 700;
+        color: #495057;
+        font-size: 18px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .info-value {
+        font-size: 32px;
+        font-weight: 700;
+        color: #2c3e50;
+        line-height: 1.3;
+        margin-bottom: 10px;
+    }
+
+        .info-value.salary {
+            font-size: 42px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+        }
+
+        .info-value.email {
+            font-size: 24px;
+            direction: ltr;
+            text-align: left;
+            word-break: break-all;
+        }
+
+    /* ===== SUBJECTS SECTION ===== */
+    .subjects-section {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+        margin-bottom: 30px;
+    }
+
+    .subjects-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        justify-content: center;
+    }
+
+    .subject-badge {
+        padding: 16px 28px;
+        border-radius: 35px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-weight: 700;
+        font-size: 16px;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+        .subject-badge:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.5);
+        }
+
+    .no-subjects {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6c757d;
+    }
+
+        .no-subjects i {
+            font-size: 80px;
+            opacity: 0.4;
+            margin-bottom: 25px;
+            display: block;
+        }
+
+    /* ===== ACTION BUTTONS ===== */
+    .action-buttons {
+        background: white;
+        border-radius: 25px;
+        padding: 40px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+        display: flex;
+        gap: 25px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-modern {
+        padding: 18px 45px;
+        border-radius: 50px;
+        font-weight: 800;
+        font-size: 17px;
+        border: none;
+        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        box-shadow: 0 12px 35px rgba(13, 110, 253, 0.4);
+        position: relative;
+        overflow: hidden;
+        min-width: 180px;
+    }
+
+    .btn-primary-modern {
+        background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+        color: white;
+    }
+
+    .btn-secondary-modern {
+        background: linear-gradient(135deg, #6c757d 0%, #5c636a 100%);
+        color: white;
+        box-shadow: 0 12px 35px rgba(108, 117, 125, 0.4);
+    }
+
+    .btn-modern:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 25px 60px rgba(13, 110, 253, 0.6);
+        color: white !important;
+    }
+
+    .btn-modern::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        transition: left 0.6s;
+    }
+
+    .btn-modern:hover::before {
+        left: 100%;
+    }
+</style>
+<div class="row justify-content-center">
+    <div class="col-xl-10 col-lg-11">
+        <div class="profile-hero position-relative">
+            <div class="row align-items-center">
+                <div class="col-md-3 d-flex justify-content-center justify-content-md-start">
+                    <div class="profile-avatar">
+                        @Model.Name.Substring(0, 1).ToUpper()
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="profile-hero-content">
+                        <h1 class="display-5 fw-bold">@Model.Name</h1>
+                        <p class="lead mb-0">معلم متميز في المدرسة</p>
+                        <div class="mt-3">
+                            <span class="badge bg-light text-dark px-4 py-2 fs-6">
+                                <i class="fas fa-briefcase me-2"></i>Teacher
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-xl-10 col-lg-11">
+        <!-- INFO SECTION - FULL WIDTH -->
+        <div class="info-section">
+            <div class="info-grid">
+                <!-- EMAIL -->
+                <div class="info-item">
+                    <div class="info-icon icon-email">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="info-label">
+                        <i class="fas fa-envelope me-2 text-info"></i>
+                        <span>البريد الإلكتروني</span>
+                    </div>
+                    <div class="info-value email">
+                        <a href="mailto:@Model.Email" class="text-decoration-none">@Model.Email</a>
+                    </div>
+                </div>
+
+                <!-- SALARY -->
+                <div class="info-item">
+                    <div class="info-icon icon-salary">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="info-label">
+                        <i class="fas fa-money-bill-wave me-2 text-success"></i>
+                        <span>الراتب الشهري</span>
+                    </div>
+                    <div class="info-value salary">
+                        <span>@Model.Salary.ToString("N0")</span>
+                        <small class="ms-2 text-success fw-bold">جنيه</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- SUBJECTS SECTION -->
+        <div class="subjects-section">
+            <div class="info-label mb-4" style="font-size: 22px;">
+                <i class="fas fa-book-open me-3 text-primary"></i>
+                المواد الدراسية
+            </div>
+
+            @if (Model.Subjects.Any())
+            {
+                <div class="subjects-grid">
+                    @foreach (var sub in Model.Subjects)
+                    {
+                        <span class="subject-badge">@sub</span>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="no-subjects">
+                    <i class="fas fa-bookmark-slash"></i>
+                    <h4 class="mb-3">لا توجد مواد دراسية</h4>
+                    <p class="lead">لم يتم تعيين أي مواد لهذا المعلم بعد</p>
+                </div>
+            }
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="action-buttons">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary-modern btn-modern btn-lg px-6">
+                <i class="fas fa-edit me-2"></i>تعديل البيانات
+            </a>
+            <a asp-action="Index" class="btn btn-secondary-modern btn-modern btn-lg px-6">
+                <i class="fas fa-arrow-left me-2"></i>العودة
+            </a>
+        </div>
+    </div>
+</div>

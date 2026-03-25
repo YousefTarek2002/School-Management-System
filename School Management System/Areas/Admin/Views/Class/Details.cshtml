@@ -1,421 +1,59 @@
-﻿@model Class
+﻿@model School.Models.Class
 @{
     ViewData["Title"] = "Class Details";
-    var allStudents = ViewBag.AllStudents as List<Student> ?? new List<Student>();
+    var allStudents = ViewBag.AllStudents as List<School.Models.Student>;
 }
 
-<style>
-    .info-card {
-        border: none;
-        border-radius: 25px;
-        background: linear-gradient(145deg, #667eea 0%, #764ba2 100%);
-        box-shadow: 0 20px 50px rgba(102,126,234,0.3);
-        overflow: hidden;
-        height: 100%;
-        color: white;
-        position: relative;
-        transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-    .info-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(90deg, #ffffff, rgba(255,255,255,0.5), #ffffff);
-        animation: shimmer 3s infinite;
-    }
-   
-    .info-card:hover {
-        transform: translateY(-10px) scale(1.02);
-        box-shadow: 0 30px 60px rgba(102,126,234,0.4);
-    }
-    .class-avatar {
-        width: 100px;
-        height: 100px;
-        background: rgba(255,255,255,0.2);
-        border-radius: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 36px;
-        font-weight: 700;
-        backdrop-filter: blur(15px);
-        border: 3px solid rgba(255,255,255,0.3);
-        margin: 0 auto 20px;
-        position: relative;
-        overflow: hidden;
-    }
-    .class-avatar::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
-        animation: float 6s ease-in-out infinite;
-    }
-    .action-card {
-        border: none;
-        border-radius: 25px;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-        overflow: hidden;
-        transition: all 0.3s ease;
-        height: 100%;
-    }
-    .action-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-    }
-    .students-card {
-        border: none;
-        border-radius: 25px;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-        overflow: hidden;
-    }
-    .table-modern {
-        margin-bottom: 0;
-    }
-    .table-modern thead th {
-        background: linear-gradient(135deg, #495057, #6c757d);
-        color: white;
-        border: none;
-        font-weight: 600;
-        padding: 18px 15px;
-        position: sticky;
-        top: 0;
-        z-index: 10;
-    }
-    .table-modern tbody td {
-        padding: 20px 15px;
-        border-color: #f1f3f4;
-        vertical-align: middle;
-        transition: all 0.3s ease;
-    }
-    .table-modern tbody tr {
-        transition: all 0.3s ease;
-    }
-    .table-modern tbody tr:hover {
-        background: linear-gradient(135deg, #f8f9ff 0%, #e8f0fe 100%);
-        transform: scale(1.01);
-        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-    }
-    .btn-modern {
-        padding: 12px 25px;
-        border-radius: 25px;
-        font-weight: 600;
-        font-size: 14px;
-        border: none;
-        transition: all 0.3s ease;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    }
-    .btn-modern:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    }
-    .btn-success-modern {
-        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-        color: white;
-    }
-    .btn-outline-danger-modern {
-        background: transparent;
-        color: #dc3545;
-        border: 2px solid #dc3545;
-    }
-    .btn-outline-danger-modern:hover {
-        background: #dc3545;
-        color: white;
-        transform: translateY(-3px);
-    }
-    .empty-state {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        border-radius: 20px;
-        padding: 60px 40px;
-        text-align: center;
-        border: 2px dashed #dee2e6;
-    }
-    .breadcrumb-modern {
-        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-        border-radius: 20px;
-        padding: 20px 30px;
-        backdrop-filter: blur(15px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        border: none;
-    }
-</style>
-
-<div class="content container-fluid">
-    <!-- BREADCRUMB -->
-    <div class="row mb-5">
-        <div class="col-12">
-            <div class="breadcrumb-modern">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb mb-0 p-0">
-                        <li class="breadcrumb-item">
-                            <a href="@Url.Action("Index")" class="text-decoration-none">
-                                <i class="fas fa-school me-2 text-primary"></i> Classes
-                            </a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">
-                            <i class="fas fa-eye me-2 text-success"></i> 
-                            @Model.Name - @Model.Section
-                        </li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
+<div class="container mt-4">
+    <h3>
+        <i class="fas fa-school me-2 text-primary"></i>
+        @Model.Name - @Model.Section
+    </h3>
+    <div class="mb-3">
+        <strong>Teacher:</strong> @Model.Teacher?.Name ?? "No Teacher"
     </div>
 
-    @if (TempData["success"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show shadow-lg mb-5 rounded-3" role="alert">
-            <i class="fas fa-check-circle me-2 text-success"></i>@TempData["success"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
+    <hr />
 
-    @if (TempData["error"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible fade show shadow-lg mb-5 rounded-3" role="alert">
-            <i class="fas fa-exclamation-triangle me-2 text-danger"></i>@TempData["error"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
+    <!-- ADD STUDENT -->
+    <div class="card mb-4 p-3 shadow-sm">
+        <h5>Add Student</h5>
+        <form asp-action="AddStudentToClass" method="post" class="d-flex gap-2">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="ClassId" value="@Model.Id" />
+            <select name="StudentId" class="form-select">
+                <option value="">-- Select Student --</option>
+                @foreach (var student in allStudents)
+                {
+                    <option value="@student.Id">@student.FirstName</option>
+                }
+            </select>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-plus me-1"></i> Add</button>
+        </form>
+    </div>
 
-    <!-- MAIN CONTENT ROW -->
-    <div class="row g-4 mb-5">
-        <!-- CLASS INFO CARD -->
-        <div class="col-xl-4 col-lg-5">
-            <div class="card info-card h-100 p-5 text-center position-relative">
-                <div class="class-avatar">
-                    @($"{Model.Name} {Model.Section}".Substring(0, 1).ToUpper())
-                </div>
-                <h3 class="mb-4 fw-bold fs-2">@Model.Name - @Model.Section</h3>
-                <h5 class="mb-4 opacity-90 fs-4">@Model.Teacher.Name</h5>
-                
-                <div class="row g-3 mb-5">
-                    <div class="col-6">
-                        <div class="bg-white bg-opacity-20 backdrop-blur-lg rounded-3 p-3">
-                            <i class="fas fa-users fa-2x text-success mb-2 d-block"></i>
-                            <div class="fs-4 fw-bold">@(Model.ClassEnrollments?.Count(e => e.Status) ?? 0)</div>
-                            <small class="opacity-75">Active Students</small>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="bg-white bg-opacity-20 backdrop-blur-lg rounded-3 p-3">
-                            <i class="fas fa-user-graduate fa-2x text-info mb-2 d-block"></i>
-                            <div class="fs-4 fw-bold">@(Model.ClassEnrollments?.Count() ?? 0)</div>
-                            <small class="opacity-75">Total Students</small>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="position-absolute bottom-0 start-50 translate-middle-x pb-4">
-                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-light btn-lg px-5">
-                        <i class="fas fa-edit me-2"></i>Edit Class
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- ADD STUDENT CARD -->
-        <div class="col-xl-8 col-lg-7">
-            <div class="card action-card h-100">
-                <div class="card-header" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white;">
-                    <h4 class="mb-0 fw-bold">
-                        <i class="fas fa-user-plus me-3"></i>Add Student to Class
-                    </h4>
-                </div>
-                <div class="card-body p-5">
-                    <form asp-action="AddStudentToClass" method="post">
+    <!-- STUDENTS LIST -->
+    <div class="row">
+        @foreach (var enrollment in Model.ClassEnrollments)
+        {
+            <div class="col-md-4 mb-3">
+                <div class="card p-3 shadow-sm">
+                    <h6>@enrollment.Student?.FirstName</h6>
+                    <p>Status: @(enrollment.Status ? "Active" : "Inactive")</p>
+                    <form asp-action="RemoveStudent" method="post">
                         @Html.AntiForgeryToken()
-                        <input type="hidden" name="ClassId" value="@Model.Id" />
-                        
-                        <div class="row g-4 align-items-end">
-                            <div class="col-md-9">
-                                <label class="form-label fw-bold fs-5 mb-3">
-                                    <i class="fas fa-search text-primary me-2"></i>
-                                    Select Student <span class="text-danger">*</span>
-                                </label>
-                                <select name="StudentId" class="form-select form-select-lg" required style="height: 65px; font-size: 16px;">
-                                    <option value="">-- اختر طالب --</option>
-                                    @foreach (var student in allStudents)
-                                    {
-                                        var isEnrolled = Model.ClassEnrollments?.Any(e => e.StudentId == student.Id) == true;
-                                        <option value="@student.Id"
-                                                disabled="@isEnrolled"
-                                                title="@(isEnrolled ? "موجود بالفعل" : "متاح")"
-                                                style="@(isEnrolled ? "color: #6c757d; font-style: italic;" : "")">
-                                            @student.FirstName @student.LastName 
-                                            <small class="text-muted ms-2">
-                                                (ID: @student.Id) 
-                                                @(isEnrolled ? "✅ موجود" : "➕ متاح")
-                                            </small>
-                                        </option>
-                                    }
-                                </select>
-                                <div class="form-text mt-2">
-                                    <i class="fas fa-info-circle text-info me-2"></i>
-                                    Choose from available students not currently enrolled
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <button type="submit" class="btn btn-success-modern w-100 btn-modern btn-lg" style="height: 65px;">
-                                    <i class="fas fa-plus-circle me-2"></i>
-                                    Add Student
-                                </button>
-                            </div>
-                        </div>
+                        <input type="hidden" name="id" value="@enrollment.Id" />
+                        <input type="hidden" name="classId" value="@Model.Id" />
+                        <button type="submit" class="btn btn-danger btn-sm">
+                            <i class="fas fa-trash me-1"></i> Remove
+                        </button>
                     </form>
                 </div>
             </div>
-        </div>
+        }
     </div>
 
-    <!-- STUDENTS TABLE -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card students-card shadow-xl">
-                <div class="card-header p-4" style="background: linear-gradient(135deg, #495057, #6c757d); color: white;">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h4 class="mb-0 fw-bold">
-                            <i class="fas fa-list-ul me-3"></i>
-                            Enrolled Students
-                        </h4>
-                        <span class="badge bg-light text-dark fs-5 px-4 py-2">
-                            @(Model.ClassEnrollments?.Count() ?? 0) Students
-                        </span>
-                    </div>
-                </div>
-                <div class="card-body p-0">
-                    @if (Model.ClassEnrollments != null && Model.ClassEnrollments.Any())
-                    {
-                        <div class="table-responsive">
-                            <table class="table table-modern mb-0">
-                                <thead>
-                                    <tr>
-                                        <th><i class="fas fa-user me-2"></i>Student Name</th>
-                                        <th><i class="fas fa-envelope me-2"></i>Email</th>
-                                        <th><i class="fas fa-calendar me-2"></i>Enrolled</th>
-                                        <th><i class="fas fa-toggle-on me-2"></i>Status</th>
-                                        <th style="width: 150px;"><i class="fas fa-cogs me-2"></i>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var enrollment in Model.ClassEnrollments)
-                                    {
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="avatar-sm me-3 bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
-                                                        @enrollment.Student.FirstName[0]@enrollment.Student.LastName[0]
-                                                    </div>
-                                                    <div>
-                                                        <strong class="d-block">@enrollment.Student.FirstName @enrollment.Student.LastName</strong>
-                                                        <small class="text-muted">ID: @enrollment.Student.Id</small>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <small class="text-muted d-block">@enrollment.Student.Email</small>
-                                            </td>
-                                            <td>
-                                                <span class="badge bg-info">@enrollment.EnrollmentDate.ToString("dd/MM/yyyy")</span>
-                                            </td>
-                                            <td>
-                                                <span class="badge @(enrollment.Status ? "bg-success" : "bg-warning") px-4 py-2 fw-semibold">
-                                                    @(enrollment.Status ? "Active" : "Inactive")
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <form asp-action="RemoveStudent" asp-route-id="@enrollment.Id" asp-route-classId="@Model.Id" 
-                                                      method="post" style="display:inline;" 
-                                                      class="d-inline"
-                                                      onclick="return confirm('هل أنت متأكد من إزالة الطالب @enrollment.Student.FirstName @enrollment.Student.LastName من الصف؟')">
-                                                    @Html.AntiForgeryToken()
-                                                    <button type="submit" class="btn btn-outline-danger-modern btn-modern btn-sm">
-                                                        <i class="fas fa-trash me-1"></i>Remove
-                                                    </button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="empty-state">
-                            <i class="fas fa-users fa-4x text-muted mb-4"></i>
-                            <h4 class="text-muted mb-3 fw-bold">No students enrolled yet</h4>
-                            <p class="text-muted mb-4 lead">This class is empty. Use the form above to add your first student.</p>
-                            <div class="row justify-content-center">
-                                <div class="col-auto">
-                                    <a href="#add-student" class="btn btn-success-modern btn-modern btn-lg px-5">
-                                        <i class="fas fa-plus-circle me-2"></i>Add First Student
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ACTION BUTTONS -->
-    <div class="row justify-content-end mt-5">
-        <div class="col-auto">
-            <div class="d-flex gap-3">
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary-modern btn-modern btn-lg px-5">
-                    <i class="fas fa-edit me-2"></i>Edit Class Details
-                </a>
-                <a asp-action="Index" class="btn btn-secondary-modern btn-modern btn-lg px-5">
-                    <i class="fas fa-arrow-left me-2"></i>Back to Classes
-                </a>
-            </div>
-        </div>
-    </div>
+    <a asp-action="Index" class="btn btn-secondary mt-3">
+        <i class="fas fa-arrow-left me-1"></i> Back to Classes
+    </a>
 </div>
-
-@section Scripts {
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Smooth animations for all cards
-            document.querySelectorAll('.info-card, .action-card, .students-card').forEach(card => {
-                card.addEventListener('mouseenter', function() {
-                    this.style.transform = 'translateY(-8px) scale(1.01)';
-                });
-                card.addEventListener('mouseleave', function() {
-                    this.style.transform = 'translateY(0) scale(1)';
-                });
-            });
-
-            // Enhanced table row hover effects
-            document.querySelectorAll('.table-modern tbody tr').forEach(row => {
-                row.addEventListener('mouseenter', function() {
-                    this.style.transform = 'scale(1.02)';
-                    this.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
-                });
-                row.addEventListener('mouseleave', function() {
-                    this.style.transform = 'scale(1)';
-                    this.style.boxShadow = 'none';
-                });
-            });
-
-            // Scroll to add student form
-            document.querySelectorAll('[href="#add-student"]').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    document.querySelector('.action-card').scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'center' 
-                    });
-                });
-            });
-        });
-    </script>
-}

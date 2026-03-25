@@ -3,7 +3,7 @@
 namespace School.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    //[Authorize(Roles = "Admin")]  
+    [Authorize(Roles = SD.SUPER_ADMIN_ROLE)]
     public class TeacherController : Controller
     {
         private readonly IRepository<Teacher> _teacherRepo;
@@ -107,88 +107,90 @@ namespace School.Areas.Admin.Controllers
         {
             var teacher = await _teacherRepo.GetOneAsync(
                 t => t.Id == id,
-                includeProperties: q => q.Include(t => t.SubjectTeachers).ThenInclude(st => st.Subject),
-                tracked: true,
+                includeProperties: q => q.Include(t => t.SubjectTeachers),
+                tracked: false,
                 cancellationToken: cancellationToken);
 
-            if (teacher == null) return NotFound();
+            if (teacher == null)
+                return NotFound();
 
-            ViewBag.Subjects = await _subjectRepo.GetAsync(tracked: false, cancellationToken: cancellationToken);
-
-            var model = new AddTeacherVM
+            var model = new EditTeacherVM
             {
                 Id = teacher.Id,
                 Name = teacher.Name,
                 Salary = teacher.Salary,
                 Email = teacher.Email,
-                SubjectId = teacher.SubjectTeachers?.FirstOrDefault()?.SubjectId ?? 0
+                SubjectId = teacher.SubjectTeachers.FirstOrDefault()?.SubjectId
             };
+
+            ViewBag.Subjects = await _subjectRepo.GetAsync(tracked: false, cancellationToken: cancellationToken);
 
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, AddTeacherVM model, CancellationToken cancellationToken)
+        public async Task<IActionResult> Edit(EditTeacherVM model, CancellationToken cancellationToken)
         {
-            if (id != model.Id)
-                return BadRequest();
-
             if (!ModelState.IsValid)
             {
                 ViewBag.Subjects = await _subjectRepo.GetAsync(tracked: false, cancellationToken: cancellationToken);
                 return View(model);
             }
 
-            var teacher = await _teacherRepo.GetOneAsync(t => t.Id == id, tracked: true, cancellationToken: cancellationToken);
-            if (teacher == null) return NotFound();
-
-            // ✅ Check email conflict (لازم يكون نفس الـ teacher)
-            var emailConflict = await _teacherRepo.GetOneAsync(
-                t => t.Email == model.Email && t.Id != id,
+            var teacher = await _teacherRepo.GetOneAsync(
+                t => t.Id == model.Id,
+                tracked: true,
                 cancellationToken: cancellationToken);
 
-            if (emailConflict != null)
+            if (teacher == null)
+                return NotFound();
+
+            // ✅ Email check
+            var emailExists = await _teacherRepo.GetOneAsync(
+                t => t.Email == model.Email && t.Id != model.Id,
+                cancellationToken: cancellationToken);
+
+            if (emailExists != null)
             {
-                ModelState.AddModelError("Email", "الإيميل مستخدم من معلم آخر");
+                ModelState.AddModelError("Email", "الإيميل مستخدم قبل كده");
                 ViewBag.Subjects = await _subjectRepo.GetAsync(tracked: false, cancellationToken: cancellationToken);
                 return View(model);
             }
 
+            // ✅ Update
             teacher.Name = model.Name;
             teacher.Salary = model.Salary;
             teacher.Email = model.Email;
-            // Password مش بنحدثه هنا - يحتاج action منفصل
 
             _teacherRepo.Update(teacher);
             await _teacherRepo.CommitAsync(cancellationToken);
 
-            // Update SubjectTeacher relations
+            // ✅ Update Subject
             var oldRelations = await _subjectTeacherRepo.GetAsync(
-                st => st.TeacherId == id,
+                st => st.TeacherId == model.Id,
                 tracked: true,
                 cancellationToken: cancellationToken);
 
-            foreach (var relation in oldRelations)
-            {
-                _subjectTeacherRepo.Delete(relation);
-            }
+            foreach (var item in oldRelations)
+                _subjectTeacherRepo.Delete(item);
+
             await _subjectTeacherRepo.CommitAsync(cancellationToken);
 
-            if (model.SubjectId > 0)
+            if (model.SubjectId.HasValue)
             {
                 await _subjectTeacherRepo.CreateAsync(new SubjectTeacher
                 {
-                    TeacherId = id,
-                    SubjectId = model.SubjectId
+                    TeacherId = model.Id,
+                    SubjectId = model.SubjectId.Value
                 }, cancellationToken);
+
                 await _subjectTeacherRepo.CommitAsync(cancellationToken);
             }
 
-            TempData["success"] = "تم تعديل المعلم بنجاح";
+            TempData["success"] = "تم التعديل بنجاح";
             return RedirectToAction(nameof(Index));
         }
-
         [HttpPost]
         public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
         {
@@ -220,6 +222,33 @@ namespace School.Areas.Admin.Controllers
             {
                 return Json(new { success = false, message = "خطأ في الحذف: " + ex.Message });
             }
+        }
+        [HttpGet]
+        public async Task<IActionResult> Details(int id, CancellationToken cancellationToken)
+        {
+            var teacher = await _teacherRepo.GetOneAsync(
+                t => t.Id == id,
+                includeProperties: q => q
+                    .Include(t => t.SubjectTeachers)
+                    .ThenInclude(st => st.Subject),
+                tracked: false,
+                cancellationToken: cancellationToken);
+
+            if (teacher == null)
+                return NotFound();
+
+            var model = new TeacherDetailsVM
+            {
+                Id = teacher.Id,
+                Name = teacher.Name,
+                Salary = teacher.Salary,
+                Email = teacher.Email,
+                Subjects = teacher.SubjectTeachers
+                    .Select(st => st.Subject.Name)
+                    .ToList()
+            };
+
+            return View(model);
         }
     }
 }

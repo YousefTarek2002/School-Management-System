@@ -1,323 +1,280 @@
-﻿@model FeeVM
+﻿@model School.Models.VM.FeeVM
 @{
     ViewData["Title"] = "Edit Fee";
 }
 
 <style>
-    .form-card {
-        border: none;
-        border-radius: 25px;
+    /* ===== MAIN CARD ===== */
+    .form-card-modern {
+        border-radius: 20px;
         background: linear-gradient(145deg, #ffffff, #f8f9fa);
-        box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
         overflow: hidden;
-        height: 100%;
+        border: none;
     }
-    .form-header {
-        background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+
+    /* ===== HEADER ===== */
+    .form-header-modern {
+        background: linear-gradient(135deg, #fd7e14 0%, #f53939 100%);
         color: white;
-        padding: 35px;
+        padding: 30px;
         text-align: center;
         position: relative;
         overflow: hidden;
     }
-    .form-header::before {
-        content: '';
-        position: absolute;
-        top: -50%;
-        right: -50%;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
-        animation: float 6s ease-in-out infinite;
-    }
-    
-    .form-icon {
-        width: 90px;
-        height: 90px;
+
+    .form-header-icon-modern {
+        width: 75px;
+        height: 75px;
         background: rgba(255,255,255,0.25);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 36px;
-        margin: 0 auto 20px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        font-size: 32px;
+        margin: 0 auto 15px;
+        backdrop-filter: blur(12px);
     }
+
+    /* ===== INPUT GROUP ===== */
     .input-group-modern {
         border-radius: 15px;
         overflow: hidden;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
         border: 2px solid #e9ecef;
         transition: all 0.3s ease;
         background: white;
-        height: 65px;
-        position: relative;
+        margin-bottom: 25px;
     }
-    .input-group-modern:focus-within {
-        border-color: #ffc107;
-        box-shadow: 0 0 0 0.3rem rgba(255,193,7,0.15), 0 10px 25px rgba(255,193,7,0.2);
-        transform: translateY(-2px);
-    }
+
+        .input-group-modern:focus-within {
+            border-color: #fd7e14;
+            box-shadow: 0 10px 30px rgba(253,126,20,0.25);
+            transform: translateY(-2px);
+        }
+
     .input-group-text-modern {
-        background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+        background: linear-gradient(135deg, #fff3e0, #ffe0b2);
         border: none;
-        color: #856404;
+        color: #fd7e14;
         font-weight: 600;
+        padding: 15px 20px;
         display: flex;
         align-items: center;
-        padding: 0 20px;
-        height: 100%;
     }
+
     .form-control-modern {
         border: none;
-        padding: 20px 20px 20px 70px !important;
+        padding: 15px 20px;
         font-size: 16px;
         background: transparent;
-        height: 100%;
         box-shadow: none;
     }
-    .form-control-modern:focus {
-        box-shadow: none;
-        background: #fff8e1;
-    }
-    .amount-input-modern {
-        font-size: 20px;
+
+        .form-control-modern:focus {
+            box-shadow: none;
+            background: #fff8e1;
+        }
+
+    /* ===== LABELS ===== */
+    .label-modern {
         font-weight: 700;
-        color: #fd7e14 !important;
-        background: linear-gradient(135deg, #fff8e1 0%, #fff3cd 100%) !important;
-        border: 3px solid #ffc107 !important;
-    }
-    .status-container {
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        border-radius: 15px;
-        border: 2px solid #dee2e6;
-        padding: 25px;
-        transition: all 0.3s ease;
-        height: 80px;
-        cursor: pointer;
+        color: #2c3e50;
+        font-size: 15px;
+        margin-bottom: 12px;
         display: flex;
         align-items: center;
+        gap: 8px;
     }
-    .status-container:hover {
-        border-color: #ffc107;
-        background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
-        transform: translateY(-3px);
+
+    /* ===== CHECKBOX ===== */
+    .form-check-modern {
+        background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 18px 20px;
+        margin-bottom: 25px;
+        transition: all 0.3s ease;
+        cursor: pointer;
     }
-    .status-container.paid {
-        border-color: #28a745;
-        background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
-        box-shadow: 0 8px 25px rgba(40,167,69,0.2);
+
+        .form-check-modern:hover {
+            border-color: #fd7e14;
+            box-shadow: 0 8px 25px rgba(253,126,20,0.15);
+        }
+
+        .form-check-modern input:checked + .form-check-label-modern {
+            color: #fd7e14;
+            font-weight: 700;
+        }
+
+    .form-check-input-modern {
+        transform: scale(1.4);
+        accent-color: #fd7e14;
+        margin-right: 12px;
     }
-    .preview-card {
-        background: linear-gradient(135deg, rgba(255,193,7,0.08) 0%, rgba(253,126,20,0.08) 100%);
-        border-radius: 20px;
-        border-left: 5px solid #ffc107;
-        box-shadow: 0 10px 30px rgba(255,193,7,0.15);
-    }
+
+    /* ===== BUTTONS ===== */
     .btn-modern {
-        padding: 15px 40px;
+        padding: 14px 40px;
         border-radius: 50px;
         font-weight: 700;
         font-size: 16px;
         border: none;
         transition: all 0.3s ease;
-        box-shadow: 0 10px 30px rgba(255,193,7,0.4);
+        box-shadow: 0 8px 25px rgba(253,126,20,0.3);
     }
-    .btn-warning-modern { 
-        background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%); 
-        color: white; 
+
+    .btn-primary-modern {
+        background: linear-gradient(135deg, #fd7e14, #f53939);
+        color: white;
     }
-    .btn-secondary-modern { 
-        background: linear-gradient(135deg, #f8f9fa, #e9ecef); 
-        color: #6c757d; 
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+
+    .btn-secondary-modern {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        color: #6c757d;
+        border: 1px solid #e3e6f0;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
+
     .btn-modern:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 15px 40px rgba(255,193,7,0.5);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 30px rgba(253,126,20,0.4);
         color: white !important;
     }
-    .label-modern {
-        font-weight: 700;
-        color: #2c3e50;
-        font-size: 15px;
-        margin-bottom: 15px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
+
+    /* ===== ALERTS ===== */
+    .alert-modern {
+        border-radius: 12px;
+        padding: 15px 20px;
+        margin-bottom: 25px;
+        border: none;
+        font-weight: 500;
     }
 </style>
 
 <div class="content container-fluid">
     <!-- PAGE HEADER -->
-    <div class="row mb-5 align-items-center">
+    <div class="row mb-4 align-items-center">
         <div class="col-md-8">
-            <h2 class="fw-bold mb-2" style="color: #2c3e50;">
-                <i class="fas fa-edit me-3 text-warning"></i>
+            <h2 class="fw-bold mb-1" style="color: #2c3e50;">
+                <i class="fas fa-edit me-2 text-warning"></i>
                 Edit Fee
             </h2>
-            <p class="mb-0 text-muted lead">Update student fee information and payment status</p>
+            <p class="mb-0 text-muted">Update fee payment information</p>
         </div>
         <div class="col-md-4 text-end">
-            <a asp-action="Index" class="btn btn-secondary-modern btn-lg shadow-lg px-5">
-                <i class="fas fa-arrow-left me-2"></i>Back to Fees
+            <a asp-action="Index" class="btn btn-secondary-modern btn-lg px-4">
+                <i class="fas fa-arrow-left me-1"></i>Back to Fees
             </a>
         </div>
     </div>
 
     @if (TempData["success"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show shadow-lg mb-5" role="alert">
-            <i class="fas fa-check-circle me-2"></i>@TempData["success"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <div class="alert alert-success alert-modern shadow-sm">
+            <i class="fas fa-check-circle me-2"></i>
+            @TempData["success"]
+        </div>
+    }
+    @if (TempData["error"] != null)
+    {
+        <div class="alert alert-danger alert-modern shadow-sm">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            @TempData["error"]
         </div>
     }
 
-    <!-- PREVIEW CARD -->
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="preview-card p-4">
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <h5 class="mb-2">
-                            <i class="fas fa-user-graduate text-primary me-2"></i>
-                            <span id="previewStudent">@Model.StudentName</span>
-                        </h5>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <small class="text-muted">
-                                    <i class="fas fa-coins me-1"></i>
-                                    Amount: <strong id="previewAmount">@Model.Amount EGP</strong>
-                                </small>
-                            </div>
-                            <div class="col-md-4">
-                                <small class="text-muted">
-                                    <i class="fas fa-calendar me-1"></i>
-                                    Due: <strong id="previewDue">@Model.DueDate.ToString("dd/MM/yyyy")</strong>
-                                </small>
-                            </div>
-                            <div class="col-md-4">
-                                <span class="badge fs-6 px-4 py-2 shadow-sm id="previewStatus" style="background: @(Model.Paid ? "#28a745" : "#ffc107"); color: @(Model.Paid ? "white" : "#212529");">
-                                    <i class="fas fa-@(Model.Paid ? "check-circle" : "clock") me-2"></i>
-                                    @(Model.Paid ? "Paid" : "Pending")
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 text-md-end">
-                        <span class="badge bg-warning text-dark fs-6 px-4 py-2 shadow-sm">
-                            <i class="fas fa-sync-alt me-2"></i>Live Preview
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- FORM CARD -->
     <div class="row justify-content-center">
-        <div class="col-xl-10 col-lg-11">
-            <div class="card form-card shadow-xl">
-                <!-- HEADER -->
-                <div class="form-header">
-                    <div class="form-icon">
-                        <i class="fas fa-money-bill-wave"></i>
+        <div class="col-xl-8 col-lg-10">
+            <div class="card form-card-modern shadow-lg">
+                <div class="form-header-modern">
+                    <div class="form-header-icon-modern">
+                        <i class="fas fa-edit text-white"></i>
                     </div>
-                    <h3 class="mb-2 fw-bold fs-2 position-relative">@Model.StudentName Fee</h3>
-                    <p class="mb-0 opacity-90 position-relative">Update fee amount, due date, and payment status</p>
+                    <h4 class="mb-1 fw-bold">Update Fee</h4>
+                    <p class="mb-0 opacity-90">Modify fee payment details</p>
                 </div>
 
-                <!-- FORM BODY -->
                 <div class="card-body p-5">
                     <form asp-action="Edit" method="post">
                         @Html.AntiForgeryToken()
-                        <input asp-for="Id" type="hidden" />
-                        
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4 rounded-3 shadow-sm">
+                        <input type="hidden" asp-for="Id" />
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger alert-modern mb-5 shadow-sm">
                             <i class="fas fa-exclamation-circle me-2"></i>
-                            Please fix the following errors before updating:
+                            Please fix the following errors:
                         </div>
 
-                        <div class="row g-4 mb-5">
-                            <!-- STUDENT -->
-                            <div class="col-lg-6">
-                                <label class="label-modern">
-                                    <i class="fas fa-user-graduate text-primary"></i>
-                                    Student <span class="text-danger">*</span>
-                                </label>
-                                <div class="input-group-modern">
-                                    <span class="input-group-text-modern">
-                                        <i class="fas fa-user-graduate"></i>
-                                    </span>
-                                    <select asp-for="StudentId" class="form-control-modern form-select" style="border: none; padding-left: 70px;" onchange="updatePreview()">
-                                        <option value="">Choose student...</option>
-                                    </select>
-                                </div>
-                                <span asp-validation-for="StudentId" class="text-danger small d-block mt-1"></span>
+                        <!-- STUDENT SELECT -->
+                        <div class="mb-5">
+                            <label class="label-modern">
+                                <i class="fas fa-user-graduate text-warning"></i>
+                                Student <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group-modern">
+                                <span class="input-group-text-modern">
+                                    <i class="fas fa-user-graduate"></i>
+                                </span>
+                                <select asp-for="StudentId" class="form-control-modern form-select" asp-items="Model.Students">
+                                    <option value="">Select a student</option>
+                                </select>
                             </div>
-
-                            <!-- AMOUNT -->
-                            <div class="col-lg-6">
-                                <label class="label-modern">
-                                    <i class="fas fa-coins text-warning"></i>
-                                    Amount (EGP) <span class="text-danger">*</span>
-                                </label>
-                                <div class="input-group-modern">
-                                    <span class="input-group-text-modern">
-                                        <i class="fas fa-coins"></i>
-                                    </span>
-                                    <input asp-for="Amount" type="number" min="0" step="0.01" 
-                                           class="form-control-modern amount-input-modern" placeholder="0.00" onchange="updatePreview()" />
-                                </div>
-                                <span asp-validation-for="Amount" class="text-danger small d-block mt-1"></span>
-                            </div>
+                            <span asp-validation-for="StudentId" class="text-danger small d-block mt-2"></span>
                         </div>
 
-                        <div class="row g-4 mb-5">
-                            <!-- DUE DATE -->
-                            <div class="col-lg-6">
-                                <label class="label-modern">
-                                    <i class="fas fa-calendar text-info"></i>
-                                    Due Date <span class="text-danger">*</span>
-                                </label>
-                                <div class="input-group-modern">
-                                    <span class="input-group-text-modern">
-                                        <i class="fas fa-calendar-alt"></i>
-                                    </span>
-                                    <input asp-for="DueDate" type="date" class="form-control-modern" onchange="updatePreview()" />
-                                </div>
-                                <span asp-validation-for="DueDate" class="text-danger small d-block mt-1"></span>
+                        <!-- AMOUNT -->
+                        <div class="mb-5">
+                            <label class="label-modern">
+                                <i class="fas fa-money-bill-wave text-success"></i>
+                                Amount (EGP) <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group-modern">
+                                <span class="input-group-text-modern">
+                                    <i class="fas fa-egyptian-pound"></i>
+                                </span>
+                                <input asp-for="Amount" class="form-control-modern" placeholder="0.00" />
                             </div>
+                            <span asp-validation-for="Amount" class="text-danger small d-block mt-2"></span>
+                        </div>
 
-                            <!-- PAYMENT STATUS -->
-                            <div class="col-lg-6">
-                                <label class="label-modern">
-                                    <i class="fas fa-credit-card text-success"></i>
-                                    Payment Status
-                                </label>
-                                <div class="status-container @(Model.Paid ? "paid" : "")" onclick="toggleStatus()">
-                                    <div class="form-check d-flex align-items-center w-100 h-100">
-                                        <input asp-for="Paid" class="form-check-input me-4" type="checkbox" id="statusCheck" onchange="updatePreview()" />
-                                        <label class="form-check-label mb-0 flex-grow-1 fs-5" for="statusCheck">
-                                            <i class="fas fa-check-circle me-3 text-success fa-2x"></i>
-                                            <strong>Mark as Paid</strong>
-                                            <div class="small text-muted mt-1">Update payment status</div>
-                                        </label>
-                                    </div>
-                                </div>
-                                <span asp-validation-for="Paid" class="text-danger small d-block mt-1"></span>
+                        <!-- DUE DATE -->
+                        <div class="mb-5">
+                            <label class="label-modern">
+                                <i class="fas fa-calendar-alt text-info"></i>
+                                Due Date <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group-modern">
+                                <span class="input-group-text-modern">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </span>
+                                <input asp-for="DueDate" type="date" class="form-control-modern" />
                             </div>
+                            <span asp-validation-for="DueDate" class="text-danger small d-block mt-2"></span>
+                        </div>
+
+                        <!-- PAID CHECKBOX -->
+                        <div class="mb-5">
+                            <label class="form-check-modern" style="cursor: pointer;">
+                                <input asp-for="Paid" class="form-check-input-modern" />
+                                <span class="form-check-label-modern ms-3">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    Mark as Paid
+                                </span>
+                            </label>
+                            <small class="text-muted d-block mt-1">
+                                Check if the fee has been paid
+                            </small>
                         </div>
 
                         <!-- ACTION BUTTONS -->
-                        <div class="text-center mt-5 pt-4 border-top">
-                            <a asp-action="Index" class="btn btn-secondary-modern btn-lg me-4 px-5 shadow-lg">
+                        <div class="text-center pt-4 border-top">
+                            <a asp-action="Index" class="btn btn-secondary-modern btn-lg me-3 px-5 shadow-sm">
                                 <i class="fas fa-times me-2"></i>Cancel
                             </a>
-                            <button type="submit" class="btn btn-warning-modern btn-lg px-5 shadow-lg">
-                                <i class="fas fa-save me-2"></i>
-                                Update Fee Information
+                            <button type="submit" class="btn btn-primary-modern btn-lg px-5 shadow-sm">
+                                <i class="fas fa-save me-2"></i>Update Fee
                             </button>
                         </div>
                     </form>
@@ -328,69 +285,7 @@
 </div>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-    <script>
-        function updatePreview() {
-            const studentSelect = document.querySelector('select[name="StudentId"]');
-            const amountInput = document.querySelector('input[name="Amount"]');
-            const dueDateInput = document.querySelector('input[name="DueDate"]');
-            const statusCheck = document.querySelector('input[name="Paid"]');
-            
-            const studentName = studentSelect?.options[studentSelect.selectedIndex]?.text || '@Model.StudentName';
-            const amount = amountInput?.value ? `${parseFloat(amountInput.value).toLocaleString()} EGP` : '@Model.Amount EGP';
-            const dueDate = dueDateInput?.value ? new Date(dueDateInput.value).toLocaleDateString('en-GB') : '@Model.DueDate.ToString("dd/MM/yyyy")';
-            const status = statusCheck?.checked ? 'Paid' : 'Pending';
-            
-            // Update preview elements
-            if (document.getElementById('previewStudent')) document.getElementById('previewStudent').textContent = studentName;
-            if (document.getElementById('previewAmount')) document.getElementById('previewAmount').textContent = amount;
-            if (document.getElementById('previewDue')) document.getElementById('previewDue').textContent = dueDate;
-            
-            const previewStatus = document.getElementById('previewStatus');
-            if (previewStatus) {
-                previewStatus.textContent = status;
-                previewStatus.innerHTML = `<i class="fas fa-${status === 'Paid' ? 'check-circle' : 'clock'} me-2"></i>${status}`;
-                previewStatus.style.background = status === 'Paid' ? '#28a745' : '#ffc107';
-                previewStatus.style.color = status === 'Paid' ? 'white' : '#212529';
-            }
-        }
-
-        function toggleStatus() {
-            const checkbox = document.getElementById('statusCheck');
-            checkbox.checked = !checkbox.checked;
-            checkbox.dispatchEvent(new Event('change'));
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            // Live preview listeners
-            const inputs = document.querySelectorAll('select[name="StudentId"], input[name="Amount"], input[name="DueDate"], input[name="Paid"]');
-            inputs.forEach(input => {
-                input.addEventListener('input', updatePreview);
-                input.addEventListener('change', updatePreview);
-            });
-
-            // Amount formatting
-            const amountInput = document.querySelector('input[name="Amount"]');
-            if (amountInput) {
-                amountInput.addEventListener('input', function() {
-                    let value = parseFloat(this.value);
-                    if (value) {
-                        this.value = value.toFixed(2);
-                    }
-                });
-            }
-
-            // Form animations
-            document.querySelectorAll('.form-control-modern').forEach(input => {
-                input.addEventListener('focus', function() {
-                    this.closest('.input-group-modern').style.transform = 'scale(1.02)';
-                });
-                input.addEventListener('blur', function() {
-                    this.closest('.input-group-modern').style.transform = 'scale(1)';
-                });
-            });
-
-            updatePreview(); // Initial preview
-        });
-    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

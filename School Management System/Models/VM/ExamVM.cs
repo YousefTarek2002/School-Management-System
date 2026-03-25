@@ -77,4 +77,28 @@ namespace School.Models.VM
         public decimal AverageGrade { get; set; }
         public List<ExamResultDisplayVM> Results { get; set; } = new();
     }
+    namespace School.Models.VM
+    {
+        public class ExamDetailsVM
+        {
+            public int Id { get; set; }
+            public string ExamName { get; set; } = "";
+            public string SubjectName { get; set; } = "";
+            public string ClassName { get; set; } = "";
+            public DateTime ExamDate { get; set; }
+            public TimeSpan ExamTime { get; set; }
+            public string? TimeTablePath { get; set; }
+          
+            public List<ExamStudentVM> Students { get; set; } = new();
+        }
+
+        public class ExamStudentVM
+        {
+            public int StudentId { get; set; }
+            public string StudentName { get; set; } = "";
+            public string Email { get; set; } = "";
+            public decimal? Grade { get; set; }
+            
+        }
+    }
 }

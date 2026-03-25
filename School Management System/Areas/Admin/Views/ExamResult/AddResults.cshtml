@@ -4,6 +4,7 @@
 }
 
 <style>
+    /* ===== MAIN CARD ===== */
     .form-card {
         border: none;
         border-radius: 25px;
@@ -12,6 +13,8 @@
         overflow: hidden;
         height: 100%;
     }
+
+    /* ===== HEADER ===== */
     .form-header {
         background: linear-gradient(135deg, #6610f2 0%, #6f42c1 100%);
         color: white;
@@ -20,6 +23,7 @@
         position: relative;
         overflow: hidden;
     }
+
     .form-header::before {
         content: '';
         position: absolute;
@@ -30,7 +34,9 @@
         background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
         animation: float 6s ease-in-out infinite;
     }
-     
+
+    
+
     .form-icon {
         width: 90px;
         height: 90px;
@@ -44,6 +50,8 @@
         backdrop-filter: blur(10px);
         box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     }
+
+    /* ===== TABLE ===== */
     .table-modern {
         border-radius: 20px;
         overflow: hidden;
@@ -51,6 +59,7 @@
         border: none;
         background: white;
     }
+
     .table-modern thead th {
         background: linear-gradient(135deg, #6610f2 0%, #6f42c1 100%);
         color: white;
@@ -61,6 +70,7 @@
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
+
     .table-modern tbody td {
         padding: 20px 15px;
         border-color: #f1f3f4;
@@ -68,11 +78,14 @@
         position: relative;
         transition: all 0.3s ease;
     }
+
     .table-modern tbody tr:hover {
         background: linear-gradient(135deg, #f8f9ff 0%, #e8f0fe 100%);
         transform: scale(1.01);
         box-shadow: 0 10px 25px rgba(102,16,242,0.1);
     }
+
+    /* ===== GRADE INPUT ===== */
     .grade-input {
         border-radius: 15px;
         border: 2px solid #e9ecef;
@@ -85,6 +98,7 @@
         text-align: center;
         color: #495057;
     }
+
     .grade-input:focus {
         border-color: #6610f2;
         box-shadow: 0 0 0 0.25rem rgba(102,16,242,0.15);
@@ -92,6 +106,8 @@
         background: white;
         outline: none;
     }
+
+    /* ===== GRADE BADGES ===== */
     .grade-badge {
         font-size: 16px;
         padding: 10px 20px;
@@ -100,13 +116,18 @@
         min-width: 80px;
         text-align: center;
     }
+
     .grade-badge.current {
         background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        color: white;
     }
+
     .grade-badge.new {
         background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
         color: white;
     }
+
+    /* ===== STUDENT AVATAR ===== */
     .student-avatar {
         width: 45px;
         height: 45px;
@@ -118,9 +139,11 @@
         color: white;
         font-weight: 700;
         font-size: 14px;
-        margin-right: 12px;
+        margin-left: 12px; /* RTL */
         flex-shrink: 0;
     }
+
+    /* ===== BUTTONS ===== */
     .btn-modern {
         padding: 15px 40px;
         border-radius: 50px;
@@ -130,20 +153,25 @@
         transition: all 0.3s ease;
         box-shadow: 0 10px 30px rgba(102,16,242,0.4);
     }
+
     .btn-primary-modern { 
         background: linear-gradient(135deg, #6610f2 0%, #6f42c1 100%); 
         color: white; 
     }
+
     .btn-secondary-modern { 
         background: linear-gradient(135deg, #f8f9fa, #e9ecef); 
         color: #6c757d; 
         box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
+
     .btn-modern:hover {
         transform: translateY(-3px);
         box-shadow: 0 15px 40px rgba(102,16,242,0.5);
         color: white !important;
     }
+
+    /* ===== EMPTY STATE ===== */
     .empty-state {
         background: linear-gradient(135deg, rgba(102,16,242,0.05) 0%, rgba(111,66,193,0.05) 100%);
         border: 2px dashed #dee2e6;
@@ -152,6 +180,32 @@
         text-align: center;
         color: #6c757d;
     }
+
+    /* ===== SUMMARY STATS ===== */
+    .stats-card {
+        background: linear-gradient(135deg, #f8f9ff 0%, #e8f0fe 100%);
+        border-radius: 16px;
+        padding: 25px;
+        margin-bottom: 20px;
+    }
+
+    /* ===== UTILITIES ===== */
+    .text-purple { color: #6610f2 !important; }
+    .bg-purple { background-color: #6610f2 !important; }
+    .btn-outline-purple {
+        color: #6610f2;
+        border-color: #6610f2;
+        background: transparent;
+    }
+    .btn-outline-purple:hover {
+        background: #6610f2;
+        color: white;
+    }
+    .bg-gradient-purple {
+        background: linear-gradient(135deg, #f8f9ff 0%, #e8f0fe 100%);
+    }
+
+   
 </style>
 
 <div class="content container-fluid">
@@ -187,7 +241,7 @@
         <div class="col-xl-12 col-lg-12">
             <div class="card form-card shadow-xl">
                 <!-- HEADER -->
-                <div class="form-header">
+                <div class="form-header position-relative">
                     <div class="form-icon">
                         <i class="fas fa-chart-line"></i>
                     </div>
@@ -233,7 +287,8 @@
                                                 <i class="fas fa-history me-2"></i>Current Grade
                                             </th>
                                             <th>
-                                                <i class="fas fa-edit me-2"></i>New Grade (0-100)
+                                                <i class="fas fa-edit me-2"></i>New Grade (
+                                                    New Grade (0-100)
                                             </th>
                                         </tr>
                                     </thead>
@@ -258,7 +313,7 @@
                                                 </td>
                                                 <td>
                                                     <span class="grade-badge current px-4 py-2">
-                                                        @Model.Students[i].CurrentGrade
+                                                        @Model.Students[i].CurrentGrade ?? "N/A"
                                                     </span>
                                                 </td>
                                                 <td>
@@ -411,20 +466,3 @@
         });
     </script>
 }
-
-<style>
-    .text-purple { color: #6610f2 !important; }
-    .bg-purple { background-color: #6610f2 !important; }
-    .btn-outline-purple {
-        color: #6610f2;
-        border-color: #6610f2;
-        background: transparent;
-    }
-    .btn-outline-purple:hover {
-        background: #6610f2;
-        color: white;
-    }
-    .bg-gradient-purple {
-        background: linear-gradient(135deg, #f8f9ff 0%, #e8f0fe 100%);
-    }
-</style>

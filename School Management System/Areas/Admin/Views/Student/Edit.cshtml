@@ -1,215 +1,294 @@
-﻿@model AddStudentVM
+﻿@model EditStudentVM
 @{
     ViewData["Title"] = "Edit Student";
 }
 
 <style>
+    /* ===== FORM CARD ===== */
     .form-card {
-        border: none;
-        border-radius: 25px;
-        background: linear-gradient(145deg, #ffffff, #f8f9fa);
-        box-shadow: 0 20px 50px rgba(0,0,0,0.12);
-        overflow: hidden;
-    }
-
-    .form-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 35px;
-        text-align: center;
-    }
-
-    .form-icon {
-        width: 90px;
-        height: 90px;
-        background: rgba(255,255,255,0.25);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 36px;
-        margin: 0 auto 20px;
-    }
-
-    .input-group-modern {
         border-radius: 15px;
+        background: #fff;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
         overflow: hidden;
-        border: 2px solid #e9ecef;
-        height: 60px;
-        background: white;
+        transition: all 0.3s ease;
     }
 
-        .input-group-modern:focus-within {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102,126,234,0.2);
-        }
-
-    .input-group-text-modern {
-        background: #f1f3ff;
-        border: none;
-        color: #667eea;
-        padding: 0 20px;
-    }
-
-    .form-control-modern {
-        border: none;
-        padding: 15px;
-        width: 100%;
-    }
-
-    .btn-modern {
-        padding: 12px 35px;
-        border-radius: 50px;
-        font-weight: bold;
-        border: none;
-    }
-
-    .btn-primary-modern {
-        background: linear-gradient(135deg, #667eea, #764ba2);
+    /* ===== HEADER ===== */
+    .form-header {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
         color: white;
+        padding: 25px 20px;
+        text-align: center;
+        position: relative;
     }
 
-    .label-modern {
-        font-weight: 600;
-        margin-bottom: 10px;
-    }
-
-    .student-avatar {
+    .form-header-icon {
         width: 70px;
         height: 70px;
-        background: rgba(255,255,255,0.3);
+        background: rgba(255,255,255,0.2);
         border-radius: 50%;
-        font-size: 26px;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin: 0 auto 10px;
-        font-weight: bold;
+        font-size: 30px;
+        margin: 0 auto 15px;
     }
+
+    /* ===== INPUTS ===== */
+    .input-group-curvy {
+        position: relative;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #e3e6f0;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+    .input-group-curvy:focus-within {
+        border-color: #4facfe;
+        box-shadow: 0 0 0 0.2rem rgba(79,172,254,0.2);
+    }
+
+    .input-group-prepend-curvy {
+        background: #e3e6f0;
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        color: #4facfe;
+    }
+
+    .form-control-curvy {
+        border: none;
+        background: transparent;
+        padding: 10px 15px;
+        width: 100%;
+    }
+    .form-control-curvy:focus {
+        box-shadow: none;
+        background: #fefeff;
+    }
+
+    /* ===== LABELS ===== */
+    .form-label-curvy {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn-curvy {
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 15px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary-curvy {
+        background: #4facfe;
+        color: white;
+        border: none;
+    }
+
+    .btn-primary-curvy:hover {
+        background: #00f2fe;
+    }
+
+    .btn-secondary-curvy {
+        background: #f8f9fa;
+        color: #6c757d;
+        border: 1px solid #e3e6f0;
+    }
+
+    .btn-secondary-curvy:hover {
+        background: #e3e6f0;
+        color: #4facfe;
+    }
+
+    /* ===== ALERTS ===== */
+    .alert-success-curvy {
+        background: #d4edda;
+        color: #155724;
+        border-radius: 10px;
+        padding: 10px 15px;
+        margin-bottom: 20px;
+    }
+    .alert-danger-curvy {
+        background: #f8d7da;
+        color: #721c24;
+        border-radius: 10px;
+        padding: 10px 15px;
+        margin-bottom: 20px;
+    }
+
+    
 </style>
 
 <div class="content container-fluid">
-
-    <!-- HEADER -->
+    <!-- PAGE HEADER -->
     <div class="row mb-4 align-items-center">
-        <div class="col">
-            <h3 class="fw-bold">@Model.FirstName @Model.LastName</h3>
-            <p class="text-muted">Edit student information</p>
+        <div class="col-md-8">
+            <h2 class="fw-bold mb-1" style="color: #2c3e50;">
+                <i class="fas fa-user-edit me-2 text-primary"></i>
+                Edit Student
+            </h2>
+            <p class="mb-0 text-muted">Update student profile information</p>
         </div>
-
-        <div class="col-auto">
-            <a asp-action="Index" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left"></i> Back
+        <div class="col-md-4 text-end">
+            <a asp-action="Index" class="btn btn-secondary-curvy btn-lg px-4">
+                <i class="fas fa-arrow-left me-1"></i>Back to Students
             </a>
         </div>
     </div>
 
-    <!-- FORM -->
-    <div class="card form-card">
-
-        <!-- TOP HEADER -->
-        <div class="form-header">
-            <div class="student-avatar">
-                @(Model.FirstName?.Substring(0, 1).ToUpper())
-            </div>
-            <h3>Edit Student</h3>
-            <p class="opacity-75">Update student details</p>
+    @if (TempData["success"] != null)
+    {
+        <div class="alert alert-success-curvy">
+            <i class="fas fa-check-circle me-2"></i>
+            @TempData["success"]
         </div>
+    }
+    @if (TempData["error"] != null)
+    {
+        <div class="alert alert-danger-curvy">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            @TempData["error"]
+        </div>
+    }
 
-        <div class="card-body p-4">
-            <form asp-action="Edit" method="post">
-                @Html.AntiForgeryToken()
-                <input asp-for="Id" type="hidden" />
-
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-                <div class="row">
-
-                    <div class="col-md-6 mb-3">
-                        <label class="label-modern">First Name</label>
-                        <div class="input-group-modern d-flex">
-                            <span class="input-group-text-modern">
-                                <i class="fas fa-user"></i>
-                            </span>
-                            <input asp-for="FirstName" class="form-control-modern" />
-                        </div>
-                        <span asp-validation-for="FirstName" class="text-danger"></span>
+    <!-- FORM CARD -->
+    <div class="row justify-content-center">
+        <div class="col-xl-8 col-lg-10">
+            <div class="card form-card">
+                <div class="form-header">
+                    <div class="form-header-icon">
+                        <i class="fas fa-user-edit text-white"></i>
                     </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label class="label-modern">Last Name</label>
-                        <div class="input-group-modern d-flex">
-                            <span class="input-group-text-modern">
-                                <i class="fas fa-user"></i>
-                            </span>
-                            <input asp-for="LastName" class="form-control-modern" />
-                        </div>
-                        <span asp-validation-for="LastName" class="text-danger"></span>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label class="label-modern">Email</label>
-                        <div class="input-group-modern d-flex">
-                            <span class="input-group-text-modern">
-                                <i class="fas fa-envelope"></i>
-                            </span>
-                            <input asp-for="Email" type="email" class="form-control-modern" />
-                        </div>
-                        <span asp-validation-for="Email" class="text-danger"></span>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label class="label-modern">Phone</label>
-                        <div class="input-group-modern d-flex">
-                            <span class="input-group-text-modern">
-                                <i class="fas fa-phone"></i>
-                            </span>
-                            <input asp-for="Phone" class="form-control-modern" />
-                        </div>
-                        <span asp-validation-for="Phone" class="text-danger"></span>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label class="label-modern">Date of Birth</label>
-                        <div class="input-group-modern d-flex">
-                            <span class="input-group-text-modern">
-                                <i class="fas fa-calendar"></i>
-                            </span>
-                            <input asp-for="BD" type="date" class="form-control-modern" />
-                        </div>
-                        <span asp-validation-for="BD" class="text-danger"></span>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label class="label-modern">Class</label>
-                        <div class="input-group-modern d-flex">
-                            <span class="input-group-text-modern">
-                                <i class="fas fa-school"></i>
-                            </span>
-                            <select asp-for="ClassId" class="form-control-modern">
-                                <option value="">Select Class...</option>
-                                @foreach (var cls in ViewBag.Classes)
-                                {
-                                    <option value="@cls.Id">@cls.Name</option>
-                                }
-                            </select>
-                        </div>
-                        <span asp-validation-for="ClassId" class="text-danger"></span>
-                    </div>
-
+                    <h4 class="mb-1 fw-bold">Update Student</h4>
+                    <p class="mb-0 opacity-90">Modify the student information below</p>
                 </div>
 
-                <div class="text-end mt-4">
-                    <a asp-action="Index" class="btn btn-light me-2">Cancel</a>
-                    <button type="submit" class="btn btn-primary-modern">
-                        <i class="fas fa-save me-2"></i> Update Student
-                    </button>
-                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Edit" method="post">
+                        @Html.AntiForgeryToken()
 
-            </form>
+                        <input asp-for="Id" type="hidden" />
+
+                        <div asp-validation-summary="ModelOnly" class="alert-danger-curvy mb-3">
+                            <i class="fas fa-exclamation-circle me-1"></i> Please fix the following errors:
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="FirstName" class="form-label-curvy">
+                                    <i class="fas fa-user text-primary"></i>
+                                    First Name <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group-curvy">
+                                    <span class="input-group-prepend-curvy">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                    <input asp-for="FirstName" class="form-control-curvy" />
+                                </div>
+                                <span asp-validation-for="FirstName" class="text-danger small mt-1 d-block"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="LastName" class="form-label-curvy">
+                                    <i class="fas fa-user text-primary"></i>
+                                    Last Name <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group-curvy">
+                                    <span class="input-group-prepend-curvy">
+                                        <i class="fas fa-user"></i>
+                                    </span>
+                                    <input asp-for="LastName" class="form-control-curvy" />
+                                </div>
+                                <span asp-validation-for="LastName" class="text-danger small mt-1 d-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-3">
+                            <div class="col-md-6">
+                                <label asp-for="Email" class="form-label-curvy">
+                                    <i class="fas fa-envelope text-info"></i>
+                                    Email <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group-curvy">
+                                    <span class="input-group-prepend-curvy">
+                                        <i class="fas fa-envelope"></i>
+                                    </span>
+                                    <input asp-for="Email" class="form-control-curvy" />
+                                </div>
+                                <span asp-validation-for="Email" class="text-danger small mt-1 d-block"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Phone" class="form-label-curvy">
+                                    <i class="fas fa-phone text-success"></i>
+                                    Phone <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group-curvy">
+                                    <span class="input-group-prepend-curvy">
+                                        <i class="fas fa-phone"></i>
+                                    </span>
+                                    <input asp-for="Phone" class="form-control-curvy" />
+                                </div>
+                                <span asp-validation-for="Phone" class="text-danger small mt-1 d-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-3">
+                            <div class="col-md-6">
+                                <label asp-for="BD" class="form-label-curvy">
+                                    <i class="fas fa-calendar text-warning"></i>
+                                    Birth Date <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group-curvy">
+                                    <span class="input-group-prepend-curvy">
+                                        <i class="fas fa-calendar"></i>
+                                    </span>
+                                    <input asp-for="BD" type="date" class="form-control-curvy" />
+                                </div>
+                                <span asp-validation-for="BD" class="text-danger small mt-1 d-block"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="ClassId" class="form-label-curvy">
+                                    <i class="fas fa-school text-info"></i>
+                                    Class <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group-curvy">
+                                    <span class="input-group-prepend-curvy">
+                                        <i class="fas fa-school"></i>
+                                    </span>
+                                    <select asp-for="ClassId" class="form-control-curvy" asp-items="@(new SelectList(ViewBag.Classes, "Id", "Name"))">
+                                        <option value="">-- Select Class --</option>
+                                    </select>
+                                </div>
+                                <span asp-validation-for="ClassId" class="text-danger small mt-1 d-block"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-md-6 text-start">
+                                <a asp-action="Index" class="btn btn-secondary-curvy btn-lg px-4">
+                                    <i class="fas fa-times me-1"></i> Cancel
+                                </a>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <button type="submit" class="btn btn-primary-curvy btn-lg px-4">
+                                    <i class="fas fa-save me-1"></i> Update Student
+                                </button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
-
 </div>
 
 @section Scripts {
