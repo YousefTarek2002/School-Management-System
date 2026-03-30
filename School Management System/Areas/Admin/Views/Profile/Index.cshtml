@@ -1,0 +1,148 @@
+﻿@model ApplicationUserVM
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<style>
+    body {
+        background: #f8f9fa;
+    }
+
+    .profile-card {
+        border-radius: 20px;
+        background: #fff;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        padding: 30px;
+        width: 100%;    
+        margin: auto;
+    }
+
+    .profile-avatar {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #007bff, #00c6ff);
+        color: #fff;
+        font-size: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: auto;
+    }
+
+    .form-control {
+        border-radius: 10px;
+    }
+
+    .btn-save {
+        border-radius: 10px;
+        padding: 10px;
+        width: 100%;
+    }
+
+    .section-title {
+        font-weight: bold;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        color: #007bff;
+    }
+</style>
+
+<div class="profile-card">
+
+    <!-- Avatar -->
+    <div class="text-center mb-4">
+        <div class="profile-avatar">
+            @(string.IsNullOrEmpty(Model.Name) ? "U" : Model.Name.Substring(0, 1).ToUpper())
+        </div>
+        <h5 class="mt-2">@Model.Name</h5>
+        <small class="text-muted">@Model.Email</small>
+    </div>
+
+    <form asp-action="UpdateAll" method="post" autocomplete="off">
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+        <!-- PROFILE -->
+        <div class="section-title">Profile Info</div>
+
+        <div class="mb-3">
+            <label>Name</label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label>Email</label>
+            <input asp-for="Email" class="form-control" disabled />
+        </div>
+
+        <div class="mb-3">
+            <label>Phone</label>
+            <input asp-for="PhoneNumber" class="form-control" />
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="section-title">Change Password (Optional)</div>
+
+        <div class="mb-3">
+            <label>Current Password</label>
+            <input asp-for="CurrentPassword" type="password" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label>New Password</label>
+            <input asp-for="NewPassword" type="password" class="form-control" />
+        </div>
+
+        <button class="btn btn-primary btn-save">
+            <i class="fas fa-save me-1"></i> Save All Changes
+        </button>
+    </form>
+</div>
+
+<!-- Toast -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index:9999">
+    <div id="liveToast" class="toast text-white border-0">
+        <div class="d-flex">
+            <div class="toast-body" id="toastMessage"></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+     
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+     
+
+    <script>
+        function showToast(message, success = true) {
+            const toastEl = document.getElementById('liveToast');
+            const toastMsg = document.getElementById('toastMessage');
+
+            toastEl.classList.remove('bg-success', 'bg-danger');
+            toastEl.classList.add(success ? 'bg-success' : 'bg-danger');
+
+            toastMsg.innerText = message;
+
+            new bootstrap.Toast(toastEl).show();
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            @if (TempData["success-notification"] != null)
+            {
+                    <text>showToast("@TempData["success-notification"]", true);</text>
+            }
+
+            @if (TempData["error-notification"] != null)
+            {
+                    <text>showToast("@TempData["error-notification"]", false);</text>
+            }
+        });
+    </script>
+}

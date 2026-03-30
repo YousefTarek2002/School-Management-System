@@ -1,13 +1,19 @@
-﻿namespace School.Models.VM
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace School.Models.VM
 {
     public class NewPasswordVM
     {
-        public int Id { get; set; }
-        [Required, DataType(DataType.Password)]
-        public string Password { get; set; } = string.Empty;
-        [Required, DataType(DataType.Password), Compare(nameof(Password))]
-        public string ConfirmPassword { get; set; } = string.Empty;
+        [Required]
         public string UserId { get; set; } = string.Empty;
 
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; } = string.Empty;
+
+        [Required]
+        [DataType(DataType.Password)]
+        [Compare("Password", ErrorMessage = "Passwords do not match")]
+        public string ConfirmPassword { get; set; } = string.Empty;
     }
 }

@@ -203,9 +203,6 @@ namespace SchoolSystem.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Role")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -467,6 +464,7 @@ namespace SchoolSystem.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Grade")
+                        .HasPrecision(5, 2)
                         .HasColumnType("decimal(5,2)");
 
                     b.Property<int>("StudentId")
@@ -495,13 +493,15 @@ namespace SchoolSystem.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Amount")
+                        .HasPrecision(10, 2)
                         .HasColumnType("decimal(10,2)");
 
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("Paid")
-                        .HasColumnType("decimal(10,2)");
+                    b.Property<bool>("Paid")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("bit");
 
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
@@ -628,7 +628,8 @@ namespace SchoolSystem.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Salary")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
 
                     b.HasKey("Id");
 

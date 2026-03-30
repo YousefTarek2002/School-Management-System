@@ -1,5 +1,4 @@
-﻿
-using Microsoft.IdentityModel.Tokens;
+﻿ 
 
 namespace School.Utilites.DBSeeder
 {
@@ -10,7 +9,11 @@ namespace School.Utilites.DBSeeder
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public DbInitializer(ApplicationDbContext context, ILogger<DbInitializer> logger, RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
+        public DbInitializer(
+            ApplicationDbContext context,
+            ILogger<DbInitializer> logger,
+            RoleManager<IdentityRole> roleManager,
+            UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _logger = logger;
@@ -22,36 +25,56 @@ namespace School.Utilites.DBSeeder
         {
             try
             {
+                // ================= MIGRATIONS =================
                 if (_context.Database.GetPendingMigrations().Any())
                 {
                     _context.Database.Migrate();
                 }
 
-                if (_roleManager.Roles.IsNullOrEmpty())
-                {
-                    _roleManager.CreateAsync(new(SD.SUPER_ADMIN_ROLE)).GetAwaiter().GetResult();
-                    _roleManager.CreateAsync(new(SD.ADMIN_ROLE)).GetAwaiter().GetResult();
-                    _roleManager.CreateAsync(new(SD.CUSTOMER_ROLE)).GetAwaiter().GetResult();
-                    _roleManager.CreateAsync(new(SD.EMPLOYEE_ROLE)).GetAwaiter().GetResult();
+                // ================= ROLES =================
+                CreateRoleIfNotExists(SD.SUPER_ADMIN_ROLE);
+                CreateRoleIfNotExists(SD.ADMIN_ROLE);
+                CreateRoleIfNotExists(SD.CUSTOMER_ROLE);
+                CreateRoleIfNotExists(SD.EMPLOYEE_ROLE);
 
-                    _userManager.CreateAsync(new()
+                // ================= SUPER ADMIN =================
+                var user = _userManager.FindByEmailAsync("superadmin@eraasoft.com")
+                                       .GetAwaiter().GetResult();
+
+                if (user == null)
+                {
+                    var newUser = new ApplicationUser
                     {
                         Email = "superadmin@eraasoft.com",
                         UserName = "SuperAdmin",
                         FirstName = "SuperAdmin",
                         EmailConfirmed = true,
-                    }, "Admin123#").GetAwaiter().GetResult();
+                    };
 
-                    var user = _userManager.FindByNameAsync("SuperAdmin").GetAwaiter().GetResult();
+                    var result = _userManager.CreateAsync(newUser, "Admin123#")
+                                             .GetAwaiter().GetResult();
 
-                    _userManager.AddToRoleAsync(user!, SD.SUPER_ADMIN_ROLE).GetAwaiter().GetResult();
+                    if (result.Succeeded)
+                    {
+                        _userManager.AddToRoleAsync(newUser, SD.SUPER_ADMIN_ROLE)
+                                    .GetAwaiter().GetResult();
+                    }
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error {ex.Message}");
+                _logger.LogError($"Seeder Error: {ex.Message}");
             }
         }
 
+        // ================= HELPER =================
+        private void CreateRoleIfNotExists(string roleName)
+        {
+            if (!_roleManager.RoleExistsAsync(roleName).GetAwaiter().GetResult())
+            {
+                _roleManager.CreateAsync(new IdentityRole(roleName))
+                            .GetAwaiter().GetResult();
+            }
+        }
     }
 }

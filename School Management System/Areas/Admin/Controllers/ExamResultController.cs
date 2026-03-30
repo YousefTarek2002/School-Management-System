@@ -22,27 +22,65 @@ namespace School.Areas.Admin.Controllers
             _enrollmentRepo = enrollmentRepo;
         }
 
-        // ================= INDEX - قائمة الامتحانات مع النتائج =================
-        public async Task<IActionResult> Index(CancellationToken cancellationToken)
+        // ================= INDEX - Exams With Results =================
+        public async Task<IActionResult> Index(
+        int page = 1,
+        int pageSize = 8,
+        string search = "",
+        CancellationToken cancellationToken = default)
         {
-            var exams = await _examRepo.GetAsync(
-                includeProperties: q => q.Include(e => e.ExamResults)
-                                       .ThenInclude(er => er.Student),
-                tracked: false,
-                cancellationToken: cancellationToken);
+            var examsData = await _examRepo.GetAsync(
+            includeProperties: q => q
+            .Include(e => e.ExamResults)
+            .ThenInclude(er => er.Student)
+            .Include(e => e.Class)
+            .Include(e => e.Subject),
+            tracked: false,
+            cancellationToken: cancellationToken);
+ 
+// ================= FILTER =================
+if (!string.IsNullOrWhiteSpace(search))
+            {
+                search = search.ToLower();
 
+                examsData = examsData.Where(e =>
+                    (e.ExamName ?? "").ToLower().Contains(search) ||
+                    (e.Subject != null && e.Subject.Name.ToLower().Contains(search)) ||
+                    (e.Class != null &&
+                     ($"{e.Class.Name} {e.Class.Section}").ToLower().Contains(search))
+                ).ToList();
+            }
+
+            // ================= PAGINATION =================
+            var totalCount = examsData.Count();
+
+            var exams = examsData
+                .OrderByDescending(e => e.Id) // ممكن تغيرها لـ Date لو عندك
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            // ================= MAPPING =================
             var examVMs = exams.Select(e => new ExamResultIndexVM
             {
                 ExamId = e.Id,
                 ExamName = e.ExamName ?? "",
-                ClassName = $"{e.Class?.Name} - {e.Class?.Section}",
-                SubjectName = e.Subject?.Name ?? "",
+                ClassName = e.Class != null
+                    ? $"{e.Class.Name} - {e.Class.Section}"
+                    : "No Class",
+                SubjectName = e.Subject?.Name ?? "No Subject",
                 TotalStudents = e.ExamResults?.Count ?? 0,
-                HasResults = e.ExamResults?.Any() == true
+                HasResults = e.ExamResults != null && e.ExamResults.Any()
             }).ToList();
 
-            return View(examVMs);
-        }
+            // ================= VIEWBAG =================
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+            ViewBag.Search = search;
+
+            return View(examVMs); 
+}
+
 
         // ================= ADD RESULTS GET =================
         public async Task<IActionResult> AddResults(int examId, CancellationToken cancellationToken)

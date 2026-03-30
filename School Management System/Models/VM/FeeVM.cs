@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System.ComponentModel.DataAnnotations;
-
-namespace School.Models.VM
+﻿namespace School.Models.VM
 {
     public class FeeVM
     {
@@ -13,12 +10,12 @@ namespace School.Models.VM
 
         [Required]
         [Range(1, 100000)]
-        public decimal Amount { get; set; }  
+        public decimal Amount { get; set; }
 
         [Required]
         public DateTime DueDate { get; set; }
 
-        public bool Paid { get; set; } 
+        public bool Paid { get; set; }
 
         // Display properties
         public string? StudentName { get; set; }

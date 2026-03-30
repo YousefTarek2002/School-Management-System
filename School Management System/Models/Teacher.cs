@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace School.Models
 {
@@ -10,7 +9,7 @@ namespace School.Models
         [Required]
         public string Name { get; set; } = string.Empty;
 
-        public decimal Salary { get; set; }  
+        public decimal Salary { get; set; }
 
         [Required]
         public string Email { get; set; } = string.Empty;

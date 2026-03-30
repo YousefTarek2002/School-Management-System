@@ -1,6 +1,6 @@
 ﻿
-using School.Utilites.DBSeeder;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using School.Utilites.DBSeeder;
 
 namespace School
 {

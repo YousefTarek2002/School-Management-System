@@ -12,8 +12,8 @@ using School.Data;
 namespace SchoolSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260310231953_EditMOdels")]
-    partial class EditMOdels
+    [Migration("20260328230725_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -206,9 +206,6 @@ namespace SchoolSystem.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Role")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -309,6 +306,12 @@ namespace SchoolSystem.Migrations
 
                     b.Property<int>("CopiesAvailable")
                         .HasColumnType("int");
+
+                    b.Property<string>("ISBN")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Publisher")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -427,7 +430,7 @@ namespace SchoolSystem.Migrations
                     b.Property<TimeSpan>("ExamTime")
                         .HasColumnType("time");
 
-                    b.Property<int>("SectionId")
+                    b.Property<int?>("SectionId")
                         .HasColumnType("int");
 
                     b.Property<int>("SubjectId")
@@ -437,7 +440,6 @@ namespace SchoolSystem.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("TimeTablePath")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -465,6 +467,7 @@ namespace SchoolSystem.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Grade")
+                        .HasPrecision(5, 2)
                         .HasColumnType("decimal(5,2)");
 
                     b.Property<int>("StudentId")
@@ -493,13 +496,15 @@ namespace SchoolSystem.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Amount")
+                        .HasPrecision(10, 2)
                         .HasColumnType("decimal(10,2)");
 
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("Paid")
-                        .HasColumnType("decimal(10,2)");
+                    b.Property<bool>("Paid")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("bit");
 
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
@@ -626,7 +631,8 @@ namespace SchoolSystem.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Salary")
-                        .HasColumnType("decimal(18,2)");
+                        .HasPrecision(10, 2)
+                        .HasColumnType("decimal(10,2)");
 
                     b.HasKey("Id");
 
@@ -778,11 +784,9 @@ namespace SchoolSystem.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("School.Models.Section", "Section")
+                    b.HasOne("School.Models.Section", null)
                         .WithMany("Exams")
-                        .HasForeignKey("SectionId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("SectionId");
 
                     b.HasOne("School.Models.Subject", "Subject")
                         .WithMany("Exams")
@@ -795,8 +799,6 @@ namespace SchoolSystem.Migrations
                         .HasForeignKey("TeacherId");
 
                     b.Navigation("Class");
-
-                    b.Navigation("Section");
 
                     b.Navigation("Subject");
                 });

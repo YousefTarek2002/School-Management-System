@@ -5,93 +5,181 @@
 }
 
 <style>
-    .card-box {
+    .page-container {
+        padding: 30px 0;
+    }
+
+    /* HEADER */
+    .book-header {
+        background: linear-gradient(135deg, #ff7e5f, #feb47b);
+        border-radius: 20px;
+        padding: 30px;
+        color: white;
+        margin-bottom: 25px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+
+    .book-header h3 {
+        font-weight: 800;
+        margin-bottom: 5px;
+    }
+
+    /* STATS */
+    .stats-card {
+        background: white;
         border-radius: 15px;
+        padding: 25px;
         box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        margin-bottom: 25px;
+    }
+
+    .stat-box {
+        text-align: center;
+        padding: 20px;
+        border-radius: 12px;
+        background: #f8f9fa;
+        transition: 0.3s;
+    }
+
+    .stat-box:hover {
+        transform: translateY(-5px);
+    }
+
+    .stat-number {
+        font-size: 28px;
+        font-weight: 800;
+    }
+
+    .total { color: #0d6efd; }
+    .available { color: #198754; }
+    .borrowed { color: #dc3545; }
+
+    /* TABLE */
+    .table-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
+
+    .table thead {
+        background: #f1f3f5;
     }
 
     .badge-active {
         background: #198754;
+        padding: 6px 12px;
+        border-radius: 20px;
     }
 
     .badge-returned {
         background: #dc3545;
+        padding: 6px 12px;
+        border-radius: 20px;
+    }
+
+    .btn-modern {
+        border-radius: 25px;
+        padding: 8px 20px;
+        font-weight: 600;
     }
 </style>
 
-<div class="container mt-4">
+<div class="container page-container">
 
-    <!-- Book Info -->
-    <div class="card card-box p-4 mb-4">
+    <!-- HEADER -->
+    <div class="book-header">
         <h3>@Model.Title</h3>
-        <p class="text-muted">by @Model.Author</p>
+        <p class="mb-0">by @Model.Author</p>
+    </div>
 
-        <div class="row mt-3">
+    <!-- STATS -->
+    <div class="stats-card">
+        <div class="row">
             <div class="col-md-4">
-                <strong>Total Copies:</strong> @Model.TotalCopies
+                <div class="stat-box">
+                    <div class="stat-number total">@Model.TotalCopies</div>
+                    <div>Total Copies</div>
+                </div>
             </div>
 
             <div class="col-md-4">
-                <strong>Available:</strong> @Model.CopiesAvailable
+                <div class="stat-box">
+                    <div class="stat-number available">@Model.CopiesAvailable</div>
+                    <div>Available</div>
+                </div>
             </div>
 
             <div class="col-md-4">
-                <strong>Borrowed:</strong> @(Model.TotalCopies - Model.CopiesAvailable)
+                <div class="stat-box">
+                    <div class="stat-number borrowed">
+                        @(Model.TotalCopies - Model.CopiesAvailable)
+                    </div>
+                    <div>Borrowed</div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Issue History -->
-    <div class="card card-box p-4">
-        <h4 class="mb-3">📖 Borrow History</h4>
+    <!-- HISTORY -->
+    <div class="table-card">
+        <h4 class="mb-3">
+            <i class="fas fa-book me-2 text-primary"></i>
+            Borrow History
+        </h4>
 
-        <table class="table table-bordered table-hover">
-            <thead class="table-light">
-                <tr>
-                    <th>Student</th>
-                    <th>Email</th>
-                    <th>Issue Date</th>
-                    <th>Return Date</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Email</th>
+                        <th>Issue Date</th>
+                        <th>Return Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
 
-            <tbody>
-                @if (Model.Issues.Any())
-                {
-                    foreach (var item in Model.Issues)
+                <tbody>
+                    @if (Model.Issues.Any())
+                    {
+                        foreach (var item in Model.Issues)
+                        {
+                            <tr>
+                                <td class="fw-bold">@item.StudentName</td>
+                                <td>@item.Email</td>
+                                <td>@item.IssueDate.ToShortDateString()</td>
+                                <td>@item.ReturnDate.ToShortDateString()</td>
+                                <td>
+                                    @if (item.IsReturned)
+                                    {
+                                        <span class="badge badge-returned">Returned</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-active">Active</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
                     {
                         <tr>
-                            <td>@item.StudentName</td>
-                            <td>@item.Email</td>
-                            <td>@item.IssueDate.ToShortDateString()</td>
-                            <td>@item.ReturnDate.ToShortDateString()</td>
-                            <td>
-                                @if (item.IsReturned)
-                                {
-                                    <span class="badge badge-returned">Returned</span>
-                                }
-                                else
-                                {
-                                    <span class="badge badge-active">Active</span>
-                                }
+                            <td colspan="5" class="text-center text-muted py-4">
+                                <i class="fas fa-book-open fa-2x mb-2"></i>
+                                <div>No borrow history found</div>
                             </td>
                         </tr>
                     }
-                }
-                else
-                {
-                    <tr>
-                        <td colspan="5" class="text-center text-muted">
-                            No records found
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
 
-        <div class="text-end">
-            <a asp-action="Index" class="btn btn-secondary">Back</a>
+        <div class="text-end mt-3">
+            <a asp-action="Index" class="btn btn-secondary btn-modern">
+                <i class="fas fa-arrow-left me-1"></i> Back
+            </a>
         </div>
     </div>
 

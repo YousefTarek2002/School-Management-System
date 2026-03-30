@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
 namespace School.Repositories
 {
@@ -76,5 +75,6 @@ namespace School.Repositories
         {
             return await _context.SaveChangesAsync(cancellationToken);
         }
+        
     }
 }

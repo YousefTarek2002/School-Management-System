@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using School.Models.VM;
-
-namespace School.Areas.Admin.Controllers
+﻿namespace School.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = SD.SUPER_ADMIN_ROLE)]
@@ -23,14 +19,31 @@ namespace School.Areas.Admin.Controllers
         }
 
         // ================= INDEX =================
-        public async Task<IActionResult> Index(CancellationToken cancellationToken)
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 8, string search = "", CancellationToken cancellationToken = default)
         {
-            var attendances = await _attRepo.GetAsync(
+            var attendancesData = await _attRepo.GetAsync(
                 includeProperties: q => q
                     .Include(a => a.Student)
                     .Include(a => a.Class),
                 tracked: false,
                 cancellationToken: cancellationToken);
+
+            // ✅ FILTER
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                attendancesData = attendancesData
+                    .Where(a => a.Student.FirstName.ToLower().Contains(search.ToLower()) ||
+                               a.Student.LastName.ToLower().Contains(search.ToLower()) ||
+                               $"{a.Class.Name} {a.Class.Section}".ToLower().Contains(search.ToLower()))
+                    .ToList();
+            }
+
+            // ✅ PAGINATION
+            var totalCount = attendancesData.Count();
+            var attendances = attendancesData
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
 
             var attendanceVMs = attendances.Select(a => new AttendanceVM
             {
@@ -38,8 +51,12 @@ namespace School.Areas.Admin.Controllers
                 StudentName = $"{a.Student.FirstName} {a.Student.LastName}",
                 ClassName = $"{a.Class.Name} - {a.Class.Section}",
                 Date = a.Date.ToDateTime(TimeOnly.MinValue),
-                StatusText = a.Status ? "حاضر" : "غائب"  // ✅ StatusText مش Status
+                StatusText = a.Status ? "حاضر" : "غائب"
             }).ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+            ViewBag.Search = search;
 
             return View(attendanceVMs);
         }
@@ -163,6 +180,8 @@ namespace School.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
+        // ================= DELETE (AJAX زي Student) =================
         [HttpPost]
         public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
         {
@@ -178,6 +197,7 @@ namespace School.Areas.Admin.Controllers
             {
                 _attRepo.Delete(attendance);
                 await _attRepo.CommitAsync(cancellationToken);
+
                 TempData["success"] = "تم حذف سجل الحضور بنجاح";
                 return Json(new { success = true });
             }

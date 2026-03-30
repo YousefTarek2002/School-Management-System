@@ -1,6 +1,4 @@
-﻿using Microsoft.Build.Tasks.Deployment.Bootstrapper;
-
-namespace School.Models
+﻿namespace School.Models
 {
     public class Subject
     {

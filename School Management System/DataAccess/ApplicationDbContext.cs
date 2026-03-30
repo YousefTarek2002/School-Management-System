@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using School.Models;
 
 namespace School.Data
 {
@@ -67,7 +65,9 @@ namespace School.Data
                 .HasForeignKey(e => e.ClassId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-           
+            modelBuilder.Entity<Teacher>()
+       .Property(t => t.Salary)
+       .HasPrecision(10, 2); 
 
             // ExamResult - كامل
             modelBuilder.Entity<ExamResult>()
@@ -131,7 +131,7 @@ namespace School.Data
             // Configurations إضافية
             modelBuilder.Entity<ExamResult>()
                 .Property(er => er.Grade)
-                .HasColumnType("decimal(5,2)");  // أحسن للدرجات
+               .HasPrecision(5, 2);  // أحسن للدرجات
 
             modelBuilder.Entity<Teacher>()
                 .Property(t => t.Email)
@@ -143,11 +143,11 @@ namespace School.Data
 
             modelBuilder.Entity<Fee>()
                 .Property(f => f.Paid)
-                .HasColumnType("decimal(10,2)");
+                .HasPrecision(10, 2);
 
             modelBuilder.Entity<Fee>()
                 .Property(f => f.Amount)
-                .HasColumnType("decimal(10,2)");
+                .HasPrecision(10, 2);
         }
     }
 }

@@ -29,7 +29,7 @@ namespace School.Areas.Admin.Controllers
                     .Select(s => new RecentItemVM
                     {
                         Name = s.FirstName + " " + s.LastName,
-                        Date = s.BD // يمكن استبدال بتاريخ إنشاء
+                        Date = s.BD 
                     })
                     .ToListAsync(),
                 RecentFees = await _context.Fees

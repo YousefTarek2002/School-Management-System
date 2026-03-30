@@ -1,6 +1,4 @@
-﻿using School.Models;
-
-namespace School.Repositories.IRepositories
+﻿namespace School.Repositories.IRepositories
 {
     public interface IUnitOfWork
     {

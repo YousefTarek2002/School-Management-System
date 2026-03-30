@@ -16,36 +16,65 @@ namespace School.Areas.Admin.Controllers
         }
 
         // ================= INDEX =================
-        public async Task<IActionResult> Index(CancellationToken cancellationToken)
+        public async Task<IActionResult> Index(
+            int page = 1,
+            int pageSize = 8,
+            string search = "",
+            CancellationToken cancellationToken = default)
         {
-            var fees = await _feeRepo.GetAsync(
-                includeProperties: q => q.Include(f => f.Student)
-                                       .Include(f => f.Student.ClassEnrollments)
-                                           .ThenInclude(ce => ce.Class),
+            var feesData = await _feeRepo.GetAsync(
+                includeProperties: q => q
+                    .Include(f => f.Student)
+                    .Include(f => f.Student.ClassEnrollments)
+                        .ThenInclude(ce => ce.Class),
                 tracked: false,
                 cancellationToken: cancellationToken);
 
-            // ✅ OrderBy في الذاكرة
-            var orderedFees = fees.OrderByDescending(f => f.DueDate).ToList();
+            // ✅ FILTER
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                search = search.ToLower();
 
-            var feeVMs = orderedFees.Select(f => new FeeVM
+                feesData = feesData
+                    .Where(f =>
+                        (f.Student.FirstName + " " + f.Student.LastName).ToLower().Contains(search) ||
+                        f.Student.Email.ToLower().Contains(search))
+                    .ToList();
+            }
+
+            // ✅ PAGINATION
+            var totalCount = feesData.Count();
+
+            var fees = feesData
+                .OrderByDescending(f => f.DueDate)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            // ✅ MAPPING
+            var feeVMs = fees.Select(f => new FeeVM
             {
                 Id = f.Id,
                 Amount = f.Amount,
                 Paid = f.Paid,
                 DueDate = f.DueDate,
                 StudentName = $"{f.Student.FirstName} {f.Student.LastName}",
-                // ✅ الحل الآمن
+
                 ClassName = f.Student.ClassEnrollments != null && f.Student.ClassEnrollments.Any(ce => ce.Status)
                     ? $"{f.Student.ClassEnrollments.First(ce => ce.Status).Class.Name} - {f.Student.ClassEnrollments.First(ce => ce.Status).Class.Section}"
                     : "غير مسجل",
+
                 PaymentStatus = f.Paid ? "مدفوع" : "غير مدفوع",
                 DaysOverdue = f.Paid ? 0 : (int)(DateTime.Today - f.DueDate).TotalDays
             }).ToList();
 
+            // ✅ VIEWBAG (زي الاتنين بالظبط)
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+            ViewBag.Search = search;
+
             return View(feeVMs);
         }
-
 
         private async Task LoadStudents(FeeVM vm, CancellationToken cancellationToken)
         {

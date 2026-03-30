@@ -5,15 +5,17 @@
         border: none;
         border-radius: 20px;
         background: linear-gradient(145deg, #ffffff, #f8f9fa);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         transition: all 0.4s ease;
         height: 100%;
         overflow: hidden;
     }
-    .book-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-    }
+
+        .book-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
     .book-avatar {
         width: 80px;
         height: 80px;
@@ -26,8 +28,9 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 8px 25px rgba(255,107,107,0.4);
+        box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
     }
+
     .book-title {
         font-size: 20px;
         font-weight: 700;
@@ -39,17 +42,20 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
+
     .book-author {
         color: #6c757d;
         font-size: 15px;
         margin-bottom: 15px;
     }
+
     .book-stats {
         display: flex;
         gap: 10px;
         flex-wrap: wrap;
         margin-bottom: 20px;
     }
+
     .book-badge {
         padding: 8px 12px;
         border-radius: 20px;
@@ -59,19 +65,27 @@
         min-width: 80px;
         text-align: center;
     }
-    .badge-total { background: linear-gradient(45deg, #17a2b8, #138496); color: white; }
-    .badge-available { 
-        background: linear-gradient(45deg, #28a745, #20c997); 
-        color: white; 
+
+    .badge-total {
+        background: linear-gradient(45deg, #17a2b8, #138496);
+        color: white;
     }
-    .badge-issued { 
-        background: linear-gradient(45deg, #ffc107, #ff8c00); 
-        color: white; 
+
+    .badge-available {
+        background: linear-gradient(45deg, #28a745, #20c997);
+        color: white;
     }
-    .badge-danger { 
-        background: linear-gradient(45deg, #dc3545, #c82333); 
-        color: white; 
+
+    .badge-issued {
+        background: linear-gradient(45deg, #ffc107, #ff8c00);
+        color: white;
     }
+
+    .badge-danger {
+        background: linear-gradient(45deg, #dc3545, #c82333);
+        color: white;
+    }
+
     .card-actions {
         padding: 20px;
         border-top: 1px solid #eee;
@@ -81,10 +95,12 @@
         justify-content: center;
         flex-wrap: wrap;
     }
+
     .btn-info {
-    background: linear-gradient(45deg, #17a2b8, #138496);
-    color: white;
-}
+        background: linear-gradient(45deg, #17a2b8, #138496);
+        color: white;
+    }
+
     .btn-action {
         flex: 1;
         min-width: 70px;
@@ -95,11 +111,29 @@
         border: none;
         transition: all 0.3s ease;
     }
-    .btn-edit { background: linear-gradient(45deg, #28a745, #20c997); color: white; }
-    .btn-issue { background: linear-gradient(45deg, #007bff, #0056b3); color: white; }
-    .btn-delete { background: linear-gradient(45deg, #dc3545, #c82333); color: white; }
-    .btn-action:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.2); color: white !important; }
+
+    .btn-edit {
+        background: linear-gradient(45deg, #28a745, #20c997);
+        color: white;
+    }
+
+    .btn-issue {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        color: white;
+    }
+
+    .btn-delete {
+        background: linear-gradient(45deg, #dc3545, #c82333);
+        color: white;
+    }
+
+    .btn-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        color: white !important;
+    }
 </style>
+<form method="post">@Html.AntiForgeryToken()</form>
 
 <div class="content container-fluid">
     <!-- HEADER -->
@@ -113,8 +147,13 @@
             </div>
             <div class="col-md-6 text-end">
                 <div class="d-flex gap-2 justify-content-end align-items-center">
-                    <input type="text" id="searchInput" class="form-control shadow-sm" 
-                           style="width: 280px;" placeholder="🔍 Search by title or author...">
+                    <form method="get" class="d-flex gap-2">
+                        <input type="text" name="search" value="@ViewBag.Search" class="form-control shadow-sm"
+                               style="width: 280px;" placeholder="🔍 Search by title or author...">
+                        <button class="btn btn-primary shadow-sm px-3">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
                     <a asp-action="Create" class="btn btn-primary shadow-sm px-4">
                         <i class="fas fa-plus me-2"></i>Add Book
                     </a>
@@ -142,11 +181,11 @@
         {
             @foreach (var book in Model)
             {
-                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-4 book-item"
-                     data-title="@(book.Title ?? "").ToLower()"
+                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-4 book-item" data-title="@(book.Title ?? "").ToLower()"
                      data-author="@(book.Author ?? "").ToLower()">
-                    
+
                     <div class="card book-card h-100">
+
                         <!-- AVATAR & TITLE -->
                         <div class="text-center pt-3">
                             <div class="book-avatar">
@@ -162,7 +201,7 @@
                                 <span class="book-badge badge-total">
                                     <i class="fas fa-copy me-1"></i>@book.TotalCopies
                                 </span>
-                                <span class="book-badge @(book.CopiesAvailable > 0 ? "badge-available" : "badge-danger")">
+                                <span class="book-badge @(book.CopiesAvailable > 0 ? " badge-available" : "badge-danger")">
                                     <i class="fas fa-check-circle me-1"></i>@book.CopiesAvailable
                                 </span>
                                 <span class="book-badge badge-issued">
@@ -171,8 +210,12 @@
                             </div>
                         </div>
 
+
                         <!-- ACTIONS -->
                         <div class="card-actions">
+                            <a asp-action="Details" asp-route-id="@book.Id" class="btn-action btn-info">
+                                <i class="fas fa-eye me-1"></i> Details
+                            </a>
                             <a asp-action="Edit" asp-route-id="@book.Id" class="btn-action btn-edit">
                                 <i class="fas fa-edit me-1"></i> Edit
                             </a>
@@ -182,54 +225,75 @@
                                     <i class="fas fa-hand-holding me-1"></i> Issue
                                 </a>
                             }
-                            <a asp-action="Details" asp-route-id="@book.Id" class="btn-action btn-info">
-    <i class="fas fa-info-circle me-1"></i> Details
-</a>
-                            <form asp-action="Delete" asp-route-id="@book.Id" method="post" 
-                                  class="d-inline" style="flex:1; min-width: 80px;" 
-                                  onsubmit="return confirmDelete('@book.Title')">
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="btn-action btn-delete w-100 h-100 p-2 border-0">
-                                    <i class="fas fa-trash me-1"></i> Delete
-                                </button>
-                            </form>
+                            <button onclick="deleteBook(@book.Id, '@book.Title')" class="btn-action btn-delete">
+                                <i class="fas fa-trash me-1"></i> Delete
+                            </button>
                         </div>
                     </div>
                 </div>
             }
         }
     </div>
+
+    <!-- PAGINATION -->
+    @if (ViewBag.TotalPages > 1)
+    {
+        <div class="d-flex justify-content-center mt-4">
+            <ul class="pagination">
+                <li class="page-item @(ViewBag.CurrentPage == 1 ? " disabled" : "")">
+                    <a class="page-link" href="?page=@(ViewBag.CurrentPage - 1)&search=@ViewBag.Search">Prev</a>
+                </li>
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li class="page-item @(i == ViewBag.CurrentPage ? " active"
+                                                  : "" )">
+                <a class="page-link" href="?page=@i&search=@ViewBag.Search">@i</a>
+            </li>
+        }
+        <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? " disabled" : "")">
+            <a class="page-link" href="?page=@(ViewBag.CurrentPage + 1)&search=@ViewBag.Search">Next</a>
+        </li>
+    </ul>
+</div>
+    }
 </div>
 
 @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // 🔍 البحث بالـ Title + Author
-        document.getElementById('searchInput').addEventListener('keyup', function() {
-            const value = this.value.toLowerCase().trim();
-            document.querySelectorAll('.book-item').forEach(item => {
-                const title = item.dataset.title;
-                const author = item.dataset.author;
-                item.style.display = (title.includes(value) || author.includes(value)) ? '' : 'none';
-            });
-        });
-
-        // Delete confirmation
-        function confirmDelete(title) {
-            return confirm(`⚠️ Delete "${title || 'Book'}"?\n\nThis action cannot be undone!`);
+        function deleteBook(id, title) {
+        Swal.fire({
+        title: `Delete "${title}"?`,
+        text: "This action cannot be undone!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#dc3545",
+        confirmButtonText: "Yes, delete",
+        cancelButtonText: "Cancel"
+        }).then((result) => {
+        if (result.isConfirmed) {
+        fetch(`/Admin/Book/Delete/${id}`, {
+        method: 'POST',
+        headers: {
+        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
         }
-
-        // Animate cards on load
-        document.addEventListener('DOMContentLoaded', function() {
-            const cards = document.querySelectorAll('.book-card');
-            cards.forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(30px)';
-                setTimeout(() => {
-                    card.style.transition = 'all 0.6s ease';
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, index * 100);
-            });
+        })
+        .then(res => res.json())
+        .then(data => {
+        if (data.success) {
+        Swal.fire({
+        icon: "success",
+        title: "Deleted!",
+        timer: 1200,
+        showConfirmButton: false
         });
+        setTimeout(() => location.reload(), 1200);
+        } else {
+        Swal.fire("Error", data.message, "error");
+        }
+        });
+        }
+        });
+        }
     </script>
 }

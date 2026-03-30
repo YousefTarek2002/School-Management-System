@@ -19,12 +19,12 @@ namespace School.Models.VM
         public DateTime Date { get; set; } = DateTime.Today;
 
         [Required]
-        public bool Status { get; set; }   
+        public bool Status { get; set; }
 
         // Display properties
         public string? StudentName { get; set; }
         public string? ClassName { get; set; }
-        public string? StatusText { get; set; }   
+        public string? StatusText { get; set; }
     }
     public class BulkAttendanceVM
     {

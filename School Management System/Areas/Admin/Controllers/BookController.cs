@@ -20,9 +20,34 @@
         }
 
 
-        public async Task<IActionResult> Index(CancellationToken cancellationToken)
+        // ================= INDEX =================
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 8, string search = "", CancellationToken ct = default)
         {
-            var books = await _bookRepo.GetAsync(tracked: false, cancellationToken: cancellationToken);
+            var booksData = await _bookRepo.GetAsync(
+                includeProperties: q => q.Include(b => b.BookIssues),
+                tracked: false,
+                cancellationToken: ct);
+
+            // ✅ FILTER
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                booksData = booksData
+                    .Where(b => b.Title.ToLower().Contains(search.ToLower()) ||
+                               b.Author.ToLower().Contains(search.ToLower()))
+                    .ToList();
+            }
+
+            // ✅ PAGINATION
+            var totalCount = booksData.Count();
+            var books = booksData
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+            ViewBag.Search = search;
+
             return View(books);
         }
 
@@ -59,17 +84,36 @@
             return RedirectToAction(nameof(Index));
         }
 
+        // ================= DELETE =================
         [HttpPost]
         public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
         {
-            var book = await _bookRepo.GetOneAsync(b => b.Id == id, tracked: true);
+            var book = await _bookRepo.GetOneAsync(b => b.Id == id, tracked: true, cancellationToken: cancellationToken);
+            if (book == null)
+                return Json(new { success = false, message = "الكتاب غير موجود" });
 
-            if (book != null)
+            try
             {
+                // Delete BookIssues first (زي SubjectTeachers)
+                var bookIssues = await _bookIssueRepo.GetAsync(
+                    bi => bi.BookId == id,
+                    tracked: true,
+                    cancellationToken: cancellationToken);
+
+                foreach (var bi in bookIssues)
+                    _bookIssueRepo.Delete(bi);
+                await _bookIssueRepo.CommitAsync(cancellationToken);
+
                 _bookRepo.Delete(book);
                 await _bookRepo.CommitAsync(cancellationToken);
+
+                TempData["success"] = "تم حذف الكتاب بنجاح";
+                return Json(new { success = true });
             }
-            return RedirectToAction(nameof(Index));
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "خطأ في الحذف: " + ex.Message });
+            }
         }
 
         [HttpGet]

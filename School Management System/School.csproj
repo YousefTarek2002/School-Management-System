@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>SchoolSystem</RootNamespace>
+    <UserSecretsId>bab45ecc-c721-4a28-989c-7954cdc40d0f</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

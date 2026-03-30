@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-namespace School.Areas.Admin.Controllers
+﻿namespace School.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = SD.SUPER_ADMIN_ROLE)]
@@ -20,24 +19,49 @@ namespace School.Areas.Admin.Controllers
         }
 
         // ================= INDEX ==================
-        public async Task<IActionResult> Index(CancellationToken ct)
+        public async Task<IActionResult> Index( int page = 1, int pageSize = 8, string search = "", CancellationToken ct = default)
         {
-            var subjects = await _subjectRepo.GetAsync(
-                includeProperties: q => q.Include(s => s.SubjectTeachers)
-                                       .ThenInclude(st => st.Teacher),
-                tracked: false,
-                cancellationToken: ct);
+            var subjectsData = await _subjectRepo.GetAsync(
+            includeProperties: q => q.Include(s => s.SubjectTeachers)
+            .ThenInclude(st => st.Teacher),
+            tracked: false,
+            cancellationToken: ct);
+
+
+            // ✅ FILTER
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                subjectsData = subjectsData
+                    .Where(s => s.Name.ToLower().Contains(search.ToLower()))
+                    .ToList();
+            }
+
+            // ✅ PAGINATION
+            var totalCount = subjectsData.Count();
+
+            var subjects = subjectsData
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
 
             var subjectVMs = subjects.Select(s => new SubjectVM
             {
                 Id = s.Id,
                 Name = s.Name ?? "",
-                TeacherNames = s.SubjectTeachers?.Select(st => st.Teacher.Name ?? "")
-                                   .ToList() ?? new List<string>()
+                TeacherNames = s.SubjectTeachers?
+                    .Select(st => st.Teacher.Name ?? "")
+                    .ToList() ?? new List<string>()
             }).ToList();
 
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+            ViewBag.Search = search;
+
             return View(subjectVMs);
+
+
         }
+
 
         // ================= ADD ==================
         [HttpGet]

@@ -1,4 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using School.Models;
+using School.Models.VM;
 
 namespace School.Areas.Admin.Controllers
 {
@@ -9,6 +13,7 @@ namespace School.Areas.Admin.Controllers
         private readonly IRepository<Teacher> _teacherRepo;
         private readonly IRepository<Subject> _subjectRepo;
         private readonly IRepository<SubjectTeacher> _subjectTeacherRepo;
+
 
         public TeacherController(
             IRepository<Teacher> teacherRepo,
@@ -21,13 +26,29 @@ namespace School.Areas.Admin.Controllers
         }
 
         // ================= INDEX =================
-        public async Task<IActionResult> Index(CancellationToken cancellationToken)
+        public async Task<IActionResult> Index(int page = 1,int pageSize = 8,string search = "",CancellationToken cancellationToken = default)
         {
-            var teachers = await _teacherRepo.GetAsync(
-                includeProperties: q => q.Include(t => t.SubjectTeachers)  // ✅ الـ type الجديد
-                                       .ThenInclude(st => st.Subject),
+            var teachersData = await _teacherRepo.GetAsync(
+                includeProperties: q => q.Include(t => t.SubjectTeachers)
+                                         .ThenInclude(st => st.Subject),
                 tracked: false,
                 cancellationToken: cancellationToken);
+
+            // ✅ FILTER
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                teachersData = teachersData
+                    .Where(t => t.Name.ToLower().Contains(search.ToLower()))
+                    .ToList();
+            }
+
+            // ✅ PAGINATION
+            var totalCount = teachersData.Count();
+
+            var teachers = teachersData
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
 
             var teacherVMs = teachers.Select(t => new TeacherVM
             {
@@ -35,9 +56,14 @@ namespace School.Areas.Admin.Controllers
                 Name = t.Name,
                 Salary = t.Salary,
                 Email = t.Email,
-                SubjectName = t.SubjectTeachers?.Select(st => st.Subject.Name)
+                SubjectName = t.SubjectTeachers?
+                    .Select(st => st.Subject.Name)
                     .FirstOrDefault() ?? "غير محدد"
             }).ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+            ViewBag.Search = search;
 
             return View(teacherVMs);
         }
@@ -66,7 +92,6 @@ namespace School.Areas.Admin.Controllers
                 return View(model);
             }
 
-            // ✅ Check email exists
             var emailExists = await _teacherRepo.GetOneAsync(t => t.Email == model.Email, cancellationToken: cancellationToken);
             if (emailExists != null)
             {
@@ -80,14 +105,13 @@ namespace School.Areas.Admin.Controllers
                 Name = model.Name,
                 Salary = model.Salary,
                 Email = model.Email,
-                Password = model.Password,  // ✅ هتحتاج hash في service layer
-                ConfirmPassword = null  // مش محتاج في الـ DB
+                Password = model.Password,
+                ConfirmPassword = null
             };
 
             await _teacherRepo.CreateAsync(teacher, cancellationToken);
             await _teacherRepo.CommitAsync(cancellationToken);
 
-            // Add SubjectTeacher if subject selected
             if (model.SubjectId > 0)
             {
                 await _subjectTeacherRepo.CreateAsync(new SubjectTeacher
@@ -124,7 +148,6 @@ namespace School.Areas.Admin.Controllers
             };
 
             ViewBag.Subjects = await _subjectRepo.GetAsync(tracked: false, cancellationToken: cancellationToken);
-
             return View(model);
         }
 
@@ -146,7 +169,6 @@ namespace School.Areas.Admin.Controllers
             if (teacher == null)
                 return NotFound();
 
-            // ✅ Email check
             var emailExists = await _teacherRepo.GetOneAsync(
                 t => t.Email == model.Email && t.Id != model.Id,
                 cancellationToken: cancellationToken);
@@ -158,7 +180,6 @@ namespace School.Areas.Admin.Controllers
                 return View(model);
             }
 
-            // ✅ Update
             teacher.Name = model.Name;
             teacher.Salary = model.Salary;
             teacher.Email = model.Email;
@@ -166,7 +187,6 @@ namespace School.Areas.Admin.Controllers
             _teacherRepo.Update(teacher);
             await _teacherRepo.CommitAsync(cancellationToken);
 
-            // ✅ Update Subject
             var oldRelations = await _subjectTeacherRepo.GetAsync(
                 st => st.TeacherId == model.Id,
                 tracked: true,
@@ -191,6 +211,7 @@ namespace School.Areas.Admin.Controllers
             TempData["success"] = "تم التعديل بنجاح";
             return RedirectToAction(nameof(Index));
         }
+
         [HttpPost]
         public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
         {
@@ -200,16 +221,14 @@ namespace School.Areas.Admin.Controllers
 
             try
             {
-                // Delete SubjectTeachers first (Cascade هيشتغل)
                 var subjectTeachers = await _subjectTeacherRepo.GetAsync(
                     st => st.TeacherId == id,
                     tracked: true,
                     cancellationToken: cancellationToken);
 
                 foreach (var st in subjectTeachers)
-                {
                     _subjectTeacherRepo.Delete(st);
-                }
+
                 await _subjectTeacherRepo.CommitAsync(cancellationToken);
 
                 _teacherRepo.Delete(teacher);
@@ -223,6 +242,7 @@ namespace School.Areas.Admin.Controllers
                 return Json(new { success = false, message = "خطأ في الحذف: " + ex.Message });
             }
         }
+
         [HttpGet]
         public async Task<IActionResult> Details(int id, CancellationToken cancellationToken)
         {
@@ -251,4 +271,6 @@ namespace School.Areas.Admin.Controllers
             return View(model);
         }
     }
+
+
 }

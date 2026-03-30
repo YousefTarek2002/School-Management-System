@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Query;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
 namespace School.Repositories.IRepositories
 {
@@ -19,5 +18,6 @@ namespace School.Repositories.IRepositories
         void Update(T entity);
         void Delete(T entity);
         Task<int> CommitAsync(CancellationToken cancellationToken = default);
+        
     }
 }

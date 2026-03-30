@@ -1,0 +1,48 @@
+﻿@model CreateUserVM
+@{
+    ViewData["Title"] = "Add User"; 
+}
+
+<div class="container mt-3">
+    <h4>Add New User</h4>
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="mb-3">
+            <label>Name</label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label>Email</label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label>Password</label>
+            <input asp-for="Password" type="password" class="form-control" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label>Role</label>
+            <select asp-for="Role" class="form-control">
+                <option value="">Select Role</option>
+                @foreach (var role in ViewBag.Roles)
+                {
+                    <option value="@role">@role</option>
+                }
+            </select>
+            <span asp-validation-for="Role" class="text-danger"></span>
+        </div>
+
+        <button class="btn btn-primary"><i class="fas fa-plus me-1"></i> Create</button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

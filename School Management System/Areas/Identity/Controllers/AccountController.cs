@@ -1,5 +1,5 @@
-﻿
-using Microsoft.AspNetCore.Identity.UI.Services;
+﻿using Microsoft.AspNetCore.Identity.UI.Services;
+
 namespace School.Areas.Identity.Controllers
 {
     [Area("Identity")]
@@ -10,7 +10,11 @@ namespace School.Areas.Identity.Controllers
         private readonly IEmailSender _emailSender;
         private readonly IRepository<ApplicationUserOTP> _applicationUserOTPRepository;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailSender emailSender, IRepository<ApplicationUserOTP> applicationUserOTPRepository)
+        public AccountController(
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IEmailSender emailSender,
+            IRepository<ApplicationUserOTP> applicationUserOTPRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -18,272 +22,246 @@ namespace School.Areas.Identity.Controllers
             _applicationUserOTPRepository = applicationUserOTPRepository;
         }
 
+        // ===================== LOGOUT =====================
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             TempData["success-notification"] = "Logout Successfully";
-
             return RedirectToAction("Login");
         }
 
-        public IActionResult Register()
-        {
-            return View();
-        }
+        // ===================== REGISTER =====================
+        public IActionResult Register() => View();
 
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterVM registerVM)
+        public async Task<IActionResult> Register(RegisterVM model)
         {
             if (!ModelState.IsValid)
-                return View(registerVM);
+                return View(model);
 
-            var user = new ApplicationUser()
+            var user = new ApplicationUser
             {
-                FirstName = registerVM.Name, // أو قسمها لو عندك First + Last
-                Email = registerVM.Email,
-                UserName = registerVM.UserName,
+                FirstName = model.Name?.Split(' ').FirstOrDefault() ?? "",
+                LastName = model.Name?.Split(' ').Skip(1).Any() == true ? string.Join(" ", model.Name.Split(' ').Skip(1)) : "",
+                Email = model.Email,
+                UserName = model.UserName
             };
-            var result = await _userManager.CreateAsync(user, registerVM.Password);
 
+            var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
             {
-                foreach (var item in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, item.Code);
-                }
-
-                return View(registerVM);
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError(string.Empty, error.Description);
+                return View(model);
             }
 
-            // Send Mail Confirmation
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var link = Url.Action(nameof(ConfirmEmail), "Account",
+                new { area = "Identity", id = user.Id, token }, Request.Scheme);
 
-            var link = Url.Action(nameof(ConfirmEmail), "Account", new { area = "Identity", token = token, user.Id }, Request.Scheme);
+            await _emailSender.SendEmailAsync(user.Email, "Confirm Your Email",
+                $"<h1>Please confirm your email by clicking <a href='{link}'>here</a></h1>");
 
-            await _emailSender.SendEmailAsync(registerVM.Email
-                , "School Managment System - Confirm Your Email!"
-                , $"<h1>Please Confirm Your Email By Clicking <a href='{link}'>Here</a></h1>");
-
-            // Add User To Role
-            await _userManager.AddToRoleAsync(user!, SD.ADMIN_ROLE);
-
-            TempData["success-notification"] = "Send Email Successfully";
-
+            await _userManager.AddToRoleAsync(user, SD.ADMIN_ROLE);
+            TempData["success-notification"] = "Registration successful, check your email!";
             return RedirectToAction("Login");
         }
 
+        // ===================== CONFIRM EMAIL =====================
         public async Task<IActionResult> ConfirmEmail(string id, string token)
         {
             var user = await _userManager.FindByIdAsync(id);
-            if (user is null)
+            if (user == null)
             {
-                TempData["error-notification"] = "User Not Found";
-
-                return RedirectToAction("Index", "Home", new { area = "Customer" });
+                TempData["error-notification"] = "User not found";
+                return RedirectToAction("Login");
             }
 
             var result = await _userManager.ConfirmEmailAsync(user, token);
-
-            if(!result.Succeeded)
-                TempData["error-notification"] = "Invalid Or Expired Token";
+            if (!result.Succeeded)
+                TempData["error-notification"] = "Invalid or expired token";
             else
-                TempData["success-notification"] = "Confirm Your Email Successfully";
+                TempData["success-notification"] = "Email confirmed successfully";
 
-            return RedirectToAction("Index", "Home", new { area = "Customer" });
+            return RedirectToAction("Login");
         }
 
-        public IActionResult Login()
-        {
-            return View();
-        }
+        // ===================== LOGIN =====================
+        public IActionResult Login() => View();
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginVM loginVM)
+        public async Task<IActionResult> Login(LoginVM model)
         {
             if (!ModelState.IsValid)
-                return View(loginVM);
+                return View(model);
 
-            var user = await _userManager.FindByNameAsync(loginVM.UserNameOREmail) ?? await _userManager.FindByEmailAsync(loginVM.UserNameOREmail);
+            var user = await _userManager.FindByNameAsync(model.UserNameOREmail)
+                       ?? await _userManager.FindByEmailAsync(model.UserNameOREmail);
 
-            if (user is null)
+            if (user == null)
             {
-                ModelState.AddModelError(string.Empty, "Invalid User Name / Email OR Password");
-                return View(loginVM);
+                ModelState.AddModelError(string.Empty, "Invalid username/email or password");
+                return View(model);
             }
 
-            var result = await _signInManager.PasswordSignInAsync(user, loginVM.Password, loginVM.RememberMe, lockoutOnFailure: true);
+            var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, lockoutOnFailure: true);
 
             if (!result.Succeeded)
             {
                 if (result.IsLockedOut)
-                    ModelState.AddModelError(string.Empty, "Too many attemps, try again after 5 min");
-
-                else if(result.IsNotAllowed)
-                    ModelState.AddModelError(string.Empty, "Please Confirm Your Email First!!");
+                    ModelState.AddModelError(string.Empty, "Too many attempts, try again after 5 minutes");
+                else if (result.IsNotAllowed)
+                    ModelState.AddModelError(string.Empty, "Please confirm your email first");
                 else
-                    ModelState.AddModelError(string.Empty, "Invalid User Name / Email OR Password");
+                    ModelState.AddModelError(string.Empty, "Invalid username/email or password");
 
-                return View(loginVM);
+                return View(model);
             }
 
-            TempData["success-notification"] = "Login Successfully";
-
+            TempData["success-notification"] = "Login successful";
             return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
         }
 
-        public IActionResult ResendEmailConfirmation()
-        {
-            return View();
-        }
+        // ===================== RESEND EMAIL CONFIRMATION =====================
+        public IActionResult ResendEmailConfirmation() => View();
 
         [HttpPost]
-        public async Task<IActionResult> ResendEmailConfirmation(ResendEmailConfirmationVM resendEmailConfirmationVM)
+        public async Task<IActionResult> ResendEmailConfirmation(ResendEmailConfirmationVM model)
         {
             if (!ModelState.IsValid)
-                return View(resendEmailConfirmationVM);
+                return View(model);
 
-            var user = await _userManager.FindByNameAsync(resendEmailConfirmationVM.UserNameOREmail) ?? await _userManager.FindByEmailAsync(resendEmailConfirmationVM.UserNameOREmail);
+            var user = await _userManager.FindByNameAsync(model.UserNameOREmail)
+                       ?? await _userManager.FindByEmailAsync(model.UserNameOREmail);
 
-            if (user is null)
+            if (user == null)
             {
-                ModelState.AddModelError(string.Empty, "Invalid User Name / Email");
-                return View(resendEmailConfirmationVM);
+                ModelState.AddModelError(string.Empty, "Invalid username/email");
+                return View(model);
             }
 
-            if(user.EmailConfirmed)
+            if (user.EmailConfirmed)
             {
-                ModelState.AddModelError(string.Empty, "Already Confirmed!!!");
-                return View(resendEmailConfirmationVM);
+                ModelState.AddModelError(string.Empty, "Email already confirmed");
+                return View(model);
             }
 
-            // Send Mail Confirmation
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var link = Url.Action(nameof(ConfirmEmail), "Account",
+                new { area = "Identity", id = user.Id, token }, Request.Scheme);
 
-            var link = Url.Action(nameof(ConfirmEmail), "Account", new { area = "Identity", token = token, user.Id }, Request.Scheme);
+            await _emailSender.SendEmailAsync(user.Email, "Resend Email Confirmation",
+                $"<h1>Please confirm your email by clicking <a href='{link}'>here</a></h1>");
 
-            await _emailSender.SendEmailAsync(user.Email!
-                , "Ecommerce 518 - Resend Confirm Your Email!"
-                , $"<h1>Please Confirm Your Email By Clicking <a href='{link}'>Here</a></h1>");
-
-            TempData["success-notification"] = "Send Email Successfully";
+            TempData["success-notification"] = "Email sent successfully";
             return RedirectToAction("Login");
         }
 
-        public IActionResult ForgetPassword()
-        {
-            return View();
-        }
+        // ===================== FORGOT PASSWORD =====================
+        public IActionResult ForgetPassword() => View();
 
         [HttpPost]
-        public async Task<IActionResult> ForgetPassword(ForgetPasswordVM forgetPasswordVM, CancellationToken cancellationToken)
+        public async Task<IActionResult> ForgetPassword(ForgetPasswordVM model, CancellationToken cancellationToken)
         {
             if (!ModelState.IsValid)
-                return View(forgetPasswordVM);
+                return View(model);
 
-            var user = await _userManager.FindByNameAsync(forgetPasswordVM.UserNameOREmail) ?? await _userManager.FindByEmailAsync(forgetPasswordVM.UserNameOREmail);
+            var user = await _userManager.FindByNameAsync(model.UserNameOREmail)
+                       ?? await _userManager.FindByEmailAsync(model.UserNameOREmail);
 
-            if (user is null)
+            if (user == null)
             {
-                ModelState.AddModelError(string.Empty, "Invalid User Name / Email");
-                return View(forgetPasswordVM);
+                ModelState.AddModelError(string.Empty, "Invalid username/email");
+                return View(model);
             }
 
             var otp = new Random().Next(1000, 9999).ToString();
 
             var userOTPs = await _applicationUserOTPRepository.GetAsync(e => e.ApplicationUserId == user.Id);
+            var totalCount = userOTPs.Count(e => (DateTime.UtcNow - e.CreateAt).TotalHours < 24);
 
-            var totalCount = userOTPs.Count(e=>(DateTime.UtcNow - e.CreateAt).TotalHours < 24);
-
-            if(totalCount > 5)
+            if (totalCount > 5)
             {
-                ModelState.AddModelError(string.Empty, "Pleas Try Again Later. Too Many Attemps");
-                return View(forgetPasswordVM);
-            }
-            else
-            {
-                await _applicationUserOTPRepository.CreateAsync(new()
-                {
-                    ApplicationUserId = user.Id,
-                    CreateAt = DateTime.UtcNow,
-                    IsValid = true,
-                    Id = Guid.NewGuid().ToString(),
-                    OTP = otp,
-                    ValidTo = DateTime.UtcNow.AddMinutes(30)
-                }, cancellationToken: cancellationToken);
-                await _applicationUserOTPRepository.CommitAsync(cancellationToken);
-
-                await _emailSender.SendEmailAsync(user.Email!
-                    , "Ecommerce 518 - Forget Password!"
-                    , $"<h1>Use this OTP: {otp} To Validate Your Account. Don't share it.</h1>");
-
-                TempData["success-notification"] = "Send OTP Your Email";
+                ModelState.AddModelError(string.Empty, "Too many attempts, please try later");
+                return View(model);
             }
 
+            await _applicationUserOTPRepository.CreateAsync(new()
+            {
+                Id = Guid.NewGuid().ToString(),
+                ApplicationUserId = user.Id,
+                OTP = otp,
+                IsValid = true,
+                CreateAt = DateTime.UtcNow,
+                ValidTo = DateTime.UtcNow.AddMinutes(30)
+            }, cancellationToken);
+
+            await _applicationUserOTPRepository.CommitAsync(cancellationToken);
+
+            await _emailSender.SendEmailAsync(user.Email, "Forgot Password OTP",
+                $"<h1>Use this OTP: {otp} to validate your account. Do not share it.</h1>");
+
+            TempData["success-notification"] = "OTP sent to your email";
             TempData["From-ForgetPassword"] = Guid.NewGuid().ToString();
             return RedirectToAction("ValidateOTP", new { userId = user.Id });
         }
 
+        // ===================== VALIDATE OTP =====================
         public IActionResult ValidateOTP(string userId)
         {
             if (TempData["From-ForgetPassword"] is null)
                 return NotFound();
 
-            return View(new ValidateOTP()
-            {
-                UserId = userId
-            });
+            return View(new ValidateOTP { UserId = userId });
         }
 
         [HttpPost]
-        public async Task<IActionResult> ValidateOTP(ValidateOTP validateOTP)
+        public async Task<IActionResult> ValidateOTP(ValidateOTP model)
         {
             if (!ModelState.IsValid)
-                return View(validateOTP);
+                return View(model);
 
+            var validOTP = (await _applicationUserOTPRepository.GetAsync(
+                e => e.ApplicationUserId == model.UserId && e.IsValid && e.ValidTo > DateTime.UtcNow))
+                .OrderByDescending(e => e.CreateAt)
+                .FirstOrDefault();
 
-            var validOTP = await _applicationUserOTPRepository.GetOneAsync(e => e.ApplicationUserId == validateOTP.UserId && e.IsValid && e.ValidTo > DateTime.UtcNow);
-
-            if (validOTP is null)
+            if (validOTP == null || validOTP.OTP != model.OTP)
             {
                 TempData["error-notification"] = "Invalid OTP";
-                return RedirectToAction(nameof(ValidateOTP), new { userId = validateOTP.UserId });
+                return RedirectToAction(nameof(ValidateOTP), new { userId = model.UserId });
             }
 
             TempData["From-ValidateOTP"] = Guid.NewGuid().ToString();
-
-            return RedirectToAction("NewPassword", new { userId = validateOTP.UserId });
+            return RedirectToAction("NewPassword", new { userId = model.UserId });
         }
 
+        // ===================== NEW PASSWORD =====================
         public IActionResult NewPassword(string userId)
         {
             if (TempData["From-ValidateOTP"] is null)
                 return NotFound();
 
-            return View(new NewPasswordVM()
-            {
-                UserId = userId
-            });
+            return View(new NewPasswordVM { UserId = userId });
         }
 
         [HttpPost]
-        public async Task<IActionResult> NewPassword(NewPasswordVM newPasswordVM)
+        public async Task<IActionResult> NewPassword(NewPasswordVM model)
         {
             if (!ModelState.IsValid)
-                return View(newPasswordVM);
+                return View(model);
 
-            var user = await _userManager.FindByIdAsync(newPasswordVM.UserId);
-
-            if (user is null)
+            var user = await _userManager.FindByIdAsync(model.UserId);
+            if (user == null)
             {
-                TempData["error-notification"] = "User Not Found";
-                return RedirectToAction(nameof(NewPassword), new { userId = newPasswordVM.UserId });
+                TempData["error-notification"] = "User not found";
+                return RedirectToAction(nameof(NewPassword), new { userId = model.UserId });
             }
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            await _userManager.ResetPasswordAsync(user, token, newPasswordVM.Password);
+            await _userManager.ResetPasswordAsync(user, token, model.Password);
 
-            TempData["success-notification"] = "Change Password Successfully";
-
+            TempData["success-notification"] = "Password changed successfully";
             return RedirectToAction("Login");
         }
     }

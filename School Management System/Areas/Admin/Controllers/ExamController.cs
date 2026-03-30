@@ -24,17 +24,34 @@ namespace School.Areas.Admin.Controllers
             _env = env;
         }
 
-        // ================= INDEX =================
-        public async Task<IActionResult> Index(CancellationToken cancellationToken)
-        {
-            var exams = await _examRepo.GetAsync(
-                includeProperties: q => q
-                    .Include(e => e.Subject)
-                    .Include(e => e.Class)
-                    .Include(e => e.ExamResults)
-                    .ThenInclude(er => er.Student),
-                tracked: false,
-                cancellationToken: cancellationToken);
+       // ================= INDEX =================
+public async Task<IActionResult> Index(int page = 1, int pageSize = 8, string search = "", CancellationToken cancellationToken = default)
+{
+    var examsData = await _examRepo.GetAsync(
+        includeProperties: q => q
+            .Include(e => e.Subject)
+            .Include(e => e.Class)
+            .Include(e => e.ExamResults)
+            .ThenInclude(er => er.Student),
+        tracked: false,
+        cancellationToken: cancellationToken);
+
+    // ✅ FILTER
+    if (!string.IsNullOrWhiteSpace(search))
+    {
+        examsData = examsData
+            .Where(e => e.ExamName.ToLower().Contains(search.ToLower()) ||
+                        e.Subject.Name.ToLower().Contains(search.ToLower()) ||
+                        $"{e.Class.Name} {e.Class.Section}".ToLower().Contains(search.ToLower()))
+            .ToList();
+    }
+
+    // ✅ PAGINATION
+    var totalCount = examsData.Count();
+    var exams = examsData
+        .Skip((page - 1) * pageSize)
+        .Take(pageSize)
+        .ToList();
 
             var examVMs = exams.Select(e => new ExamVM
             {
@@ -48,9 +65,12 @@ namespace School.Areas.Admin.Controllers
                 ExistingTimeTablePath = e.TimeTablePath
             }).ToList();
 
-            return View(examVMs);
-        }
+            ViewBag.CurrentPage = page;
+    ViewBag.TotalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+    ViewBag.Search = search;
 
+    return View(examVMs);
+}
         // ================= CREATE GET =================
         public async Task<IActionResult> Create(CancellationToken cancellationToken)
         {
@@ -296,7 +316,7 @@ namespace School.Areas.Admin.Controllers
                     StudentName = er.Student.FirstName + " " + er.Student.LastName,
                     Email = er.Student.Email ?? "",
                     Grade = er.Grade,
-                
+
                 }).OrderBy(s => s.StudentName).ToList()
             };
 

@@ -1,0 +1,47 @@
+﻿@model EditUserVM
+@{
+    ViewData["Title"] = "Edit User"; 
+}
+
+<div class="container mt-3">
+    <h4>Edit User</h4>
+    <form asp-action="Edit" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label>Name</label>
+            <input asp-for="Name" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label>Email</label>
+            <input asp-for="Email" class="form-control" disabled />
+        </div>
+
+        <div class="mb-3">
+            <label>Role</label>
+            <select asp-for="Role" class="form-control">
+                <option value="">Select Role</option>
+                @foreach (var role in ViewBag.Roles)
+                {
+                    <option value="@role" selected="@(Model.Role == role ? "selected" : "")">@role</option>
+                }
+            </select>
+            <span asp-validation-for="Role" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3 form-check">
+            <input asp-for="IsActive" class="form-check-input" />
+            <label asp-for="IsActive" class="form-check-label">Active</label>
+        </div>
+
+        <button class="btn btn-success"><i class="fas fa-save me-1"></i> Save Changes</button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

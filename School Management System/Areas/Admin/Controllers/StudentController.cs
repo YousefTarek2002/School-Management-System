@@ -19,36 +19,55 @@ namespace School.Areas.Admin.Controllers
             _enrollmentRepo = enrollmentRepo;
         }
 
-        // ================= INDEX =================
-        public async Task<IActionResult> Index(CancellationToken cancellationToken)
-        {
-            var students = await _studentRepo.GetAsync(
-                includeProperties: source => source
-                    .Include(s => s.ClassEnrollments)
-                        .ThenInclude(ce => ce.Class)
-                    .Include(s => s.Attendances)
-                    .Include(s => s.ExamResults)
-                        .ThenInclude(er => er.Exam),
-                tracked: false,
-                cancellationToken: cancellationToken);
+      // ================= INDEX =================
+public async Task<IActionResult> Index(int page = 1, int pageSize = 8, string search = "", CancellationToken cancellationToken = default)
+{
+    var studentsData = await _studentRepo.GetAsync(
+        includeProperties: source => source
+            .Include(s => s.ClassEnrollments)
+                .ThenInclude(ce => ce.Class)
+            .Include(s => s.Attendances)
+            .Include(s => s.ExamResults)
+                .ThenInclude(er => er.Exam),
+        tracked: false,
+        cancellationToken: cancellationToken);
 
-            var studentVMs = students.Select(s => new StudentVM
-            {
-                Id = s.Id,
-                FirstName = s.FirstName ?? "",
-                LastName = s.LastName ?? "",
-                FullName = $"{s.FirstName ?? ""} {s.LastName ?? ""}".Trim(),
-                Email = s.Email ?? "",
-                Phone = s.Phone ?? "",
-                ClassName = s.ClassEnrollments != null && s.ClassEnrollments.Any(ce => ce.Status)
-                    ? $"{s.ClassEnrollments.First(ce => ce.Status).Class.Name} - {s.ClassEnrollments.First(ce => ce.Status).Class.Section}"
-                    : "غير مسجل"
-            }).ToList();
+    // ✅ FILTER
+    if (!string.IsNullOrWhiteSpace(search))
+    {
+        studentsData = studentsData
+            .Where(s => (s.FirstName + " " + s.LastName).ToLower().Contains(search.ToLower()) ||
+                       s.Email.ToLower().Contains(search.ToLower()))
+            .ToList();
+    }
 
-            return View(studentVMs);
-        }
+    // ✅ PAGINATION
+    var totalCount = studentsData.Count();
 
+    var students = studentsData
+        .Skip((page - 1) * pageSize)
+        .Take(pageSize)
+        .ToList();
 
+    var studentVMs = students.Select(s => new StudentVM
+    {
+        Id = s.Id,
+        FirstName = s.FirstName ?? "",
+        LastName = s.LastName ?? "",
+        FullName = $"{s.FirstName ?? ""} {s.LastName ?? ""}".Trim(),
+        Email = s.Email ?? "",
+        Phone = s.Phone ?? "",
+        ClassName = s.ClassEnrollments != null && s.ClassEnrollments.Any(ce => ce.Status)
+            ? $"{s.ClassEnrollments.First(ce => ce.Status).Class.Name} - {s.ClassEnrollments.First(ce => ce.Status).Class.Section}"
+            : "غير مسجل"
+    }).ToList();
+
+    ViewBag.CurrentPage = page;
+    ViewBag.TotalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+    ViewBag.Search = search;
+
+    return View(studentVMs);
+}
         private async Task LoadClasses(CancellationToken ct)
         {
             ViewBag.Classes = (await _classRepo.GetAsync(tracked: false, cancellationToken: ct)).ToList();

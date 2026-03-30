@@ -1,7 +1,4 @@
-﻿using School.Models;
-using System.ComponentModel.DataAnnotations;
-
-namespace School.Models
+﻿namespace School.Models
 {
     public class ApplicationUserOTP
     {

@@ -2,94 +2,100 @@
 @model IEnumerable<FeeVM>
 
 <style>
-    body {
-        background: #f8f9fa;
-    }
-
-    .fee-card {
-        border: 1px solid #e0e0e0;
-        border-radius: 15px;
-        background: #fff;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        transition: transform 0.3s, box-shadow 0.3s;
+    .student-card {
+        border: none;
+        border-radius: 20px;
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: all 0.4s ease;
         height: 100%;
         overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
     }
 
-    .fee-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    .student-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
     }
 
-    .fee-avatar {
-        width: 60px;
-        height: 60px;
+    .student-avatar {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #ff9f43, #ff6b6b);
+        color: white;
+        font-size: 30px;
+        font-weight: 700;
         border-radius: 50%;
+        margin: 25px auto 20px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 24px;
+        box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+    }
+
+    .student-name {
+        font-size: 22px;
         font-weight: 700;
-        color: #fff;
-        margin: 20px auto 10px;
-    }
-
-    .fee-avatar.paid { background-color: #28a745; }
-    .fee-avatar.pending { background-color: #17a2b8; }
-    .fee-avatar.overdue { background-color: #dc3545; }
-
-    .fee-name {
-        font-size: 18px;
-        font-weight: 600;
         color: #2c3e50;
-        text-align: center;
-        margin-bottom: 5px;
+        margin-bottom: 10px;
     }
 
-    .fee-name a { color: inherit; text-decoration: none; }
-    .fee-name a:hover { color: #007bff; }
+    .student-name a {
+        color: inherit;
+        text-decoration: none;
+    }
 
-    .fee-meta {
+    .student-name a:hover {
+        color: #ff6b6b;
+    }
+
+    .student-meta {
         color: #6c757d;
-        font-size: 13px;
-        text-align: center;
-        margin-bottom: 15px;
-    }
-
-    .amount-badge {
-        font-size: 16px;
-        font-weight: 600;
-        padding: 10px 15px;
-        border-radius: 20px;
-        display: block;
-        margin: 0 auto 10px;
-        text-align: center;
-        color: #fff;
-    }
-
-    .paid-badge { background-color: #28a745; }
-    .pending-badge { background-color: #17a2b8; }
-    .overdue-badge { background-color: #dc3545; }
-
-    .status-badge {
-        padding: 4px 10px;
-        border-radius: 15px;
-        font-size: 11px;
-        font-weight: 500;
-        display: inline-block;
+        font-size: 14px;
         margin-bottom: 8px;
-        text-align: center;
-        width: fit-content;
-        margin-left: auto;
-        margin-right: auto;
+    }
+
+    .student-badges {
+        margin-bottom: 25px;
+    }
+
+    .student-badge {
+        padding: 8px 16px;
+        margin: 5px;
+        border-radius: 25px;
+        font-size: 13px;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .badge-class {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        color: white;
+    }
+
+    .badge-paid {
+        background: linear-gradient(45deg, #28a745, #20c997);
+        color: white;
+    }
+
+    .badge-unpaid {
+        background: linear-gradient(45deg, #dc3545, #c82333);
+        color: white;
+    }
+
+    .badge-amount {
+        background: linear-gradient(45deg, #ffc107, #e0a800);
+        color: #212529;
+    }
+
+    .badge-date {
+        background: linear-gradient(45deg, #6f42c1, #6610f2);
+        color: white;
     }
 
     .card-actions {
-        padding: 10px;
+        padding: 20px;
         border-top: 1px solid #eee;
+        background: #fafbfc;
         display: flex;
         gap: 8px;
         justify-content: center;
@@ -97,127 +103,216 @@
 
     .btn-action {
         flex: 1;
-        padding: 6px 12px;
-        border-radius: 10px;
-        font-weight: 500;
-        font-size: 13px;
+        padding: 10px 15px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 14px;
         border: none;
-        cursor: pointer;
-        transition: all 0.3s ease;
+        transition: 0.3s;
     }
 
-    .btn-edit { background-color: #28a745; color: white; }
-    .btn-delete { background-color: #dc3545; color: white; }
-    .btn-action:hover { opacity: 0.85; }
+    .btn-details { background: linear-gradient(45deg, #17a2b8, #138496); color: white; }
+    .btn-edit { background: linear-gradient(45deg, #28a745, #20c997); color: white; }
+    .btn-delete { background: linear-gradient(45deg, #dc3545, #c82333); color: white; }
 
-    /* Responsive grid spacing */
-    .fee-item { margin-bottom: 20px; }
+    .btn-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        color: white !important;
+    }
 </style>
 
+<!-- AntiForgeryToken -->
+
+<form method="post">
+    @Html.AntiForgeryToken()
+</form>
+
 <div class="content container-fluid">
-    <!-- HEADER -->
-    <div class="page-header d-flex justify-content-between align-items-center">
-        <h4>
+
+<!-- HEADER (زي الطلاب بالظبط) -->
+
+<div class="page-header">
+    <div class="row align-items-center"> 
+    <div class="col-md-6">
+        <h4 class="mb-0">
             <i class="fas fa-money-bill-wave me-2 text-primary"></i>
             Fees <span class="badge bg-primary ms-2">@Model.Count()</span>
         </h4>
-        <div class="d-flex gap-2">
-            <input type="text" id="searchInput" class="form-control shadow-sm" style="width: 250px;" placeholder="🔍 Search by student name...">
-            <a asp-action="Create" class="btn btn-success shadow-sm px-4">
+    </div>
+
+    <div class="col-md-6 text-end">
+        <div class="d-flex gap-2 justify-content-end align-items-center">
+
+            <form method="get" class="d-flex gap-2">
+                <input id="searchInput"
+                       type="text"
+                       name="search"
+                       value="@ViewBag.Search"
+                       class="form-control shadow-sm"
+                       style="width: 280px;"
+                       placeholder="🔍 Search student...">
+                <button class="btn btn-primary shadow-sm px-3">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+
+            <a asp-action="Create" class="btn btn-primary shadow-sm px-4">
                 <i class="fas fa-plus me-2"></i>Add Fee
             </a>
         </div>
     </div>
 
-    @if (TempData["success"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-            <i class="fas fa-check-circle me-2"></i>@TempData["success"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    }
+</div> 
 
-    <!-- GRID -->
-    <div class="row mt-4" id="feeGrid">
-        @if (!Model.Any())
-        {
-            <div class="col-12 text-center py-5">
-                <div class="empty-state text-muted">
-                    <i class="fas fa-money-bill-wave fa-5x mb-3"></i>
-                    <h3>No Fees Yet</h3>
-                    <p class="lead">Get started by adding your first fee record</p>
-                    <a asp-action="Create" class="btn btn-success btn-lg px-5">
-                        <i class="fas fa-plus me-2"></i> Add First Fee
-                    </a>
-                </div>
-            </div>
-        }
-        else
-        {
-            @foreach (var fee in Model)
-            {
-                var avatarClass = fee.Paid ? "paid" : (fee.DaysOverdue > 0 ? "overdue" : "pending");
-                var amountClass = fee.Paid ? "paid-badge" : (fee.DaysOverdue > 0 ? "overdue-badge" : "pending-badge");
-                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 fee-item" data-name="@(fee.StudentName ?? "").ToLower()">
-                    <div class="card fee-card h-100">
-                        <div class="text-center pt-3">
-                            <a asp-action="Edit" asp-route-id="@fee.Id" class="fee-avatar @avatarClass">
-                                @(string.IsNullOrEmpty(fee.StudentName) ? "F" : fee.StudentName.Substring(0,1).ToUpper())
-                            </a>
-                        </div>
-                        <div class="px-3">
-                            <h5 class="fee-name">
-                                <a asp-action="Edit" asp-route-id="@fee.Id">@(fee.StudentName ?? "Unnamed")</a>
-                            </h5>
-                            <div class="fee-meta"><i class="fas fa-school me-1"></i>@(fee.ClassName ?? "No Class")</div>
-                            <span class="amount-badge @amountClass">
-                                <i class="fas fa-money-bill me-1"></i>@fee.Amount EGP
-                            </span>
-                            <span class="status-badge bg-info">
-                                <i class="fas fa-info-circle me-1"></i>@(fee.PaymentStatus ?? "Pending")
-                            </span>
-
-                            @if (!fee.Paid && fee.DaysOverdue > 0)
-                            {
-                                <div class="alert alert-danger mt-2 py-1 px-2 text-center mb-0">
-                                    <i class="fas fa-clock me-1"></i> Overdue @fee.DaysOverdue days
-                                </div>
-                            }
-
-                            <div class="small text-muted text-center mt-2">
-                                <i class="fas fa-calendar me-1"></i>@fee.DueDate.ToString("dd/MM/yyyy")
-                            </div>
-                        </div>
-                        <div class="card-actions">
-                            <a asp-action="Edit" asp-route-id="@fee.Id" class="btn-action btn-edit">
-                                <i class="fas fa-edit me-1"></i>Edit
-                            </a>
-                            <form asp-action="Delete" asp-route-id="@fee.Id" method="post" class="d-inline flex-fill" onsubmit="return confirmDelete('@fee.StudentName')">
-                                @Html.AntiForgeryToken()
-                                <button type="submit" class="btn-action btn-delete w-100 h-100">
-                                    <i class="fas fa-trash me-1"></i>Delete
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            }
-        }
-    </div>
 </div>
 
-@section Scripts {
-    <script>
-        document.getElementById('searchInput').addEventListener('keyup', function() {
-            const value = this.value.toLowerCase().trim();
-            document.querySelectorAll('.fee-item').forEach(item => {
-                const name = item.dataset.name;
-                item.style.display = name.includes(value) ? '' : 'none';
-            });
-        });
+<!-- GRID -->
 
-        function confirmDelete(name) {
-            return confirm(`⚠️ Delete fee for "${name || 'Student'}"? This action cannot be undone!`);
+<div class="row mt-4">
+
+@if (!Model.Any())
+{ <div class="col-12 text-center py-5"> <div class="empty-state"> <i class="fas fa-money-bill-wave fa-5x text-muted mb-4 opacity-75"></i> <h3 class="text-muted mb-3">No Fees Yet</h3> <p class="lead text-muted mb-4">Add your first fee</p> <a asp-action="Create" class="btn btn-primary btn-lg px-5"> <i class="fas fa-plus me-3"></i> Add First Fee </a> </div> </div>
+}
+else
+{
+@foreach (var fee in Model)
+{
+<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-4 fee-item"
+data-name="@(fee.StudentName ?? "").ToLower()">
+ 
+        <div class="card student-card h-100">
+
+            <!-- AVATAR -->
+            <div class="text-center pt-4">
+                <div class="student-avatar">
+                    @(fee.StudentName?.Length > 0 ? fee.StudentName[0].ToString().ToUpper() : "F")
+                </div>
+
+                <h5 class="student-name">
+                    <a asp-action="Details" asp-route-id="@fee.Id">
+                        @(fee.StudentName ?? "Unnamed")
+                    </a>
+                </h5>
+            </div>
+
+            <!-- DATA -->
+            <div class="px-4 pb-4 text-center">
+
+                <div class="student-badges">
+
+                    <span class="student-badge badge-class">
+                        <i class="fas fa-school me-1"></i>@fee.ClassName
+                    </span>
+
+                    <span class="student-badge badge-date">
+                        <i class="fas fa-calendar me-1"></i>@fee.DueDate.ToString("dd/MM/yyyy")
+                    </span>
+
+                    <span class="student-badge badge-amount">
+                        💰 @fee.Amount EGP
+                    </span>
+
+                    <span class="student-badge @(fee.Paid ? "badge-paid" : "badge-unpaid")">
+                        @fee.PaymentStatus
+                    </span>
+
+                    @if (!fee.Paid && fee.DaysOverdue > 0)
+                    {
+                        <span class="student-badge badge-unpaid">
+                            Overdue @fee.DaysOverdue days
+                        </span>
+                    }
+
+                </div>
+
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="card-actions">
+
+                <a asp-action="Details" asp-route-id="@fee.Id"
+                   class="btn-action btn-details">
+                    <i class="fas fa-eye me-1"></i> Details
+                </a>
+
+                <a asp-action="Edit" asp-route-id="@fee.Id"
+                   class="btn-action btn-edit">
+                    <i class="fas fa-edit me-1"></i> Edit
+                </a>
+
+                <button onclick="deleteFee(@fee.Id, '@fee.StudentName')"
+                        class="btn-action btn-delete">
+                    <i class="fas fa-trash me-1"></i> Delete
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+} 
+
+}
+
+</div>
+
+<!-- PAGINATION -->
+
+@if (ViewBag.TotalPages > 1)
+{ <div class="d-flex justify-content-center mt-4"> <ul class="pagination">
+     
+        <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+            <a class="page-link" href="?page=@(ViewBag.CurrentPage - 1)&search=@ViewBag.Search">Prev</a>
+        </li>
+
+        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+        {
+            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                <a class="page-link" href="?page=@i&search=@ViewBag.Search">@i</a>
+            </li>
         }
-    </script>
+
+        <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+            <a class="page-link" href="?page=@(ViewBag.CurrentPage + 1)&search=@ViewBag.Search">Next</a>
+        </li>
+
+    </ul>
+</div> 
+
+}
+
+</div>
+
+@section Scripts{
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+function deleteFee(id, name){
+    Swal.fire({
+        title: `Delete "${name}"?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes",
+        cancelButtonText: "Cancel"
+    }).then(result => {
+        if(result.isConfirmed){
+            fetch(`/Admin/Fee/Delete/${id}`, {
+                method: "POST",
+                headers: {
+                    'RequestVerificationToken':
+                        document.querySelector('input[name="__RequestVerificationToken"]').value
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                }
+            });
+        }
+    });
+}
+</script>
+
 }

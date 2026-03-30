@@ -1,0 +1,50 @@
+﻿@inherits Microsoft.AspNetCore.Mvc.Razor.RazorPage<dynamic>
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MyApp</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,800" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #dbe6f6, #c8d8f8);
+            min-height: 100vh;
+        }
+        .account-card {
+            background: linear-gradient(145deg, #ffffff, #f0f4ff);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+            padding: 3rem;
+            max-width: 480px;
+            width: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .account-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 45px rgba(0,0,0,0.18);
+        }
+        .social-btn img {
+            height: 24px;
+            width: 24px;
+        }
+        .gradient-button {
+            background: linear-gradient(90deg, #5f3ff3, #6e57f3);
+            transition: background 0.3s ease;
+        }
+        .gradient-button:hover {
+            background: linear-gradient(90deg, #6e57f3, #5f3ff3);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center font-sans p-4">
+
+    <div class="account-card">
+        @RenderBody()
+    </div>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

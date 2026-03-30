@@ -53,7 +53,7 @@
                     .ThenInclude(e => e.Subject)
                     .Include(r => r.Exam)
                     .ThenInclude(e => e.Class)
-                    .ThenInclude(c => c.Teacher), 
+                    .ThenInclude(c => c.Teacher),
                 tracked: false,
                 cancellationToken: ct);
 

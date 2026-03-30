@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace School.Models.VM
+﻿namespace School.Models.VM
 {
     public class TeacherVM
     {

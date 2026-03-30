@@ -1,8 +1,4 @@
-﻿using School.Data;
-using School.Models;
-using School.Repositories.IRepositories;
-
-namespace School.Repositories
+﻿namespace School.Repositories
 {
     public class UnitOfWork : IUnitOfWork
     {

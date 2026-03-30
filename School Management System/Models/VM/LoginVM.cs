@@ -1,13 +1,15 @@
-﻿namespace School.Models.VM
+﻿
+namespace School.Models.VM
 {
     public class LoginVM
     {
-        public int Id { get; set; }
-
-        [Required]
+        [Required(ErrorMessage = "Username or Email is required")]
         public string UserNameOREmail { get; set; } = string.Empty;
-        [Required, DataType(DataType.Password)]
+
+        [Required(ErrorMessage = "Password is required")]
+        [DataType(DataType.Password)]
         public string Password { get; set; } = string.Empty;
-        public bool RememberMe { get; set; }
+
+        public bool RememberMe { get; set; } = false;
     }
 }

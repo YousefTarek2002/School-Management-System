@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using SchoolSystem.Models.VM;
-
-namespace School.Areas.Admin.Controllers
+﻿namespace School.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = SD.SUPER_ADMIN_ROLE)]
@@ -25,14 +22,29 @@ namespace School.Areas.Admin.Controllers
         }
 
         // ================= INDEX =================
-        public async Task<IActionResult> Index(CancellationToken cancellationToken)
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 8, string search = "", CancellationToken cancellationToken = default)
         {
-            var classes = await _classRepo.GetAsync(
+            var classesData = await _classRepo.GetAsync(
                 includeProperties: q => q.Include(c => c.ClassEnrollments)
                                        .ThenInclude(e => e.Student)
                                        .Include(c => c.Teacher),
                 tracked: false,
                 cancellationToken: cancellationToken);
+
+            // ✅ FILTER
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                classesData = classesData
+                    .Where(c => (c.Name + " " + c.Section).ToLower().Contains(search.ToLower()))
+                    .ToList();
+            }
+
+            // ✅ PAGINATION
+            var totalCount = classesData.Count();
+            var classes = classesData
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
 
             var classVMs = classes.Select(c => new ClassVM
             {
@@ -44,9 +56,12 @@ namespace School.Areas.Admin.Controllers
                 TotalStudents = c.ClassEnrollments?.Count() ?? 0
             }).ToList();
 
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+            ViewBag.Search = search;
+
             return View(classVMs);
         }
-
         private async Task LoadTeachers(CancellationToken ct)
         {
             ViewBag.Teachers = (await _teacherRepo.GetAsync(tracked: false, cancellationToken: ct)).ToList();

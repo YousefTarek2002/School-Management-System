@@ -1,11 +1,13 @@
-﻿namespace School.Models.VM
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace School.Models.VM
 {
     public class ValidateOTP
     {
-        public int Id { get; set; }
-
         [Required]
-        public string OTP { get; set; } = string.Empty;
         public string UserId { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "OTP is required")]
+        public string OTP { get; set; } = string.Empty;
     }
 }

@@ -1,108 +1,74 @@
 ﻿@model School.Models.VM.LoginVM
 @{
     ViewData["Title"] = "Login";
+    Layout = "_AccountLayout";
 }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Login</title>
-<link href="https://fonts.googleapis.com/css?family=Montserrat:400,800" rel="stylesheet" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
+<div class="w-full max-w-md bg-white dark:bg-gray-700 rounded-lg shadow p-8">
+    <h1 class="text-3xl font-extrabold text-center mb-6">Login</h1>
 
-<style>
-body {
-    background: #f6f5f7;
-    font-family: 'Montserrat', sans-serif;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0;
-}
-.container-login {
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 14px 28px rgba(0,0,0,0.25),0 10px 10px rgba(0,0,0,0.22);
-    width: 400px;
-    max-width: 100%;
-    padding: 50px 30px;
-    text-align: center;
-    position: relative;
-    animation: fadeIn 0.8s ease;
-}
-h1 { margin-bottom: 20px; font-weight: 700; color: #333; }
-input { width: 100%; padding: 12px 15px; margin: 8px 0; border: none; border-radius: 5px; background: #eee; }
-button { margin-top: 20px; width: 100%; padding: 12px; border: none; border-radius: 20px; background: #FF4B2B; color: #fff; font-weight: bold; cursor: pointer; transition: 0.3s; }
-button:hover { background: #FF416C; }
-a { display: block; margin: 10px 0; color: #FF4B2B; text-decoration: none; }
-a:hover { text-decoration: underline; color: #FF416C; }
-.text-danger { font-size: 13px; }
-.remember-me {
-    display: flex;
-    align-items: center;
-    margin-top: 10px;
-    font-size: 14px;
-    color: #333;
-}
+    <form asp-action="Login" method="post" class="space-y-4">
+        <div asp-validation-summary="ModelOnly" class="text-red-500 text-sm"></div>
 
-.remember-me input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 18px;
-    height: 18px;
-    border: 2px solid #FF4B2B;
-    border-radius: 4px;
-    margin-right: 10px;
-    position: relative;
-    cursor: pointer;
-    transition: background 0.3s;
-}
+        <input asp-for="UserNameOREmail" placeholder="Username or Email"
+               class="w-full rounded-md border-gray-300 px-3 py-2 dark:bg-gray-800 dark:border-gray-600 dark:text-white" />
+        <span asp-validation-for="UserNameOREmail" class="text-red-500 text-sm"></span>
 
-.remember-me input[type="checkbox"]:checked {
-    background: #FF4B2B;
-}
+        <input asp-for="Password" type="password" placeholder="Password"
+               class="w-full rounded-md border-gray-300 px-3 py-2 dark:bg-gray-800 dark:border-gray-600 dark:text-white" />
+        <span asp-validation-for="Password" class="text-red-500 text-sm"></span>
 
-.remember-me input[type="checkbox"]:checked::after {
-    content: '✔';
-    position: absolute;
-    top: 0;
-    left: 3px;
-    font-size: 14px;
-    color: white;
-}
-</style>
-</head>
-<body>
+        <div class="flex items-center justify-between">
+            <label class="flex items-center space-x-2">
+                <input asp-for="RememberMe" type="checkbox" class="rounded border-gray-300 text-indigo-600 dark:border-gray-600 dark:text-white">
+                    <span class="text-sm">Remember me</span>
+                </label>
+                <a asp-action="ForgetPassword" class="text-sm text-indigo-600 hover:underline dark:text-indigo-300">Forgot password?</a>
+            </div>
 
-<div class="container-login">
-    <h1>Login</h1>
-    <form asp-action="Login" method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <input asp-for="UserNameOREmail" placeholder="Username or Email" />
-        <span asp-validation-for="UserNameOREmail" class="text-danger"></span>
+            <button type="submit" class="w-full py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Login</button>
+        </form>
 
-        <input asp-for="Password" type="password" placeholder="Password" />
-        <span asp-validation-for="Password" class="text-danger"></span>
+        <!-- Or continue with -->
+        <div class="mt-6 text-center relative">
+            <div class="absolute inset-0 flex items-center">
+                <div class="w-full border-t border-gray-300 dark:border-gray-600"></div>
+            </div>
+            <span class="relative bg-white dark:bg-gray-700 px-2 text-gray-500 dark:text-gray-300">Or continue with</span>
+        </div>
 
-       <!-- استبدل div الخاص بـ RememberMe -->
-<div class="remember-me">
-    <input asp-for="RememberMe" id="rememberMe" type="checkbox" />
-    <label for="rememberMe">Remember Me</label>
-</div>
+        <!-- Social Buttons -->
+        <div class="mt-6 grid grid-cols-3 gap-3">
+            <!-- Google -->
+            <a href="@Url.Action("ExternalLogin", "Account", new { provider = "Google", returnUrl = "/" })"
+                   class="flex justify-center items-center rounded-md border border-gray-300 bg-white dark:bg-gray-800 px-4 py-2 text-gray-500 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700">
+                <span class="sr-only">Sign in with Google</span>
+                <img class="h-5 w-5" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg" alt="Google" />
+            </a>
 
-        <button type="submit">Login</button>
-    </form>
+            <!-- GitHub -->
+            <a href="@Url.Action("ExternalLogin", "Account", new { provider = "GitHub", returnUrl = "/" })"
+                   class="flex justify-center items-center rounded-md border border-gray-300 bg-white dark:bg-gray-800 px-4 py-2 text-gray-500 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700">
+                <span class="sr-only">Sign in with GitHub</span>
+                <img class="h-5 w-5" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub" />
+            </a>
 
-    <a asp-action="Register">Create Account</a>
-    <a asp-action="ForgetPassword">Forgot Password?</a>
-</div>
+            <!-- Facebook -->
+            <a href="@Url.Action("ExternalLogin", "Account", new { provider = "Facebook", returnUrl = "/" })"
+                   class="flex justify-center items-center rounded-md border border-gray-300 bg-white dark:bg-gray-800 px-4 py-2 text-gray-500 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-700">
+                <span class="sr-only">Sign in with Facebook</span>
+                <img class="h-5 w-5" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/facebook/facebook-original.svg" alt="Facebook" />
+            </a>
+        </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+        <div class="mt-6 text-center text-sm dark:text-gray-300">
+            Don't have an account?
+            <a asp-action="Register" class="text-indigo-600 font-semibold hover:underline dark:text-indigo-100">Create Account</a>
+        </div>
+    </div>
 
-</body>
-</html>
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }

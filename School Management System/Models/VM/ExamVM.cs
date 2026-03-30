@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System.ComponentModel.DataAnnotations;
-
-namespace School.Models.VM
+﻿namespace School.Models.VM
 {
     public class ExamVM
     {
@@ -56,7 +53,7 @@ namespace School.Models.VM
         public string StudentName { get; set; } = "";
         [Range(0, 100)]
         public decimal Grade { get; set; }
-        public decimal CurrentGrade { get; set; } 
+        public decimal CurrentGrade { get; set; }
     }
     public class ExamResultDisplayVM
     {
@@ -88,7 +85,7 @@ namespace School.Models.VM
             public DateTime ExamDate { get; set; }
             public TimeSpan ExamTime { get; set; }
             public string? TimeTablePath { get; set; }
-          
+
             public List<ExamStudentVM> Students { get; set; } = new();
         }
 
@@ -98,7 +95,7 @@ namespace School.Models.VM
             public string StudentName { get; set; } = "";
             public string Email { get; set; } = "";
             public decimal? Grade { get; set; }
-            
+
         }
     }
 }
